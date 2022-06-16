@@ -1,0 +1,9 @@
+# Please keep up to date with the new-version of Golang docker for builder
+FROM golang:1.17.3-alpine
+
+RUN apk update && apk upgrade && \
+  apk add git && \
+  apk add build-base && \
+  go get github.com/cosmtrek/air
+
+ENTRYPOINT ["/go/bin/air"]

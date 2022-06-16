@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  app:
+    container_name: ss-platform-api
+    build:
+      context: .
+      dockerfile: ./build/Dockerfile.local
+    volumes:
+      - ./:/app/
+    working_dir: /app
+    env_file:
+      - .env
+    ports:
+      - "1000:8080"

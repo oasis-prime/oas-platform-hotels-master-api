@@ -1,0 +1,17 @@
+app:
+  env: APP_ENV
+  debug: APP_DEBUG
+  port: APP_PORT
+database:
+  name: DATABASE_NAME
+  read:
+    url: DATABASE_READ_URL
+  write:
+    url: DATABASE_WRITE_URL
+jwt:
+  secret: JWT_SECRET
+  expirationdelta: JWT_EXPIRATIONDELTA
+redis:
+  address: REDIS_ADDRESS
+  password: REDIS_PASSWORD
+  db: REDIS_DB
