@@ -3,9 +3,10 @@ package protocol
 import (
 	"encoding/json"
 	"fmt"
-	"ss-platform-api/configs"
-	"ss-platform-api/graph"
-	"ss-platform-api/graph/generated"
+
+	"github.com/oasis-prime/oas-platform-hotels-master-api/configs"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/graph"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"

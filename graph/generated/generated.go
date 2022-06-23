@@ -7,7 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"ss-platform-api/graph/model"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 	"strconv"
 	"sync"
 	"sync/atomic"
