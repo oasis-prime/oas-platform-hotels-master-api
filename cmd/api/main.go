@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"ss-platform-api/protocol"
+
+	"github.com/oasis-prime/oas-platform-hotels-master-api/protocol"
 )
 
 func main() {

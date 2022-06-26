@@ -6,8 +6,9 @@ package graph
 import (
 	"context"
 	"fmt"
-	"ss-platform-api/graph/generated"
-	"ss-platform-api/graph/model"
+
+	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
