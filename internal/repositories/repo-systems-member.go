@@ -8,7 +8,7 @@ import (
 )
 
 // gorm.Model definition
-type Member struct {
+type SystemsMember struct {
 	ID             uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
 	FirebaseAuthID string
 	CreatedAt      time.Time
@@ -26,9 +26,9 @@ func NewMemberRepo(db *gorm.DB) *MemberRepo {
 	}
 }
 
-func (r *MemberRepo) GetAll(page, pagesize int, order string) (results []*Member, totalRows int64, err error) {
+func (r *MemberRepo) GetAll(page, pagesize int, order string) (results []*SystemsMember, totalRows int64, err error) {
 
-	resultOrm := r.db.Model(&Member{})
+	resultOrm := r.db.Model(&SystemsMember{})
 
 	resultOrm.Count(&totalRows)
 
@@ -51,9 +51,9 @@ func (r *MemberRepo) GetAll(page, pagesize int, order string) (results []*Member
 	return results, totalRows, nil
 }
 
-func (r *MemberRepo) Get(argID uuid.UUID) (record *Member, err error) {
-	record = &Member{}
-	if err = r.db.Debug().Preload("BTags").Where(&Member{ID: argID}).First(record, argID).Error; err != nil {
+func (r *MemberRepo) Get(argID uuid.UUID) (record *SystemsMember, err error) {
+	record = &SystemsMember{}
+	if err = r.db.Debug().Preload("BTags").Where(&SystemsMember{ID: argID}).First(record, argID).Error; err != nil {
 		err = ErrNotFound
 		return record, err
 	}
@@ -61,7 +61,7 @@ func (r *MemberRepo) Get(argID uuid.UUID) (record *Member, err error) {
 	return record, nil
 }
 
-func (r *MemberRepo) Create(record *Member) (result *Member, RowsAffected int64, err error) {
+func (r *MemberRepo) Create(record *SystemsMember) (result *SystemsMember, RowsAffected int64, err error) {
 	db := r.db.Save(record)
 	if err = db.Error; err != nil {
 		return nil, -1, ErrInsertFailed
@@ -70,18 +70,18 @@ func (r *MemberRepo) Create(record *Member) (result *Member, RowsAffected int64,
 	return record, db.RowsAffected, nil
 }
 
-func (r *MemberRepo) Update(argID uuid.UUID, updated *Member) (result *Member, RowsAffected int64, err error) {
-	record := &Member{}
-	db := r.db.Where(&Member{ID: argID}).First(record)
+func (r *MemberRepo) Update(argID uuid.UUID, updated *SystemsMember) (result *SystemsMember, RowsAffected int64, err error) {
+	record := &SystemsMember{}
+	db := r.db.Where(&SystemsMember{ID: argID}).First(record)
 	db.Delete(record)
 
-	result = &Member{}
+	result = &SystemsMember{}
 	db = r.db.First(result, argID)
 	if err = db.Error; err != nil {
 		return nil, -1, ErrNotFound
 	}
 
-	db.Where(&Member{ID: argID}).Updates(updated)
+	db.Where(&SystemsMember{ID: argID}).Updates(updated)
 	if err = db.Error; err != nil {
 		return nil, -1, ErrUpdateFailed
 	}
@@ -90,7 +90,7 @@ func (r *MemberRepo) Update(argID uuid.UUID, updated *Member) (result *Member, R
 }
 
 func (r *MemberRepo) Delete(argID uint32) (rowsAffected int64, err error) {
-	record := &Member{}
+	record := &SystemsMember{}
 	db := r.db.First(record, argID)
 	if db.Error != nil {
 		return -1, ErrNotFound
