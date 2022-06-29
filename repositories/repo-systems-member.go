@@ -9,11 +9,17 @@ import (
 
 // gorm.Model definition
 type SystemsMember struct {
-	ID             uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
+	ID             uuid.UUID `gorm:"type:char(36);primary_key"`
 	FirebaseAuthID string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      gorm.DeletedAt `gorm:"index"`
+}
+
+func (member *SystemsMember) BeforeCreate(tx *gorm.DB) error {
+	id, err := uuid.NewRandom()
+	member.ID = id
+	return err
 }
 
 type MemberRepo struct {
