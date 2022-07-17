@@ -7,7 +7,7 @@ import (
 // ชื่อโรงแรม
 type HotelName struct {
 	gorm.Model
-	HotelID  uint
-	Language string
-	Value    string
+	HotelID uint
+	Key     string
+	Value   string
 }
