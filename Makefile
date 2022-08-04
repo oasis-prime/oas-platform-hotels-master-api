@@ -1,3 +1,8 @@
+generate:
+	- go run github.com/99designs/gqlgen generate
+make-env:
+	export $(grep -v '^#' .env | xargs)
+
 dcup-local:
 	docker-compose up
 

@@ -4,10 +4,13 @@ app:
   port: APP_PORT
 database:
   name: DATABASE_NAME
-  read:
-    url: DATABASE_READ_URL
-  write:
-    url: DATABASE_WRITE_URL
+  user: DATABASE_USER
+  pwd: DATABASE_PWD
+  instance:
+    connection:
+      name: DATABASE_INSTANCE_CONNECTION_NAME
+  socket:
+    dir: DATABASE_SOCKET_DIR
 jwt:
   secret: JWT_SECRET
   expirationdelta: JWT_EXPIRATIONDELTA
@@ -15,3 +18,9 @@ redis:
   address: REDIS_ADDRESS
   password: REDIS_PASSWORD
   db: REDIS_DB
+hotelbeds:
+  endpoint: HOTELBEDS_ENDPOINT
+  secureendopint: HOTELBEDS_SECUREENDOPINT
+  key: HOTELBEDS_KEY
+  secret: HOTELBEDS_SECRET
+  format: HOTELBEDS_FORMAT

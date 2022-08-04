@@ -1,14 +1,14 @@
-package handlers
+package memberhdl
 
 import "github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
 
-type MemberHandler struct {
+type Handler struct {
 	serv       ports.MemberService
 	serviceURL string
 }
 
-func NewMemberHandler(serv ports.MemberService, serviceURL string) *MemberHandler {
-	return &MemberHandler{
+func NewHandler(serv ports.MemberService, serviceURL string) *Handler {
+	return &Handler{
 		serv:       serv,
 		serviceURL: serviceURL,
 	}

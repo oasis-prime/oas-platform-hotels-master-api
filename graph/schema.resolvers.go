@@ -5,18 +5,19 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 )
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
+// CreateHotel is the resolver for the createHotel field.
+func (r *mutationResolver) CreateHotel(ctx context.Context, input model.NewHotel) (*model.Hotel, error) {
+	return r.HotelbedsHandler.CreateHotel(ctx, input)
 }
 
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
+// Hotels is the resolver for the hotels field.
+func (r *queryResolver) Hotels(ctx context.Context) ([]*model.Hotel, error) {
+	return r.HotelbedsHandler.Hotels(ctx)
 }
 
 // Mutation returns generated.MutationResolver implementation.

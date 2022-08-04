@@ -1,15 +1,15 @@
-package services
+package membersvc
 
 import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
 )
 
-type MemberService struct {
+type Service struct {
 	repo ports.MemberRepository
 }
 
-func NewMemberService(repo ports.MemberRepository) *MemberService {
-	return &MemberService{
+func NewService(repo ports.MemberRepository) *Service {
+	return &Service{
 		repo: repo,
 	}
 }

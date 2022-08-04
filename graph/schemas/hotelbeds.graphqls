@@ -1,0 +1,16 @@
+# GraphQL schema Type
+#
+
+type Hotel {
+  id: ID!
+  text: String!
+  done: Boolean!
+}
+
+# GraphQl schema Input
+#
+
+input NewHotel {
+  text: String!
+  userId: String!
+}

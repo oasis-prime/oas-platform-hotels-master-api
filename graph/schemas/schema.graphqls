@@ -1,0 +1,13 @@
+# GraphQL schema
+#
+# Query
+
+type Query {
+  hotels: [Hotel!]!
+}
+
+# Mutation
+
+type Mutation {
+  createHotel(input: NewHotel!): Hotel!
+}
