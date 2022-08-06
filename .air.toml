@@ -1,7 +1,7 @@
 root = "."
 tmp_dir = "tmp"
 [build]
-bin = ";export $(grep -v '^#' .env | xargs); ./tmp/app"
+bin = "./tmp/app"
 cmd = "go build -o ./tmp/app -tags musl ./cmd/api/main.go"
 delay = 1000
 exclude_dir = ["assets", "tmp", "vendor", "testdata"]

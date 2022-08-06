@@ -7,6 +7,7 @@ import (
 	"github.com/oasis-prime/oas-platform-core/repositories"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func DBInit() {
@@ -22,10 +23,15 @@ func DBInit() {
 		socketDir = "/cloudsql"
 		dbURI = fmt.Sprintf("%s:%s@unix(/%s/%s)/%s?parseTime=true", dbUser, dbPwd, socketDir, instanceConnectionName, dbName)
 	} else {
-		dbURI = fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", dbUser, dbPwd, instanceConnectionName, dbName)
+		dbURI = fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8&parseTime=True&loc=Local", dbUser, dbPwd, instanceConnectionName, dbName)
 	}
-
-	db, err := gorm.Open(mysql.Open(dbURI), &gorm.Config{})
+	var err error
+	db, err = gorm.Open(mysql.Open(dbURI), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+		PrepareStmt:                              true,
+		AllowGlobalUpdate:                        true,
+		Logger:                                   logger.Default.LogMode(logger.Error),
+	})
 
 	if err != nil {
 		panic(err)
@@ -33,8 +39,17 @@ func DBInit() {
 
 	db.AutoMigrate(
 		&repositories.SystemsMember{},
-		&repositories.Hotels{},
+		&repositories.HotelCity{},
 		&repositories.HotelName{},
 		&repositories.HotelDescription{},
+		&repositories.HotelCoordinates{},
+		&repositories.HotelAddress{},
+		&repositories.HotelPhone{},
+		&repositories.HotelRooms{},
+		&repositories.HotelFacility{},
+		&repositories.HotelIssues{},
+		&repositories.HotelInterestPoints{},
+		&repositories.HotelImages{},
+		&repositories.Hotels{},
 	)
 }
