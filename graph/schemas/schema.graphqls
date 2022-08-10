@@ -2,12 +2,9 @@
 #
 # Query
 
-type Query {
-  hotels: [Hotel!]!
-}
-
 # Mutation
 
 type Mutation {
-  createHotel(input: NewHotel!): Hotel!
+  bookingA(input: BookingInput!): BookingData!
+  # availability(input: AvailabilityInput!): AvailabilityData!
 }

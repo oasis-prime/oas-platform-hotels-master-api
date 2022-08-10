@@ -1,16 +1,100 @@
+# GraphQL Basic enum
+enum Language {
+  TAI
+  ENG
+}
+
 # GraphQL schema Type
 #
 
-type Hotel {
-  id: ID!
-  text: String!
-  done: Boolean!
+type AvailabilityData {
+  hotels: AvailabilityHotels
+}
+
+type AvailabilityHotels {
+  code: Int
+  name: String
+  categoryCode: String
+  categoryName: String
+  destinationCode: String
+  destinationName: String
+  zoneCode: Int
+  zoneName: String
+  latitude: String
+  longitude: String
+  minRate: String
+  maxRate: String
+  currency: String
+  rooms: [AvailabilityRooms]
+}
+
+type AvailabilityRooms {
+  code: String
+  name: String
+  rates: [AvailabilityRates]
+}
+
+type AvailabilityRates {
+  rateKey: String
+  rateClass: String
+  rateType: String
+  net: String
+  discount: String
+  discountPCT: String
+  sellingRate: String
+  allotment: Int
+  paymentType: String
+  packaging: Boolean
+  boardCode: String
+  boardName: String
+  rooms: Int
+  adults: Int
+  children: Int
+  cancellationPolicies: [AvailabilityCancellationPolicies]
+}
+
+type AvailabilityCancellationPolicies {
+  amount: String
+  from: String
 }
 
 # GraphQl schema Input
 #
 
-input NewHotel {
-  text: String!
-  userId: String!
+input AvailabilityInput {
+  stay: AvailabilityStayInput!
+  occupancies: [AvailabilityOccupanciesInput!]!
+  geolocation: AvailabilityGeolocationInput!
+  language: Language!
+  filter: AvailabilityFilterInput
+}
+
+input AvailabilityStayInput {
+  checkIn: String!
+  checkOut: String!
+}
+
+input AvailabilityOccupanciesInput {
+  rooms: Int!
+  adults: Int!
+  children: Int!
+}
+
+input AvailabilityGeolocationInput {
+  latitude: Float!
+  longitude: Float!
+  radius: Int!
+}
+
+input AvailabilityFilterInput {
+  maxHotels: Int
+  maxRooms: Int
+  minRate: Int
+  maxRate: Int
+  maxRatesPerRoom: Int
+}
+
+# Query
+extend type Query {
+  availability(input: AvailabilityInput!): AvailabilityData!
 }

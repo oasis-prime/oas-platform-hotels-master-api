@@ -2,13 +2,141 @@
 
 package model
 
-type Hotel struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
+type AvailabilityCancellationPolicies struct {
+	Amount *string `json:"amount"`
+	From   *string `json:"from"`
 }
 
-type NewHotel struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type AvailabilityData struct {
+	Hotels *AvailabilityHotels `json:"hotels"`
+}
+
+type AvailabilityFilterInput struct {
+	MaxHotels       *int `json:"maxHotels"`
+	MaxRooms        *int `json:"maxRooms"`
+	MinRate         *int `json:"minRate"`
+	MaxRate         *int `json:"maxRate"`
+	MaxRatesPerRoom *int `json:"maxRatesPerRoom"`
+}
+
+type AvailabilityGeolocationInput struct {
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+	Radius    int     `json:"radius"`
+}
+
+type AvailabilityHotels struct {
+	Code            *int                 `json:"code"`
+	Name            *string              `json:"name"`
+	CategoryCode    *string              `json:"categoryCode"`
+	CategoryName    *string              `json:"categoryName"`
+	DestinationCode *string              `json:"destinationCode"`
+	DestinationName *string              `json:"destinationName"`
+	ZoneCode        *int                 `json:"zoneCode"`
+	ZoneName        *string              `json:"zoneName"`
+	Latitude        *string              `json:"latitude"`
+	Longitude       *string              `json:"longitude"`
+	MinRate         *string              `json:"minRate"`
+	MaxRate         *string              `json:"maxRate"`
+	Currency        *string              `json:"currency"`
+	Rooms           []*AvailabilityRooms `json:"rooms"`
+}
+
+type AvailabilityInput struct {
+	Stay        *AvailabilityStayInput          `json:"stay"`
+	Occupancies []*AvailabilityOccupanciesInput `json:"occupancies"`
+	Geolocation *AvailabilityGeolocationInput   `json:"geolocation"`
+	Language    Language                        `json:"language"`
+	Filter      *AvailabilityFilterInput        `json:"filter"`
+}
+
+type AvailabilityOccupanciesInput struct {
+	Rooms    int `json:"rooms"`
+	Adults   int `json:"adults"`
+	Children int `json:"children"`
+}
+
+type AvailabilityRates struct {
+	RateKey              *string                             `json:"rateKey"`
+	RateClass            *string                             `json:"rateClass"`
+	RateType             *string                             `json:"rateType"`
+	Net                  *string                             `json:"net"`
+	Discount             *string                             `json:"discount"`
+	DiscountPct          *string                             `json:"discountPCT"`
+	SellingRate          *string                             `json:"sellingRate"`
+	Allotment            *int                                `json:"allotment"`
+	PaymentType          *string                             `json:"paymentType"`
+	Packaging            *bool                               `json:"packaging"`
+	BoardCode            *string                             `json:"boardCode"`
+	BoardName            *string                             `json:"boardName"`
+	Rooms                *int                                `json:"rooms"`
+	Adults               *int                                `json:"adults"`
+	Children             *int                                `json:"children"`
+	CancellationPolicies []*AvailabilityCancellationPolicies `json:"cancellationPolicies"`
+}
+
+type AvailabilityRooms struct {
+	Code  *string              `json:"code"`
+	Name  *string              `json:"name"`
+	Rates []*AvailabilityRates `json:"rates"`
+}
+
+type AvailabilityStayInput struct {
+	CheckIn  string `json:"checkIn"`
+	CheckOut string `json:"checkOut"`
+}
+
+type BookingData struct {
+	ID *string `json:"id"`
+}
+
+type BookingInput struct {
+	ID *string `json:"id"`
+}
+
+type Language string
+
+const (
+	LanguageTai Language = "TAI"
+	LanguageEng Language = "ENG"
+)
+
+var AllLanguage = []Language{
+	LanguageTai,
+	LanguageEng,
+}
+
+func (e Language) IsValid() bool {
+	switch e {
+	case LanguageTai, LanguageEng:
+		return true
+	}
+	return false
+}
+
+func (e Language) String() string {
+	return string(e)
+}
+
+func (e *Language) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Language(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Language", str)
+	}
+	return nil
+}
+
+func (e Language) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

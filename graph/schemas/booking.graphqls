@@ -1,0 +1,26 @@
+# GraphQL Basic enum
+
+# GraphQL schema Type
+#
+
+type BookingData {
+  id: String
+}
+
+# GraphQl schema Input
+#
+
+input BookingInput {
+  id: String
+}
+
+# Query
+extend type Query {
+  booking(input: BookingInput!): BookingData!
+}
+
+# Mutation
+
+extend type Mutation {
+  bookingB(input: BookingInput!): BookingData!
+}

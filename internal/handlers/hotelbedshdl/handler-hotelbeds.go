@@ -18,7 +18,7 @@ func NewHandler(
 	}
 }
 
-func (h *Handler) CreateHotel(ctx context.Context, input model.NewHotel) (*model.Hotel, error) {
+func (h *Handler) AvailabilityHotel(ctx context.Context, input model.AvailabilityInput) (*model.AvailabilityData, error) {
 
 	e := h.servContent.ServiceGetAllHotelbeds()
 
@@ -26,9 +26,5 @@ func (h *Handler) CreateHotel(ctx context.Context, input model.NewHotel) (*model
 		return nil, e
 	}
 
-	return nil, nil
-}
-
-func (h *Handler) Hotels(ctx context.Context) ([]*model.Hotel, error) {
 	return nil, nil
 }
