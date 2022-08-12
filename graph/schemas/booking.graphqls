@@ -15,12 +15,10 @@ input BookingInput {
 }
 
 # Query
-extend type Query {
-  booking(input: BookingInput!): BookingData!
-}
+# extend type Query {
+# }
 
 # Mutation
 
-extend type Mutation {
-  bookingB(input: BookingInput!): BookingData!
-}
+# extend type Mutation {
+# }

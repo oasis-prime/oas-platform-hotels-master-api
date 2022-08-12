@@ -14,7 +14,7 @@ type AvailabilityCancellationPolicies struct {
 }
 
 type AvailabilityData struct {
-	Hotels *AvailabilityHotels `json:"hotels"`
+	Hotels []*AvailabilityHotels `json:"hotels"`
 }
 
 type AvailabilityFilterInput struct {

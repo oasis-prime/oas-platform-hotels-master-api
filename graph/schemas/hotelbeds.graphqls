@@ -8,7 +8,7 @@ enum Language {
 #
 
 type AvailabilityData {
-  hotels: AvailabilityHotels
+  hotels: [AvailabilityHotels!]!
 }
 
 type AvailabilityHotels {

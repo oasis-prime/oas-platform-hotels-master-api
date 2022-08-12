@@ -9,10 +9,13 @@ require (
 )
 
 require (
+	github.com/gofiber/adaptor v0.2.0
+	github.com/gofiber/adaptor/v2 v2.1.25
+	github.com/gofiber/fiber/v2 v2.36.0
+	github.com/jinzhu/copier v0.3.5
 	github.com/nqd/flat v0.1.1
 	github.com/oasis-prime/oas-platform-core v0.0.0-00010101000000-000000000000
 	github.com/spf13/viper v1.12.0
-	gorm.io/datatypes v1.0.7
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/gorm v1.23.8
 )

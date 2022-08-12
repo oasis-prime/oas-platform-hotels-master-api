@@ -33,18 +33,20 @@ func graphqlHandler() gin.HandlerFunc {
 	var hotelbedsHandler *hotelbedshdl.Handler
 	{
 		apprequest := hotelbedshttp.NewRequester(con.Hotelbeds.Key, con.Hotelbeds.Secret, con.Hotelbeds.Format)
-		hotelbedsRepo := repositories.NewHotelsRepo(db)
-		hotelbedsHttp := hotelbedshttp.NewHotelbedsContentHTTP(con.Hotelbeds.Endpoint, apprequest)
-		hotelbedsServ := hotelbedssvc.NewService(hotelbedsHttp, hotelbedsRepo)
+		hotelsRepo := repositories.NewHotelsRepo(db)
+		hotelbedsContentHttp := hotelbedshttp.NewHotelbedsContentHTTP(con.Hotelbeds.Endpoint, apprequest)
+		hotelbedsServ := hotelbedssvc.NewService(hotelbedsContentHttp, hotelsRepo)
 		hotelbedsHandler = hotelbedshdl.NewHandler(hotelbedsServ)
 	}
 
 	h := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
-			generated.Config{Resolvers: &graph.Resolver{
-				MemberHandler:    memberHandler,
-				HotelbedsHandler: hotelbedsHandler,
-			}},
+			generated.Config{
+				Resolvers: &graph.Resolver{
+					MemberHandler:    memberHandler,
+					HotelbedsHandler: hotelbedsHandler,
+				},
+			},
 		),
 	)
 
@@ -67,7 +69,7 @@ func ServeHTTP() error {
 	con = configs.GetConfig()
 	DBInit()
 
-	r.POST("/query", graphqlHandler())
+	r.Any("/query", graphqlHandler())
 	r.GET("/", playgroundHandler())
 	r.Run(":" + configs.GetConfig().App.Port)
 

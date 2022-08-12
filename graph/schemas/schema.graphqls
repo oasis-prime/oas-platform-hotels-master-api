@@ -4,7 +4,8 @@
 
 # Mutation
 
-type Mutation {
-  bookingA(input: BookingInput!): BookingData!
-  # availability(input: AvailabilityInput!): AvailabilityData!
-}
+# type Mutation {
+# }
+
+# type Query {
+# }

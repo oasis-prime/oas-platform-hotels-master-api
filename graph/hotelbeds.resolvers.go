@@ -5,12 +5,17 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 )
 
 // Availability is the resolver for the availability field.
 func (r *queryResolver) Availability(ctx context.Context, input model.AvailabilityInput) (*model.AvailabilityData, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.HotelbedsHandler.AvailabilityHotel(ctx, input)
 }
+
+// Query returns generated.QueryResolver implementation.
+func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
+
+type queryResolver struct{ *Resolver }
