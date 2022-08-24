@@ -8,3 +8,7 @@ type MemberService interface {
 type HotelbedsService interface {
 	AvailabilityHotelbeds(condition *hotelbedsdm.AvailabilityRequest) (res *hotelbedsdm.AvailabilityResponse, err error)
 }
+
+type HotelsService interface {
+	// AvailabilityHotelbeds(condition *hotelbedsdm.AvailabilityRequest) (res *hotelbedsdm.AvailabilityResponse, err error)
+}

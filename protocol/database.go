@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/oasis-prime/oas-platform-core/repositories"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -36,20 +35,4 @@ func DBInit() {
 	if err != nil {
 		panic(err)
 	}
-
-	db.AutoMigrate(
-		&repositories.SystemsMember{},
-		&repositories.HotelCity{},
-		&repositories.HotelName{},
-		&repositories.HotelDescription{},
-		&repositories.HotelCoordinates{},
-		&repositories.HotelAddress{},
-		&repositories.HotelPhone{},
-		&repositories.HotelRooms{},
-		&repositories.HotelFacility{},
-		&repositories.HotelIssues{},
-		&repositories.HotelInterestPoints{},
-		&repositories.HotelImages{},
-		&repositories.Hotels{},
-	)
 }

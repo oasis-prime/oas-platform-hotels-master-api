@@ -10,7 +10,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 make: *** No rule to make target `all'.  Stop.
 
 
-# Make data base, printed on Fri Aug 12 11:19:45 2022
+# Make data base, printed on Wed Aug 24 09:32:12 2022
 
 # Variables
 
@@ -47,7 +47,7 @@ PATH = /Users/sittha/gsutil/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Us
 # environment
 GOPATH = /Users/sittha/go
 # environment
-LaunchInstanceID = D30692A9-0530-4F6E-B731-F1B86FB9385A
+LaunchInstanceID = 114F2065-0E82-4855-99F3-26D619F2863D
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
@@ -55,7 +55,7 @@ ANDROID_HOME = /Users/sittha/Library/Android/sdk
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.8GOepWW9Zy/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.kyfVVDei45/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -69,14 +69,13 @@ HOME = /Users/sittha
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/sittha/Library/Application Support/Code/CachedData/da76f93349a72022ca4670c1b84860304616aaa2
+VSCODE_CODE_CACHE_PATH = /Users/sittha/Library/Application Support/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
 # environment
 LOGNAME = sittha
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
- 
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
@@ -104,7 +103,7 @@ TMPDIR = /var/folders/xz/k_2ryb4s4mqfdd63915p6chw0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/sittha/Library/Application Support/Code/1.70.0-main.sock
+VSCODE_IPC_HOOK = /Users/sittha/Library/Application Support/Code/1.70.2-main.sock
 # environment
 MallocNanoZone = 0
 # makefile
@@ -114,7 +113,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.93140925.93140931
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.94504977.94504983
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -142,7 +141,7 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 383
+VSCODE_PID = 421
 # variable set hash-table stats:
 # Load=64/1024=6%, Rehash=0, Collisions=2/88=2%
 
@@ -182,7 +181,6 @@ dcup-local:
 dc-clear:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 #  commands to execute (from `Makefile', line 21):
 	docker-compose down
@@ -234,6 +232,7 @@ generate:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 
 run-dev:
 #  Implicit rule search has not been done.
@@ -265,6 +264,6 @@ make-env:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Fri Aug 12 11:19:45 2022
+# Finished Make data base on Wed Aug 24 09:32:12 2022
 
  

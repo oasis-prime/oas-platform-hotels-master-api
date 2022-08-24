@@ -1,4 +1,4 @@
-package hotelbedssvc
+package hotelbedsserv
 
 import (
 	"github.com/oasis-prime/oas-platform-core/domain/hotelbedsdm"
@@ -7,16 +7,13 @@ import (
 
 type Service struct {
 	httpContent ports.HotelbedsHttp
-	repoHotels  ports.HotelsRepository
 }
 
 func NewService(
 	httpContent ports.HotelbedsHttp,
-	repoHotels ports.HotelsRepository,
 ) *Service {
 	return &Service{
 		httpContent: httpContent,
-		repoHotels:  repoHotels,
 	}
 }
 

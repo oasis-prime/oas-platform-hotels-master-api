@@ -1,4 +1,4 @@
-package hotelbedshdl
+package hotelshdl
 
 import (
 	"context"
@@ -9,20 +9,24 @@ import (
 )
 
 type Handler struct {
-	servContent ports.HotelbedsService
+	servHotelbeds ports.HotelbedsService
+	servHotels    ports.HotelsService
 }
 
 func NewHandler(
-	servContent ports.HotelbedsService) *Handler {
+	servHotelbeds ports.HotelbedsService,
+	servHotels ports.HotelsService,
+) *Handler {
 	return &Handler{
-		servContent: servContent,
+		servHotelbeds: servHotelbeds,
+		servHotels:    servHotels,
 	}
 }
 
 func (h *Handler) AvailabilityHotel(ctx context.Context, input model.AvailabilityInput) (display *model.AvailabilityData, err error) {
 	condition := input.ParseToAvailabilityRequest()
 
-	response, e := h.servContent.AvailabilityHotelbeds(condition)
+	response, e := h.servHotelbeds.AvailabilityHotelbeds(condition)
 
 	if e != nil {
 		return nil, e

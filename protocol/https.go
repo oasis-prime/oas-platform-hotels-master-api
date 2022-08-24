@@ -2,13 +2,15 @@ package protocol
 
 import (
 	"github.com/oasis-prime/oas-platform-core/http/hotelbedshttp"
-	"github.com/oasis-prime/oas-platform-core/repositories"
+	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
+	"github.com/oasis-prime/oas-platform-core/repositories/systemsrepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/configs"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelbedssvc"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/membersvc"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelbedshdl"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelbedsserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelsserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/memberserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/memberhdl"
 	"gorm.io/gorm"
 
@@ -25,26 +27,27 @@ var (
 func graphqlHandler() gin.HandlerFunc {
 	var memberHandler *memberhdl.Handler
 	{
-		memberRepo := repositories.NewMemberRepo(db)
-		memberServ := membersvc.NewService(memberRepo)
+		memberRepo := systemsrepo.NewMemberRepo(db)
+		memberServ := memberserv.NewService(memberRepo)
 		memberHandler = memberhdl.NewHandler(memberServ, "")
 	}
 
-	var hotelbedsHandler *hotelbedshdl.Handler
+	var hotelsHandler *hotelshdl.Handler
 	{
 		apprequest := hotelbedshttp.NewRequester(con.Hotelbeds.Key, con.Hotelbeds.Secret, con.Hotelbeds.Format)
-		hotelsRepo := repositories.NewHotelsRepo(db)
+		hotelsRepo := hotelrepo.NewHotelsRepo(db)
 		hotelbedsContentHttp := hotelbedshttp.NewHotelbedsContentHTTP(con.Hotelbeds.Endpoint, apprequest)
-		hotelbedsServ := hotelbedssvc.NewService(hotelbedsContentHttp, hotelsRepo)
-		hotelbedsHandler = hotelbedshdl.NewHandler(hotelbedsServ)
+		hotelbedsServ := hotelbedsserv.NewService(hotelbedsContentHttp)
+		hotelsServ := hotelsserv.NewService(hotelsRepo)
+		hotelsHandler = hotelshdl.NewHandler(hotelbedsServ, hotelsServ)
 	}
 
 	h := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
 			generated.Config{
 				Resolvers: &graph.Resolver{
-					MemberHandler:    memberHandler,
-					HotelbedsHandler: hotelbedsHandler,
+					MemberHandler: memberHandler,
+					HotelsHandler: hotelsHandler,
 				},
 			},
 		),

@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelbedshdl"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/memberhdl"
 )
 
@@ -10,6 +10,6 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	MemberHandler    *memberhdl.Handler
-	HotelbedsHandler *hotelbedshdl.Handler
+	MemberHandler *memberhdl.Handler
+	HotelsHandler *hotelshdl.Handler
 }
