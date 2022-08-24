@@ -2,8 +2,8 @@ package protocol
 
 import (
 	"github.com/oasis-prime/oas-platform-core/http/hotelbedshttp"
+	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
-	"github.com/oasis-prime/oas-platform-core/repositories/systemsrepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/configs"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
@@ -27,7 +27,7 @@ var (
 func graphqlHandler() gin.HandlerFunc {
 	var memberHandler *memberhdl.Handler
 	{
-		memberRepo := systemsrepo.NewMemberRepo(db)
+		memberRepo := customerrepo.NewMemberRepo(db)
 		memberServ := memberserv.NewService(memberRepo)
 		memberHandler = memberhdl.NewHandler(memberServ, "")
 	}

@@ -8,13 +8,20 @@ import (
 	"strconv"
 )
 
+type Address struct {
+	Content *string `json:"content"`
+	Street  *string `json:"street"`
+	Number  *string `json:"number"`
+}
+
 type AvailabilityCancellationPolicies struct {
 	Amount *string `json:"amount"`
 	From   *string `json:"from"`
 }
 
 type AvailabilityData struct {
-	Hotels []*AvailabilityHotels `json:"hotels"`
+	Hotels       []*Hotels             `json:"hotels"`
+	Availability []*AvailabilityHotels `json:"availability"`
 }
 
 type AvailabilityFilterInput struct {
@@ -98,6 +105,127 @@ type BookingData struct {
 
 type BookingInput struct {
 	ID *string `json:"id"`
+}
+
+type City struct {
+	Content *string `json:"content"`
+}
+
+type Coordinates struct {
+	Longitude *float64 `json:"longitude"`
+	Latitude  *float64 `json:"latitude"`
+}
+
+type Description struct {
+	Content *string `json:"content"`
+}
+
+type Facilities struct {
+	FacilityCode      *int  `json:"facilityCode"`
+	FacilityGroupCode *int  `json:"facilityGroupCode"`
+	Order             *int  `json:"order"`
+	Number            *int  `json:"number"`
+	Voucher           *bool `json:"voucher"`
+}
+
+type Hotels struct {
+	Code                  *int              `json:"code"`
+	CountryCode           *string           `json:"countryCode"`
+	StateCode             *string           `json:"stateCode"`
+	DestinationCode       *string           `json:"destinationCode"`
+	ZoneCode              *int              `json:"zoneCode"`
+	CategoryCode          *string           `json:"categoryCode"`
+	CategoryGroupCode     *string           `json:"categoryGroupCode"`
+	ChainCode             *string           `json:"chainCode"`
+	AccommodationTypeCode *string           `json:"accommodationTypeCode"`
+	PostalCode            *string           `json:"postalCode"`
+	Email                 *string           `json:"email"`
+	Web                   *string           `json:"web"`
+	LastUpdate            *string           `json:"lastUpdate"`
+	S2c                   *string           `json:"S2C"`
+	Ranking               *int              `json:"ranking"`
+	Images                []*Images         `json:"images"`
+	InterestPoints        []*InterestPoints `json:"interestPoints"`
+	Issues                []*Issues         `json:"issues"`
+	Facilities            []*Facilities     `json:"facilities"`
+	Rooms                 []*Rooms          `json:"rooms"`
+	Phones                []*Phones         `json:"phones"`
+	City                  *City             `json:"city"`
+	Address               *Address          `json:"address"`
+	AmenityCodes          []*int            `json:"amenityCodes"`
+	SegmentCodes          []*int            `json:"segmentCodes"`
+	BoardCodes            []*string         `json:"boardCodes"`
+	Coordinates           *Coordinates      `json:"coordinates"`
+	Description           *Description      `json:"description"`
+	Name                  *Name             `json:"name"`
+}
+
+type Images struct {
+	ImageTypeCode *string `json:"imageTypeCode"`
+	Path          *string `json:"path"`
+	Order         *int    `json:"order"`
+	VisualOrder   *int    `json:"visualOrder"`
+}
+
+type InterestPoints struct {
+	FacilityCode      *int    `json:"facilityCode"`
+	FacilityGroupCode *int    `json:"facilityGroupCode"`
+	Order             *int    `json:"order"`
+	PoiName           *string `json:"poiName"`
+	Distance          *string `json:"distance"`
+}
+
+type Issues struct {
+	IssueCode   *string `json:"issueCode"`
+	IssueType   *string `json:"issueType"`
+	DateFrom    *string `json:"dateFrom"`
+	DateTo      *string `json:"dateTo"`
+	Order       *int    `json:"order"`
+	Alternative *bool   `json:"alternative"`
+}
+
+type Name struct {
+	Content *string `json:"content"`
+}
+
+type Phones struct {
+	PhoneNumber *string `json:"phoneNumber"`
+	PhoneType   *string `json:"phoneType"`
+}
+
+type RoomFacilities struct {
+	FacilityCode      *int  `json:"facilityCode"`
+	FacilityGroupCode *int  `json:"facilityGroupCode"`
+	IndLogic          *bool `json:"indLogic"`
+	Number            *int  `json:"number"`
+	Voucher           *bool `json:"voucher"`
+}
+
+type RoomStayFacilities struct {
+	FacilityCode      *int `json:"facilityCode"`
+	FacilityGroupCode *int `json:"facilityGroupCode"`
+	Number            *int `json:"number"`
+}
+
+type RoomStays struct {
+	StayType           *string               `json:"stayType"`
+	Order              *string               `json:"order"`
+	Description        *string               `json:"description"`
+	RoomStayFacilities []*RoomStayFacilities `json:"roomStayFacilities"`
+}
+
+type Rooms struct {
+	RoomCode           *string           `json:"roomCode"`
+	IsParentRoom       *bool             `json:"isParentRoom"`
+	MinPax             *int              `json:"minPax"`
+	MaxPax             *int              `json:"maxPax"`
+	MaxAdults          *int              `json:"maxAdults"`
+	MaxChildren        *int              `json:"maxChildren"`
+	MinAdults          *int              `json:"minAdults"`
+	RoomType           *string           `json:"roomType"`
+	CharacteristicCode *string           `json:"characteristicCode"`
+	RoomStays          []*RoomStays      `json:"roomStays"`
+	RoomFacilities     []*RoomFacilities `json:"roomFacilities"`
 }
 
 type Language string

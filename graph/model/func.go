@@ -53,7 +53,7 @@ func (input AvailabilityInput) ParseToAvailabilityRequest() *hotelbedsdm.Availab
 			CheckOut: input.Stay.CheckOut,
 		},
 		Occupancies: occ,
-		Geolocation: hotelbedsdm.GeolocationReq{
+		Geolocation: &hotelbedsdm.GeolocationReq{
 			Latitude:  input.Geolocation.Latitude,
 			Longitude: input.Geolocation.Longitude,
 			Radius:    &radius,

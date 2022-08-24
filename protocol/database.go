@@ -26,10 +26,7 @@ func DBInit() {
 	}
 	var err error
 	db, err = gorm.Open(mysql.Open(dbURI), &gorm.Config{
-		DisableForeignKeyConstraintWhenMigrating: true,
-		PrepareStmt:                              true,
-		AllowGlobalUpdate:                        true,
-		Logger:                                   logger.Default.LogMode(logger.Error),
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 
 	if err != nil {
