@@ -1,0 +1,152 @@
+# Hotels
+type Hotels {
+  language: LanguageEnum!
+  code: Int
+  type: HotelTypeEnum!
+  countryCode: String
+  stateCode: String
+  destinationCode: String
+  zoneCode: Int
+  categoryCode: String
+  categoryGroupCode: String
+  chainCode: String
+  accommodationTypeCode: String
+  postalCode: String
+  email: String
+  web: String
+  lastUpdate: String
+  S2C: String
+  ranking: Int
+  images: [Images]
+  interestPoints: [InterestPoints]
+  issues: [Issues]
+  facilities: [Facilities]
+  rooms: [Rooms]
+  phones: [Phones]
+  city: City
+  address: Address
+  amenityCodes: [Int]
+  segmentCodes: [Int]
+  boardCodes: [String]
+  coordinates: Coordinates
+  description: Description
+  name: Name
+}
+
+type Images {
+  imageTypeCode: String
+  path: String
+  order: Int
+  visualOrder: Int
+}
+
+type InterestPoints {
+  facilityCode: Int
+  facilityGroupCode: Int
+  order: Int
+  poiName: String
+  distance: String
+}
+
+type Issues {
+  issueCode: String
+  issueType: String
+  dateFrom: String
+  dateTo: String
+  order: Int
+  alternative: Boolean
+}
+
+type Facilities {
+  facilityCode: Int
+  facilityGroupCode: Int
+  order: Int
+  number: Int
+  voucher: Boolean
+}
+
+type RoomStayFacilities {
+  facilityCode: Int
+  facilityGroupCode: Int
+  number: Int
+}
+
+type RoomStays {
+  stayType: String
+  order: String
+  description: String
+  roomStayFacilities: [RoomStayFacilities]
+}
+
+type RoomFacilities {
+  facilityCode: Int
+  facilityGroupCode: Int
+  indLogic: Boolean
+  number: Int
+  voucher: Boolean
+}
+
+type Rooms {
+  roomCode: String
+  isParentRoom: Boolean
+  minPax: Int
+  maxPax: Int
+  maxAdults: Int
+  maxChildren: Int
+  minAdults: Int
+  roomType: String
+  characteristicCode: String
+  roomStays: [RoomStays]
+  roomFacilities: [RoomFacilities]
+}
+
+type Phones {
+  phoneNumber: String
+  phoneType: String
+}
+
+type City {
+  content: String
+}
+
+type Address {
+  content: String
+  street: String
+  number: String
+}
+
+type Coordinates {
+  longitude: Float
+  latitude: Float
+}
+
+type Description {
+  content: String
+}
+
+type Name {
+  content: String
+}
+
+type HotelsData {
+  hotels: [Hotels!]!
+  pagination: PaginationType!
+}
+
+input HotelsInput {
+  language: LanguageEnum!
+  pagination: PaginationInput!
+  geolocation: HotelsGeolocationInput!
+  id: Int!
+}
+
+input HotelsGeolocationInput {
+  latitude: Float!
+  longitude: Float!
+  radius: Int!
+}
+
+# Query
+extend type Query {
+  hotels(input: HotelsInput!): HotelsData!
+}

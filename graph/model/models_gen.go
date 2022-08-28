@@ -20,7 +20,6 @@ type AvailabilityCancellationPolicies struct {
 }
 
 type AvailabilityData struct {
-	Hotels       []*Hotels             `json:"hotels"`
 	Availability []*AvailabilityHotels `json:"availability"`
 }
 
@@ -32,10 +31,8 @@ type AvailabilityFilterInput struct {
 	MaxRatesPerRoom *int `json:"maxRatesPerRoom"`
 }
 
-type AvailabilityGeolocationInput struct {
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
-	Radius    int     `json:"radius"`
+type AvailabilityHotelInput struct {
+	Hotel []int `json:"hotel"`
 }
 
 type AvailabilityHotels struct {
@@ -56,10 +53,10 @@ type AvailabilityHotels struct {
 }
 
 type AvailabilityInput struct {
+	Hotels      *AvailabilityHotelInput         `json:"hotels"`
 	Stay        *AvailabilityStayInput          `json:"stay"`
 	Occupancies []*AvailabilityOccupanciesInput `json:"occupancies"`
-	Geolocation *AvailabilityGeolocationInput   `json:"geolocation"`
-	Language    Language                        `json:"language"`
+	Language    LanguageEnum                    `json:"language"`
 	Filter      *AvailabilityFilterInput        `json:"filter"`
 }
 
@@ -129,7 +126,9 @@ type Facilities struct {
 }
 
 type Hotels struct {
+	Language              LanguageEnum      `json:"language"`
 	Code                  *int              `json:"code"`
+	Type                  HotelTypeEnum     `json:"type"`
 	CountryCode           *string           `json:"countryCode"`
 	StateCode             *string           `json:"stateCode"`
 	DestinationCode       *string           `json:"destinationCode"`
@@ -160,6 +159,24 @@ type Hotels struct {
 	Name                  *Name             `json:"name"`
 }
 
+type HotelsData struct {
+	Hotels     []*Hotels       `json:"hotels"`
+	Pagination *PaginationType `json:"pagination"`
+}
+
+type HotelsGeolocationInput struct {
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+	Radius    int     `json:"radius"`
+}
+
+type HotelsInput struct {
+	Language    LanguageEnum            `json:"language"`
+	Pagination  *PaginationInput        `json:"pagination"`
+	Geolocation *HotelsGeolocationInput `json:"geolocation"`
+	ID          int                     `json:"id"`
+}
+
 type Images struct {
 	ImageTypeCode *string `json:"imageTypeCode"`
 	Path          *string `json:"path"`
@@ -186,6 +203,18 @@ type Issues struct {
 
 type Name struct {
 	Content *string `json:"content"`
+}
+
+type PaginationInput struct {
+	Page     int     `json:"page"`
+	PageSize int     `json:"pageSize"`
+	OrderBy  *string `json:"orderBy"`
+}
+
+type PaginationType struct {
+	Page     int `json:"page"`
+	PageSize int `json:"pageSize"`
+	Total    int `json:"total"`
 }
 
 type Phones struct {
@@ -228,43 +257,86 @@ type Rooms struct {
 	RoomFacilities     []*RoomFacilities `json:"roomFacilities"`
 }
 
-type Language string
+type HotelTypeEnum string
 
 const (
-	LanguageTai Language = "TAI"
-	LanguageEng Language = "ENG"
+	HotelTypeEnumDe HotelTypeEnum = "DE"
+	HotelTypeEnumHb HotelTypeEnum = "HB"
+	HotelTypeEnumCg HotelTypeEnum = "CG"
 )
 
-var AllLanguage = []Language{
-	LanguageTai,
-	LanguageEng,
+var AllHotelTypeEnum = []HotelTypeEnum{
+	HotelTypeEnumDe,
+	HotelTypeEnumHb,
+	HotelTypeEnumCg,
 }
 
-func (e Language) IsValid() bool {
+func (e HotelTypeEnum) IsValid() bool {
 	switch e {
-	case LanguageTai, LanguageEng:
+	case HotelTypeEnumDe, HotelTypeEnumHb, HotelTypeEnumCg:
 		return true
 	}
 	return false
 }
 
-func (e Language) String() string {
+func (e HotelTypeEnum) String() string {
 	return string(e)
 }
 
-func (e *Language) UnmarshalGQL(v interface{}) error {
+func (e *HotelTypeEnum) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
 	}
 
-	*e = Language(str)
+	*e = HotelTypeEnum(str)
 	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid Language", str)
+		return fmt.Errorf("%s is not a valid HotelTypeEnum", str)
 	}
 	return nil
 }
 
-func (e Language) MarshalGQL(w io.Writer) {
+func (e HotelTypeEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type LanguageEnum string
+
+const (
+	LanguageEnumTai LanguageEnum = "TAI"
+	LanguageEnumEng LanguageEnum = "ENG"
+)
+
+var AllLanguageEnum = []LanguageEnum{
+	LanguageEnumTai,
+	LanguageEnumEng,
+}
+
+func (e LanguageEnum) IsValid() bool {
+	switch e {
+	case LanguageEnumTai, LanguageEnumEng:
+		return true
+	}
+	return false
+}
+
+func (e LanguageEnum) String() string {
+	return string(e)
+}
+
+func (e *LanguageEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = LanguageEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid LanguageEnum", str)
+	}
+	return nil
+}
+
+func (e LanguageEnum) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }

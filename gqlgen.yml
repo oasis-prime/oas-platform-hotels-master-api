@@ -43,6 +43,28 @@ autobind:
 # modelgen, the others will be allowed when binding to fields. Configure them to
 # your liking
 models:
+  Hotels:
+    fields:
+      images:
+        resolver: true
+      interestPoints:
+        resolver: true
+      issues:
+        resolver: true
+      facilities:
+        resolver: true
+      rooms:
+        resolver: true
+      phones:
+        resolver: true
+      city:
+        resolver: true
+      address:
+        resolver: true
+      description:
+        resolver: true
+      name:
+        resolver: true
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.ID

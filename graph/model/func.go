@@ -15,7 +15,7 @@ func (input AvailabilityInput) ParseToAvailabilityRequest() *hotelbedsdm.Availab
 			})
 		}
 	}
-	radius := uint(input.Geolocation.Radius)
+	// radius := uint(input.Geolocation.Radius)
 
 	var filter *hotelbedsdm.FilterReq
 	{
@@ -53,11 +53,8 @@ func (input AvailabilityInput) ParseToAvailabilityRequest() *hotelbedsdm.Availab
 			CheckOut: input.Stay.CheckOut,
 		},
 		Occupancies: occ,
-		Geolocation: &hotelbedsdm.GeolocationReq{
-			Latitude:  input.Geolocation.Latitude,
-			Longitude: input.Geolocation.Longitude,
-			Radius:    &radius,
-			Unit:      hotelbedsdm.KM,
+		Hotels: &hotelbedsdm.HotelsReq{
+			input.Hotels.Hotel,
 		},
 		Language: hotelbedsdm.Language(input.Language),
 		Filter:   filter,

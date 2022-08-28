@@ -10,6 +10,7 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelbedsserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelsserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/memberserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelbedshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/memberhdl"
 	"gorm.io/gorm"
@@ -32,22 +33,51 @@ func graphqlHandler() gin.HandlerFunc {
 		memberHandler = memberhdl.NewHandler(memberServ, "")
 	}
 
-	var hotelsHandler *hotelshdl.Handler
+	var hotelbedsHandler *hotelbedshdl.Handler
 	{
 		apprequest := hotelbedshttp.NewRequester(con.Hotelbeds.Key, con.Hotelbeds.Secret, con.Hotelbeds.Format)
-		hotelsRepo := hotelrepo.NewHotelsRepo(db)
 		hotelbedsContentHttp := hotelbedshttp.NewHotelbedsContentHTTP(con.Hotelbeds.Endpoint, apprequest)
 		hotelbedsServ := hotelbedsserv.NewService(hotelbedsContentHttp)
-		hotelsServ := hotelsserv.NewService(hotelsRepo)
-		hotelsHandler = hotelshdl.NewHandler(hotelbedsServ, hotelsServ)
+		hotelbedsHandler = hotelbedshdl.NewHandler(hotelbedsServ)
+	}
+
+	var hotelsHandler *hotelshdl.Handler
+	{
+		repoHotels := hotelrepo.NewHotelsRepo(db)
+		repoHotelName := hotelrepo.NewHotelNameRepo(db)
+		repoHotelDescription := hotelrepo.NewHotelDescriptionRepo(db)
+		repoHotelInterestPoints := hotelrepo.NewHotelInterestPointsRepo(db)
+		repoHotelIssues := hotelrepo.NewHotelIssuesRepo(db)
+		repoHotelFacility := hotelrepo.NewHotelFacilityRepo(db)
+		repoHotelRooms := hotelrepo.NewHotelRoomsRepo(db)
+		repoHotelPhones := hotelrepo.NewHotelPhoneRepo(db)
+		repoHotelCity := hotelrepo.NewHotelCityRepo(db)
+		repoHotelAddress := hotelrepo.NewHotelAddressRepo(db)
+		repoHotelImages := hotelrepo.NewHotelImagesRepo(db)
+
+		hotelsServ := hotelsserv.NewService(
+			repoHotels,
+			repoHotelName,
+			repoHotelDescription,
+			repoHotelInterestPoints,
+			repoHotelIssues,
+			repoHotelFacility,
+			repoHotelRooms,
+			repoHotelPhones,
+			repoHotelCity,
+			repoHotelAddress,
+			repoHotelImages,
+		)
+		hotelsHandler = hotelshdl.NewHandler(hotelsServ)
 	}
 
 	h := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
 			generated.Config{
 				Resolvers: &graph.Resolver{
-					MemberHandler: memberHandler,
-					HotelsHandler: hotelsHandler,
+					MemberHandler:    memberHandler,
+					HotelbedsHandler: hotelbedsHandler,
+					HotelsHandler:    hotelsHandler,
 				},
 			},
 		),

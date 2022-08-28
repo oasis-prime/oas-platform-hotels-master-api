@@ -12,7 +12,7 @@ import (
 
 // Availability is the resolver for the availability field.
 func (r *queryResolver) Availability(ctx context.Context, input model.AvailabilityInput) (*model.AvailabilityData, error) {
-	return r.HotelsHandler.AvailabilityHotel(ctx, input)
+	return r.HotelbedsHandler.AvailabilityHotel(ctx, input)
 }
 
 // Query returns generated.QueryResolver implementation.
