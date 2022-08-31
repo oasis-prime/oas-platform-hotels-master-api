@@ -89,7 +89,7 @@ func graphqlHandler() gin.HandlerFunc {
 }
 
 func playgroundHandler() gin.HandlerFunc {
-	h := playground.Handler("GraphQL", "/query")
+	h := playground.Handler("GraphQL", "/graphql")
 
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
@@ -102,8 +102,8 @@ func ServeHTTP() error {
 	con = configs.GetConfig()
 	DBInit()
 
-	r.Any("/query", graphqlHandler())
-	r.GET("/", playgroundHandler())
+	r.POST("/graphql", graphqlHandler())
+	r.GET("/graphql", playgroundHandler())
 	r.Run(":" + configs.GetConfig().App.Port)
 
 	return nil

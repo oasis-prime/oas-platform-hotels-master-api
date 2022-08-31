@@ -61,8 +61,8 @@ func (r *hotelsResolver) Name(ctx context.Context, obj *model.Hotels) (*model.Na
 	return r.HotelsHandler.GetAllHotelName(ctx, obj)
 }
 
-// Hotels is the resolver for the hotels field.
-func (r *queryResolver) Hotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error) {
+// GetHotels is the resolver for the getHotels field.
+func (r *queryResolver) GetHotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error) {
 	return r.HotelsHandler.GetAllHotel(ctx, input)
 }
 
@@ -70,3 +70,13 @@ func (r *queryResolver) Hotels(ctx context.Context, input model.HotelsInput) (*m
 func (r *Resolver) Hotels() generated.HotelsResolver { return &hotelsResolver{r} }
 
 type hotelsResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+// func (r *queryResolver) Hotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error) {
+// 	return r.HotelsHandler.GetAllHotel(ctx, input)
+// }

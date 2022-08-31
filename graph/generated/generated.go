@@ -206,7 +206,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Availability func(childComplexity int, input model.AvailabilityInput) int
-		Hotels       func(childComplexity int, input model.HotelsInput) int
+		GetHotels    func(childComplexity int, input model.HotelsInput) int
 	}
 
 	RoomFacilities struct {
@@ -260,7 +260,7 @@ type HotelsResolver interface {
 }
 type QueryResolver interface {
 	Availability(ctx context.Context, input model.AvailabilityInput) (*model.AvailabilityData, error)
-	Hotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error)
+	GetHotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error)
 }
 
 type executableSchema struct {
@@ -1011,17 +1011,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Availability(childComplexity, args["input"].(model.AvailabilityInput)), true
 
-	case "Query.hotels":
-		if e.complexity.Query.Hotels == nil {
+	case "Query.getHotels":
+		if e.complexity.Query.GetHotels == nil {
 			break
 		}
 
-		args, err := ec.field_Query_hotels_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getHotels_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.Hotels(childComplexity, args["input"].(model.HotelsInput)), true
+		return e.complexity.Query.GetHotels(childComplexity, args["input"].(model.HotelsInput)), true
 
 	case "RoomFacilities.facilityCode":
 		if e.complexity.RoomFacilities.FacilityCode == nil {
@@ -1518,7 +1518,7 @@ input HotelsGeolocationInput {
 
 # Query
 extend type Query {
-  hotels(input: HotelsInput!): HotelsData!
+  getHotels(input: HotelsInput!): HotelsData!
 }
 `, BuiltIn: false},
 	{Name: "../schemas/schema.graphqls", Input: `# GraphQL schema-enum
@@ -1594,7 +1594,7 @@ func (ec *executionContext) field_Query_availability_args(ctx context.Context, r
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_hotels_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getHotels_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 model.HotelsInput
@@ -6207,8 +6207,8 @@ func (ec *executionContext) fieldContext_Query_availability(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_hotels(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_hotels(ctx, field)
+func (ec *executionContext) _Query_getHotels(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getHotels(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6221,7 +6221,7 @@ func (ec *executionContext) _Query_hotels(ctx context.Context, field graphql.Col
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Hotels(rctx, fc.Args["input"].(model.HotelsInput))
+		return ec.resolvers.Query().GetHotels(rctx, fc.Args["input"].(model.HotelsInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6238,7 +6238,7 @@ func (ec *executionContext) _Query_hotels(ctx context.Context, field graphql.Col
 	return ec.marshalNHotelsData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsData(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_hotels(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getHotels(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -6261,7 +6261,7 @@ func (ec *executionContext) fieldContext_Query_hotels(ctx context.Context, field
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_hotels_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_getHotels_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -10554,7 +10554,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "hotels":
+		case "getHotels":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -10563,7 +10563,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_hotels(ctx, field)
+				res = ec._Query_getHotels(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
