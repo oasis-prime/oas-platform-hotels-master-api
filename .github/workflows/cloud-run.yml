@@ -43,23 +43,6 @@ jobs:
           context: .
           file: ./build/Dockerfile
           push: false
-          build-args: |-
-            ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
-            DATABASE_NAME=${{ secrets.DATABASE_NAME }}
-            DATABASE_USER=${{ secrets.DATABASE_USER }}
-            DATABASE_PWD=${{ secrets.DATABASE_PWD }}
-            DATABASE_INSTANCE_CONNECTION_NAME=${{ secrets.DATABASE_INSTANCE_CONNECTION_NAME }}
-            DATABASE_SOCKET_DIR=${{ secrets.DATABASE_SOCKET_DIR }}
-            JWT_SECRET=${{ secrets.JWT_SECRET }}
-            JWT_EXPIRATIONDELTA=${{ secrets.JWT_EXPIRATIONDELTA }}
-            REDIS_ADDR=${{ secrets.REDIS_ADDR }}
-            REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
-            REDIS_DB=${{ secrets.REDIS_DB }}
-            HOTELBEDS_ENDPOINT=${{ secrets.HOTELBEDS_ENDPOINT }}
-            HOTELBEDS_SECUREENDOPINT=${{ secrets.HOTELBEDS_SECUREENDOPINT }}
-            HOTELBEDS_KEY=${{ secrets.HOTELBEDS_KEY }}
-            HOTELBEDS_SECRET=${{ secrets.HOTELBEDS_SECRET }}
-            HOTELBEDS_FORMAT=${{ secrets.HOTELBEDS_FORMAT }}
         run: |-
           docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} --build-arg TAG=latest  .
           docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
