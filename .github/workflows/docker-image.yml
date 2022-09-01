@@ -10,8 +10,14 @@ env:
   REGION: asia-southeast1
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on:
+      ubuntu-latest
+
+      # Add "id-token" with the intended permissions.
+    permissions:
+      contents: "read"
+      id-token: "write"
 
     steps:
       - name: Checkout
