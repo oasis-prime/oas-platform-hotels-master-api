@@ -7,13 +7,32 @@ COPY go.* ./
 RUN apk update && apk upgrade && \
     apk add git
 
+#Set Env
+ARG ACCESS_TOKEN
+# ARG DATABASE_NAME=oasis-master
+# ARG DATABASE_USER=root
+# ARG DATABASE_PWD=iHA3i4JumM4Ap
+# ARG DATABASE_INSTANCE_CONNECTION_NAME=127.0.0.1
+# ARG DATABASE_SOCKET_DIR=true
+
+# ARG JWT_SECRET=xxxx
+# ARG JWT_EXPIRATIONDELTA=72
+
+# ARG REDIS_ADDR=127.0.0.1:6379
+# ARG REDIS_PASSWORD=xxxx
+# ARG REDIS_DB=0
+
+# ARG HOTELBEDS_ENDPOINT=https://api.test.hotelbeds.com
+# ARG HOTELBEDS_SECUREENDOPINT=https://api-secure.test.hotelbeds.com
+# ARG HOTELBEDS_KEY=rq9mtpfyjmedv77rdy3h7uhm
+# ARG HOTELBEDS_SECRET=TqzaWFcvg6
+# ARG HOTELBEDS_FORMAT=application/json
+
+ENV ACCESS_TOKEN=$ACCESS_TOKEN
+
 #Set github login
 RUN go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core
 RUN GOCACHE=OFF
-ARG GITHUB_USER
-ARG ACCESS_TOKEN
-ENV ACCESS_TOKEN=$ACCESS_TOKEN
-ENV GITHUB_USER=$GITHUB_USER
 RUN git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
 RUN go mod download

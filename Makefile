@@ -8,6 +8,10 @@ run-dev:
 	-export $(grep -v '^#' .env | xargs);
 	-air
 
+set-mod:
+	go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core
+	git config --global url."https://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:x-oauth-basic@github.com".insteadOf "https://github.com"
+
 dcup-build:
 	docker build \
 		--build-arg ACCESS_TOKEN=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 \

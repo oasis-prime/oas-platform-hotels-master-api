@@ -5,9 +5,8 @@ services:
     build:
       context: .
       dockerfile: ./build/Dockerfile.local
-      args: 
+      args:
         ACCESS_TOKEN: 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
-        GITHUB_USER: siitha-ra
     volumes:
       - ./:/app/
     working_dir: /app
