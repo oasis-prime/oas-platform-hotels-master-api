@@ -72,5 +72,5 @@ jobs:
             --region ${{ env.REGION }} \
             --image gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} \
             --platform "managed" \
-            --port=3000 \
+            --port=8080 \
             --allow-unauthenticated
