@@ -6,8 +6,13 @@ WORKDIR /app
 
 COPY ./go.* ./
 
-RUN apk update && apk upgrade && \
-    apk add git
+RUN set -ex; \
+    apk update; \
+    apk add --no-cache \
+    git \
+    gcc \
+    musl-dev \
+    make
 
 #Set Env
 ARG ACCESS_TOKEN
@@ -23,7 +28,7 @@ RUN go mod download
 
 COPY ./ .
 
-RUN go build -o goapp cmd/api/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o goapp --no-cache cmd/api/main.go
 
 ##########################################
 
