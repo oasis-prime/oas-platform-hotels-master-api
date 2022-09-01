@@ -21,7 +21,7 @@ RUN git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com".i
 
 RUN go mod download
 
-COPY ../ .
+COPY ./ .
 
 RUN go build -o goapp cmd/api/main.go
 

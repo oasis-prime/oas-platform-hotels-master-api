@@ -40,7 +40,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: .
           file: ./build/Dockerfile
           push: true
           tags: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
