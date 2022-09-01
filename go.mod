@@ -10,6 +10,7 @@ require (
 
 require (
 	github.com/jinzhu/copier v0.3.5
+	github.com/joho/godotenv v1.4.0
 	github.com/nqd/flat v0.1.1
 	github.com/oasis-prime/oas-platform-core v0.1.1
 	github.com/sirupsen/logrus v1.9.0
