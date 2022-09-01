@@ -1,9 +1,11 @@
+name: Build and Deploy to Cloud Run
+
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
-name: Build and Deploy to Cloud Run
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT }}
   SERVICE: hotels-online-travel-agency-api
