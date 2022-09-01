@@ -1,14 +1,13 @@
-name: Build and Deploy to Cloud Run
-
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-  SERVICE: hotels-online-travel-agency-api
-  REGION: asia-southeast1
-
 on:
   push:
     branches:
       - main
+
+name: Build and Deploy to Cloud Run
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+  SERVICE: hotels-online-travel-agency-api
+  REGION: asia-southeast1
 
 jobs:
   build:
