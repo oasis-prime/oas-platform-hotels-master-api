@@ -11,10 +11,9 @@ env:
 
 jobs:
   deploy:
-    runs-on:
-      ubuntu-latest
+    runs-on: ubuntu-latest
 
-      # Add "id-token" with the intended permissions.
+    # Add "id-token" with the intended permissions.
     permissions:
       contents: "read"
       id-token: "write"
@@ -59,7 +58,6 @@ jobs:
             HOTELBEDS_KEY=${{ secrets.HOTELBEDS_KEY }}
             HOTELBEDS_SECRET=${{ secrets.HOTELBEDS_SECRET }}
             HOTELBEDS_FORMAT=${{ secrets.HOTELBEDS_FORMAT }}
-
         run: |-
           docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} --build-arg TAG=latest  .
           docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
