@@ -1,6 +1,9 @@
 package protocol
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/oasis-prime/oas-platform-core/http/hotelbedshttp"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
@@ -97,6 +100,7 @@ func playgroundHandler() gin.HandlerFunc {
 }
 
 func ServeHTTP() error {
+	fmt.Println(os.Environ())
 	r := gin.Default()
 	configs.ConfigsInit()
 	con = configs.GetConfig()
