@@ -81,7 +81,7 @@ jobs:
           region: ${{ env.REGION }}
           image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
           flags: --cpu=1 --memory=1Gi --port=8080 --allow-unauthenticated
-          secrets: |
+          env_vars: |
             GIN_MODE=${{ secrets.GIN_MODE }}
             APP_ENV=${{ secrets.APP_ENV }}
             APP_PORT=${{ secrets.APP_PORT }}
