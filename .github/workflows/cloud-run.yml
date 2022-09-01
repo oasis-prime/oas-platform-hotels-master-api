@@ -30,30 +30,3 @@ jobs:
         with:
           service_account: "github-service-account@smartgo-life-prod.iam.gserviceaccount.com"
           credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
-
-      - name: Authorize Docker push
-        run: gcloud auth configure-docker
-
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: ./build/Dockerfile
-          push: false
-        run: |-
-          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} --build-arg TAG=latest  .
-          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
-
-      - name: Deploy to Cloud Run
-        run: |-
-          gcloud run deploy ${{ env.SERVICE }} \
-            --cpu=1 \
-            --memory=1Gi \
-            --region ${{ env.REGION }} \
-            --image gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} \
-            --platform "managed" \
-            --port=3000 \
-            --allow-unauthenticated
