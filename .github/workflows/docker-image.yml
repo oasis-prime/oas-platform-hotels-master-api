@@ -1,43 +1,43 @@
-name: Build and Deploy to Cloud Run
+# name: Build and Deploy to Cloud Run
 
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT }}
-  SERVICE: hotels-online-travel-agency-api
-  REGION: asia-southeast1
+# env:
+#   PROJECT_ID: ${{ secrets.GCP_PROJECT }}
+#   SERVICE: hotels-online-travel-agency-api
+#   REGION: asia-southeast1
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
+# jobs:
 
-  build:
+#   build:
 
-    runs-on: ubuntu-latest
+#     runs-on: ubuntu-latest
 
-    steps:
+#     steps:
    
-    - name: Checkout
-      uses: actions/checkout@v3
+#     - name: Checkout
+#       uses: actions/checkout@v3
     
-    - id: "auth"
-      name: "Authenticate to Google Cloud"
-      uses: "google-github-actions/auth@v0"
-      with:
-        service_account: "github-service-account@smartgo-life-prod.iam.gserviceaccount.com"
-        credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
+#     - id: "auth"
+#       name: "Authenticate to Google Cloud"
+#       uses: "google-github-actions/auth@v0"
+#       with:
+#         service_account: "github-service-account@smartgo-life-prod.iam.gserviceaccount.com"
+#         credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
 
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v0
+#     - name: Set up Cloud SDK
+#       uses: google-github-actions/setup-gcloud@v0
   
-    - name: Authorize Docker push
-      run: gcloud auth configure-docker
+#     - name: Authorize Docker push
+#       run: gcloud auth configure-docker
     
-    - name: Build and Push Container
+#     - name: Build and Push Container
       
-      run: |-
-          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} .
-          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
+#       run: |-
+#           docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} .
+#           docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
 
 
