@@ -1,0 +1,35 @@
+# GraphQL schema-enum
+enum LanguageEnum {
+  TAI
+  ENG
+}
+
+enum HotelTypeEnum {
+  DE
+  HB
+  CG
+}
+
+# GrapgQL schema-type
+type PaginationType {
+  page: Int!
+  pageSize: Int!
+  total: Int!
+}
+
+# GrapgQL schema-input
+input PaginationInput {
+  page: Int!
+  pageSize: Int!
+  orderBy: String
+}
+
+# Query
+
+# Mutation
+
+# type Mutation {
+# }
+
+# type Query {
+# }

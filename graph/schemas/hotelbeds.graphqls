@@ -1,0 +1,96 @@
+# GraphQL Basic enum
+
+# GraphQL schema Type
+#
+
+type AvailabilityData {
+  availability: [AvailabilityHotels!]!
+}
+
+# --- End Hotels -----
+
+type AvailabilityHotels {
+  code: Int
+  name: String
+  categoryCode: String
+  categoryName: String
+  destinationCode: String
+  destinationName: String
+  zoneCode: Int
+  zoneName: String
+  latitude: String
+  longitude: String
+  minRate: String
+  maxRate: String
+  currency: String
+  rooms: [AvailabilityRooms]
+}
+
+type AvailabilityRooms {
+  code: String
+  name: String
+  rates: [AvailabilityRates]
+}
+
+type AvailabilityRates {
+  rateKey: String
+  rateClass: String
+  rateType: String
+  net: String
+  discount: String
+  discountPCT: String
+  sellingRate: String
+  allotment: Int
+  paymentType: String
+  packaging: Boolean
+  boardCode: String
+  boardName: String
+  rooms: Int
+  adults: Int
+  children: Int
+  cancellationPolicies: [AvailabilityCancellationPolicies]
+}
+
+type AvailabilityCancellationPolicies {
+  amount: String
+  from: String
+}
+
+# GraphQl schema Input
+#
+
+input AvailabilityInput {
+  hotels: AvailabilityHotelInput!
+  stay: AvailabilityStayInput!
+  occupancies: [AvailabilityOccupanciesInput!]!
+  language: LanguageEnum!
+  filter: AvailabilityFilterInput
+}
+
+input AvailabilityHotelInput {
+  hotel: [Int!]!
+}
+
+input AvailabilityStayInput {
+  checkIn: String!
+  checkOut: String!
+}
+
+input AvailabilityOccupanciesInput {
+  rooms: Int!
+  adults: Int!
+  children: Int!
+}
+
+input AvailabilityFilterInput {
+  maxHotels: Int
+  maxRooms: Int
+  minRate: Int
+  maxRate: Int
+  maxRatesPerRoom: Int
+}
+
+# Query
+extend type Query {
+  availability(input: AvailabilityInput!): AvailabilityData!
+}

@@ -1,10 +1,12 @@
 version: "3.8"
 services:
   app:
-    container_name: ss-platform-api
+    container_name: oas-platform-hotels-master-propd-api
     build:
       context: .
-      dockerfile: ./build/Dockerfile.local
+      dockerfile: ./build/Dockerfile
+      args: 
+        ACCESS_TOKEN: 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
     volumes:
       - ./:/app/
     working_dir: /app

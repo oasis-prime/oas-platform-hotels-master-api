@@ -1,63 +1,85 @@
 package protocol
 
 import (
-	"encoding/json"
-	"fmt"
-
+	"github.com/oasis-prime/oas-platform-core/http/hotelbedshttp"
+	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
+	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/configs"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/repositories"
-	"gorm.io/driver/mysql"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelbedsserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelsserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/memberserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelbedshdl"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelshdl"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/memberhdl"
 	"gorm.io/gorm"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
+)
 
-	gmysql "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/mysql"
+var (
+	db  *gorm.DB
+	con *configs.Config
 )
 
 func graphqlHandler() gin.HandlerFunc {
-	// oasis-hotel-api
-	// Ddg[/Fq&@9J^N4L;
-	// var dsn = "oasis-hotel-api@cloudsql(oas-platform:asia-southeast1:oasis-prime)/oasis-master?charset=utf8&parseTime=True&loc=UTC"
-
-	// dsn := "oasis-hotel-api:Ddg[/Fq&@9J^N4L;@tcp(34.124.129.16:3306)/oasis-master?charset=utf8mb4&parseTime=True&loc=Local"
-	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-
-	// })
-
-	// if err != nil {
-	// 	panic(err)
-	// }
-	sqlDB, err := gmysql.Dial("oas-platform:asia-southeast1:oasis-prime", "oasis-trigger-event")
-	if err != nil {
-		// log.Printf(err.Error())
-		panic(err)
+	var memberHandler *memberhdl.Handler
+	{
+		memberRepo := customerrepo.NewMemberRepo(db)
+		memberServ := memberserv.NewService(memberRepo)
+		memberHandler = memberhdl.NewHandler(memberServ, "")
 	}
 
-	db, err := gorm.Open(mysql.New(mysql.Config{
-		Conn: sqlDB,
-	}), &gorm.Config{})
-	if err != nil {
-		// log.Printf(err.Error())
-		panic(err)
+	var hotelbedsHandler *hotelbedshdl.Handler
+	{
+		apprequest := hotelbedshttp.NewRequester(con.Hotelbeds.Key, con.Hotelbeds.Secret, con.Hotelbeds.Format)
+		hotelbedsContentHttp := hotelbedshttp.NewHotelbedsContentHTTP(con.Hotelbeds.Endpoint, apprequest)
+		hotelbedsServ := hotelbedsserv.NewService(hotelbedsContentHttp)
+		hotelbedsHandler = hotelbedshdl.NewHandler(hotelbedsServ)
 	}
 
-	db.AutoMigrate(&repositories.SystemsMember{})
+	var hotelsHandler *hotelshdl.Handler
+	{
+		repoHotels := hotelrepo.NewHotelsRepo(db)
+		repoHotelName := hotelrepo.NewHotelNameRepo(db)
+		repoHotelDescription := hotelrepo.NewHotelDescriptionRepo(db)
+		repoHotelInterestPoints := hotelrepo.NewHotelInterestPointsRepo(db)
+		repoHotelIssues := hotelrepo.NewHotelIssuesRepo(db)
+		repoHotelFacility := hotelrepo.NewHotelFacilityRepo(db)
+		repoHotelRooms := hotelrepo.NewHotelRoomsRepo(db)
+		repoHotelPhones := hotelrepo.NewHotelPhoneRepo(db)
+		repoHotelCity := hotelrepo.NewHotelCityRepo(db)
+		repoHotelAddress := hotelrepo.NewHotelAddressRepo(db)
+		repoHotelImages := hotelrepo.NewHotelImagesRepo(db)
 
-	memberRepo := repositories.NewMemberRepo(db)
-	memberServ := services.NewMemberService(memberRepo)
-	memberHandler := handlers.NewMemberHandler(memberServ, "")
+		hotelsServ := hotelsserv.NewService(
+			repoHotels,
+			repoHotelName,
+			repoHotelDescription,
+			repoHotelInterestPoints,
+			repoHotelIssues,
+			repoHotelFacility,
+			repoHotelRooms,
+			repoHotelPhones,
+			repoHotelCity,
+			repoHotelAddress,
+			repoHotelImages,
+		)
+		hotelsHandler = hotelshdl.NewHandler(hotelsServ)
+	}
 
 	h := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
-			generated.Config{Resolvers: &graph.Resolver{
-				MemberHandler: memberHandler,
-			}},
+			generated.Config{
+				Resolvers: &graph.Resolver{
+					MemberHandler:    memberHandler,
+					HotelbedsHandler: hotelbedsHandler,
+					HotelsHandler:    hotelsHandler,
+				},
+			},
 		),
 	)
 
@@ -67,7 +89,7 @@ func graphqlHandler() gin.HandlerFunc {
 }
 
 func playgroundHandler() gin.HandlerFunc {
-	h := playground.Handler("GraphQL", "/query")
+	h := playground.Handler("GraphQL", "/graphql")
 
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
@@ -77,12 +99,11 @@ func playgroundHandler() gin.HandlerFunc {
 func ServeHTTP() error {
 	r := gin.Default()
 	configs.ConfigsInit()
+	con = configs.GetConfig()
+	DBInit()
 
-	c, _ := json.Marshal(configs.GetConfig())
-	fmt.Println(string(c))
-
-	r.POST("/query", graphqlHandler())
-	r.GET("/", playgroundHandler())
+	r.POST("/graphql", graphqlHandler())
+	r.GET("/graphql", playgroundHandler())
 	r.Run(":" + configs.GetConfig().App.Port)
 
 	return nil

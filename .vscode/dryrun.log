@@ -1,5 +1,6 @@
 make --dry-run --always-make --keep-going --print-directory
 make: Entering directory `/Users/sittha/Documents/oasis-prime/oas-platform-hotels-master-api'
-docker-compose up
+go get github.com/99designs/gqlgen
+go run github.com/99designs/gqlgen generate
 make: Leaving directory `/Users/sittha/Documents/oasis-prime/oas-platform-hotels-master-api'
  

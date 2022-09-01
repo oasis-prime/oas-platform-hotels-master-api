@@ -12,13 +12,17 @@ type jwt struct {
 }
 
 type database struct {
-	Name string `mapstructure:"name"`
-	Read struct {
-		Url string `mapstructure:"url"`
-	} `mapstructure:"read"`
-	Write struct {
-		Url string `mapstructure:"url"`
-	} `mapstructure:"write"`
+	Name     string `mapstructure:"name"`
+	User     string `mapstructure:"user"`
+	PWD      string `mapstructure:"pwd"`
+	Instance struct {
+		Connection struct {
+			Name string `mapstructure:"name"`
+		} `mapstructure:"connection"`
+	} `mapstructure:"instance"`
+	Socket struct {
+		Dir bool `mapstructure:"dir"`
+	} `mapstructure:"socket"`
 }
 
 type redis struct {
@@ -27,9 +31,18 @@ type redis struct {
 	DB       int    `mapstructure:"db"`
 }
 
+type hotelbeds struct {
+	Endpoint       string `mapstructure:"endpoint"`
+	SecureEndopint string `mapstructure:"secureendopint"`
+	Key            string `mapstructure:"key"`
+	Secret         string `mapstructure:"secret"`
+	Format         string `mapstructure:"format"`
+}
+
 type Config struct {
-	App      app      `mapstructure:"app"`
-	Database database `mapstructure:"database"`
-	Redis    redis    `mapstructure:"redis"`
-	Jwt      jwt      `mapstructure:"jwt"`
+	App       app       `mapstructure:"app"`
+	Database  database  `mapstructure:"database"`
+	Redis     redis     `mapstructure:"redis"`
+	Jwt       jwt       `mapstructure:"jwt"`
+	Hotelbeds hotelbeds `mapstructure:"hotelbeds"`
 }

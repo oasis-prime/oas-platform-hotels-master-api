@@ -10,17 +10,15 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 make: *** No rule to make target `all'.  Stop.
 
 
-# Make data base, printed on Wed Jun 29 23:24:42 2022
+# Make data base, printed on Sat Aug 27 12:42:07 2022
 
 # Variables
 
 # automatic
- 
 <D = $(patsubst %/,%,$(dir $<))
 # automatic
 ?F = $(notdir $?)
-# environment
-VSCODE_LOG_NATIVE = false
+ 
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # automatic
@@ -40,11 +38,7 @@ MAKEFILE_LIST :=  Makefile
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
-VSCODE_VERBOSE_LOGGING = true
-# environment
 __CFBundleIdentifier = com.microsoft.VSCode
-# environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/xz/k_2ryb4s4mqfdd63915p6chw0000gn/T/vscode-ipc-fc9f1086-b223-4a3a-bda3-bd07fdb3ccda.sock
 # environment
 VSCODE_CWD = /
 # environment
@@ -54,9 +48,7 @@ PATH = /Users/sittha/gsutil/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Us
 # environment
 GOPATH = /Users/sittha/go
 # environment
-LaunchInstanceID = 0E44EBFF-CEBB-48A0-8804-7EE6650D4BC6
-# environment
-VSCODE_LOG_STACK = false
+LaunchInstanceID = 23177270-A7FA-45F1-8D2A-27C1C2AF4990
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
@@ -64,11 +56,9 @@ ANDROID_HOME = /Users/sittha/Library/Android/sdk
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.koJHK84bLw/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.QhTZMFtaIc/Listeners
 # automatic
 %F = $(notdir $%)
-# environment
-VSCODE_PIPE_LOGGING = true
 # environment
 PWD = /Users/sittha/Documents/oasis-prime/oas-platform-hotels-master-api
 # environment
@@ -80,11 +70,11 @@ HOME = /Users/sittha
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/sittha/Library/Application Support/Code/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
+VSCODE_CODE_CACHE_PATH = /Users/sittha/Library/Application Support/Code/CachedData/e4503b30fc78200f846c62cf8091b76ff5547662
 # environment
 LOGNAME = sittha
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
@@ -102,7 +92,7 @@ MAKE_VERSION := 3.81
 # environment
 USER = sittha
 # makefile
-.DEFAULT_GOAL := dcup-local
+.DEFAULT_GOAL := generate
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # default
@@ -114,7 +104,9 @@ TMPDIR = /var/folders/xz/k_2ryb4s4mqfdd63915p6chw0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/sittha/Library/Application Support/Code/1.68.1-main.sock
+VSCODE_IPC_HOOK = /Users/sittha/Library/Application Support/Code/1.70.2-main.sock
+# environment
+MallocNanoZone = 0
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -122,7 +114,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.91655333.91655339
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.94504977.94504983
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -134,11 +126,12 @@ COMMAND_MODE = unix2003
 # default
 MAKEFILES := 
 # automatic
+ 
 <F = $(notdir $<)
 # environment
 LC_ALL = C
 # environment
-SECURITYSESSIONID = 186a5
+SECURITYSESSIONID = 186a6
 # automatic
 ^F = $(notdir $^)
 # default
@@ -150,9 +143,9 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 434
+VSCODE_PID = 419
 # variable set hash-table stats:
-# Load=68/1024=7%, Rehash=0, Collisions=2/92=2%
+# Load=64/1024=6%, Rehash=0, Collisions=2/88=2%
 
 # Pattern-specific Variable Values
 
@@ -160,9 +153,9 @@ VSCODE_PID = 434
 
 # Directories
 
-# . (device 16777223, inode 91252518): 24 files, no impossibilities.
+# . (device 16777222, inode 91252518): 22 files, no impossibilities.
 
-# 24 files, no impossibilities in 1 directories.
+# 22 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -171,7 +164,6 @@ VSCODE_PID = 434
 # Files
 
 # Not a target:
- 
 all:
 #  Command-line target.
 #  Implicit rule search has been done.
@@ -184,7 +176,7 @@ dcup-local:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 2):
+#  commands to execute (from `Makefile', line 12):
 	docker-compose up
 	
 
@@ -192,7 +184,7 @@ dc-clear:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 11):
+#  commands to execute (from `Makefile', line 21):
 	docker-compose down
 	docker rmi -f ss-platform-api
 	
@@ -206,7 +198,7 @@ dc-clear:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-26 16:02:40
+#  Last modified 2022-08-11 23:47:49
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -216,7 +208,7 @@ dcup-prod:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 5):
+#  commands to execute (from `Makefile', line 15):
 	docker-compose -f ./docker-compose.prod.yaml up
 	
 
@@ -224,8 +216,17 @@ dc-down:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 8):
+#  commands to execute (from `Makefile', line 18):
 	docker-compose down
+	
+
+generate:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 2):
+	- go get github.com/99designs/gqlgen
+	- go run github.com/99designs/gqlgen generate
 	
 
 # Not a target:
@@ -234,22 +235,25 @@ dc-down:
 #  Modification time never checked.
 #  File has not been updated.
 
-deploy-trigger:
+run-dev:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 15):
-	gcloud functions deploy HelloAuth \
-	--trigger-event providers/firebase.auth/eventTypes/user.create \
-	--entry-point trigger/HelloAuth \
-	--trigger-resource oas-platform \
-	--runtime go116 \
-	--set-env-vars APP_ENV="develop",DATABASE_NAME="oasis-master",DATABASE_READ_URL="oasis-trigger-event@cloudsql(oas-platform:asia-southeast1:oasis-prime)/oasis-master?charset=utf8&parseTime=True&loc=UTC",DATABASE_WRITE_URL="oasis-trigger-event@cloudsql(oas-platform:asia-southeast1:oasis-prime)/oasis-master?charset=utf8&parseTime=True&loc=UTC" \
-	--region asia-southeast1
+#  commands to execute (from `Makefile', line 8):
+	-export $(grep -v '^#' .env | xargs);
+	-air
+	
+
+make-env:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 5):
+	export $(grep -v '^#' .env | xargs)
 	
 
 # files hash-table stats:
-# Load=9/1024=1%, Rehash=0, Collisions=0/21=0%
+# Load=11/1024=1%, Rehash=0, Collisions=0/23=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
@@ -261,6 +265,6 @@ deploy-trigger:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Wed Jun 29 23:24:42 2022
+# Finished Make data base on Sat Aug 27 12:42:07 2022
 
  

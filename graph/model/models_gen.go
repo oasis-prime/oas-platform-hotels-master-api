@@ -2,19 +2,341 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
+type Address struct {
+	Content *string `json:"content"`
+	Street  *string `json:"street"`
+	Number  *string `json:"number"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type AvailabilityCancellationPolicies struct {
+	Amount *string `json:"amount"`
+	From   *string `json:"from"`
 }
 
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type AvailabilityData struct {
+	Availability []*AvailabilityHotels `json:"availability"`
+}
+
+type AvailabilityFilterInput struct {
+	MaxHotels       *int `json:"maxHotels"`
+	MaxRooms        *int `json:"maxRooms"`
+	MinRate         *int `json:"minRate"`
+	MaxRate         *int `json:"maxRate"`
+	MaxRatesPerRoom *int `json:"maxRatesPerRoom"`
+}
+
+type AvailabilityHotelInput struct {
+	Hotel []int `json:"hotel"`
+}
+
+type AvailabilityHotels struct {
+	Code            *int                 `json:"code"`
+	Name            *string              `json:"name"`
+	CategoryCode    *string              `json:"categoryCode"`
+	CategoryName    *string              `json:"categoryName"`
+	DestinationCode *string              `json:"destinationCode"`
+	DestinationName *string              `json:"destinationName"`
+	ZoneCode        *int                 `json:"zoneCode"`
+	ZoneName        *string              `json:"zoneName"`
+	Latitude        *string              `json:"latitude"`
+	Longitude       *string              `json:"longitude"`
+	MinRate         *string              `json:"minRate"`
+	MaxRate         *string              `json:"maxRate"`
+	Currency        *string              `json:"currency"`
+	Rooms           []*AvailabilityRooms `json:"rooms"`
+}
+
+type AvailabilityInput struct {
+	Hotels      *AvailabilityHotelInput         `json:"hotels"`
+	Stay        *AvailabilityStayInput          `json:"stay"`
+	Occupancies []*AvailabilityOccupanciesInput `json:"occupancies"`
+	Language    LanguageEnum                    `json:"language"`
+	Filter      *AvailabilityFilterInput        `json:"filter"`
+}
+
+type AvailabilityOccupanciesInput struct {
+	Rooms    int `json:"rooms"`
+	Adults   int `json:"adults"`
+	Children int `json:"children"`
+}
+
+type AvailabilityRates struct {
+	RateKey              *string                             `json:"rateKey"`
+	RateClass            *string                             `json:"rateClass"`
+	RateType             *string                             `json:"rateType"`
+	Net                  *string                             `json:"net"`
+	Discount             *string                             `json:"discount"`
+	DiscountPct          *string                             `json:"discountPCT"`
+	SellingRate          *string                             `json:"sellingRate"`
+	Allotment            *int                                `json:"allotment"`
+	PaymentType          *string                             `json:"paymentType"`
+	Packaging            *bool                               `json:"packaging"`
+	BoardCode            *string                             `json:"boardCode"`
+	BoardName            *string                             `json:"boardName"`
+	Rooms                *int                                `json:"rooms"`
+	Adults               *int                                `json:"adults"`
+	Children             *int                                `json:"children"`
+	CancellationPolicies []*AvailabilityCancellationPolicies `json:"cancellationPolicies"`
+}
+
+type AvailabilityRooms struct {
+	Code  *string              `json:"code"`
+	Name  *string              `json:"name"`
+	Rates []*AvailabilityRates `json:"rates"`
+}
+
+type AvailabilityStayInput struct {
+	CheckIn  string `json:"checkIn"`
+	CheckOut string `json:"checkOut"`
+}
+
+type BookingData struct {
+	ID *string `json:"id"`
+}
+
+type BookingInput struct {
+	ID *string `json:"id"`
+}
+
+type City struct {
+	Content *string `json:"content"`
+}
+
+type Coordinates struct {
+	Longitude *float64 `json:"longitude"`
+	Latitude  *float64 `json:"latitude"`
+}
+
+type Description struct {
+	Content *string `json:"content"`
+}
+
+type Facilities struct {
+	FacilityCode      *int  `json:"facilityCode"`
+	FacilityGroupCode *int  `json:"facilityGroupCode"`
+	Order             *int  `json:"order"`
+	Number            *int  `json:"number"`
+	Voucher           *bool `json:"voucher"`
+}
+
+type Hotels struct {
+	Language              LanguageEnum      `json:"language"`
+	Code                  *int              `json:"code"`
+	Type                  HotelTypeEnum     `json:"type"`
+	CountryCode           *string           `json:"countryCode"`
+	StateCode             *string           `json:"stateCode"`
+	DestinationCode       *string           `json:"destinationCode"`
+	ZoneCode              *int              `json:"zoneCode"`
+	CategoryCode          *string           `json:"categoryCode"`
+	CategoryGroupCode     *string           `json:"categoryGroupCode"`
+	ChainCode             *string           `json:"chainCode"`
+	AccommodationTypeCode *string           `json:"accommodationTypeCode"`
+	PostalCode            *string           `json:"postalCode"`
+	Email                 *string           `json:"email"`
+	Web                   *string           `json:"web"`
+	LastUpdate            *string           `json:"lastUpdate"`
+	S2c                   *string           `json:"S2C"`
+	Ranking               *int              `json:"ranking"`
+	Images                []*Images         `json:"images"`
+	InterestPoints        []*InterestPoints `json:"interestPoints"`
+	Issues                []*Issues         `json:"issues"`
+	Facilities            []*Facilities     `json:"facilities"`
+	Rooms                 []*Rooms          `json:"rooms"`
+	Phones                []*Phones         `json:"phones"`
+	City                  *City             `json:"city"`
+	Address               *Address          `json:"address"`
+	AmenityCodes          []*int            `json:"amenityCodes"`
+	SegmentCodes          []*int            `json:"segmentCodes"`
+	BoardCodes            []*string         `json:"boardCodes"`
+	Coordinates           *Coordinates      `json:"coordinates"`
+	Description           *Description      `json:"description"`
+	Name                  *Name             `json:"name"`
+}
+
+type HotelsData struct {
+	Hotels     []*Hotels       `json:"hotels"`
+	Pagination *PaginationType `json:"pagination"`
+}
+
+type HotelsGeolocationInput struct {
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+	Radius    int     `json:"radius"`
+}
+
+type HotelsInput struct {
+	Language    LanguageEnum            `json:"language"`
+	Pagination  *PaginationInput        `json:"pagination"`
+	Geolocation *HotelsGeolocationInput `json:"geolocation"`
+	ID          int                     `json:"id"`
+}
+
+type Images struct {
+	ImageTypeCode *string `json:"imageTypeCode"`
+	Path          *string `json:"path"`
+	Order         *int    `json:"order"`
+	VisualOrder   *int    `json:"visualOrder"`
+}
+
+type InterestPoints struct {
+	FacilityCode      *int    `json:"facilityCode"`
+	FacilityGroupCode *int    `json:"facilityGroupCode"`
+	Order             *int    `json:"order"`
+	PoiName           *string `json:"poiName"`
+	Distance          *string `json:"distance"`
+}
+
+type Issues struct {
+	IssueCode   *string `json:"issueCode"`
+	IssueType   *string `json:"issueType"`
+	DateFrom    *string `json:"dateFrom"`
+	DateTo      *string `json:"dateTo"`
+	Order       *int    `json:"order"`
+	Alternative *bool   `json:"alternative"`
+}
+
+type Name struct {
+	Content *string `json:"content"`
+}
+
+type PaginationInput struct {
+	Page     int     `json:"page"`
+	PageSize int     `json:"pageSize"`
+	OrderBy  *string `json:"orderBy"`
+}
+
+type PaginationType struct {
+	Page     int `json:"page"`
+	PageSize int `json:"pageSize"`
+	Total    int `json:"total"`
+}
+
+type Phones struct {
+	PhoneNumber *string `json:"phoneNumber"`
+	PhoneType   *string `json:"phoneType"`
+}
+
+type RoomFacilities struct {
+	FacilityCode      *int  `json:"facilityCode"`
+	FacilityGroupCode *int  `json:"facilityGroupCode"`
+	IndLogic          *bool `json:"indLogic"`
+	Number            *int  `json:"number"`
+	Voucher           *bool `json:"voucher"`
+}
+
+type RoomStayFacilities struct {
+	FacilityCode      *int `json:"facilityCode"`
+	FacilityGroupCode *int `json:"facilityGroupCode"`
+	Number            *int `json:"number"`
+}
+
+type RoomStays struct {
+	StayType           *string               `json:"stayType"`
+	Order              *string               `json:"order"`
+	Description        *string               `json:"description"`
+	RoomStayFacilities []*RoomStayFacilities `json:"roomStayFacilities"`
+}
+
+type Rooms struct {
+	RoomCode           *string           `json:"roomCode"`
+	IsParentRoom       *bool             `json:"isParentRoom"`
+	MinPax             *int              `json:"minPax"`
+	MaxPax             *int              `json:"maxPax"`
+	MaxAdults          *int              `json:"maxAdults"`
+	MaxChildren        *int              `json:"maxChildren"`
+	MinAdults          *int              `json:"minAdults"`
+	RoomType           *string           `json:"roomType"`
+	CharacteristicCode *string           `json:"characteristicCode"`
+	RoomStays          []*RoomStays      `json:"roomStays"`
+	RoomFacilities     []*RoomFacilities `json:"roomFacilities"`
+}
+
+type HotelTypeEnum string
+
+const (
+	HotelTypeEnumDe HotelTypeEnum = "DE"
+	HotelTypeEnumHb HotelTypeEnum = "HB"
+	HotelTypeEnumCg HotelTypeEnum = "CG"
+)
+
+var AllHotelTypeEnum = []HotelTypeEnum{
+	HotelTypeEnumDe,
+	HotelTypeEnumHb,
+	HotelTypeEnumCg,
+}
+
+func (e HotelTypeEnum) IsValid() bool {
+	switch e {
+	case HotelTypeEnumDe, HotelTypeEnumHb, HotelTypeEnumCg:
+		return true
+	}
+	return false
+}
+
+func (e HotelTypeEnum) String() string {
+	return string(e)
+}
+
+func (e *HotelTypeEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = HotelTypeEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid HotelTypeEnum", str)
+	}
+	return nil
+}
+
+func (e HotelTypeEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type LanguageEnum string
+
+const (
+	LanguageEnumTai LanguageEnum = "TAI"
+	LanguageEnumEng LanguageEnum = "ENG"
+)
+
+var AllLanguageEnum = []LanguageEnum{
+	LanguageEnumTai,
+	LanguageEnumEng,
+}
+
+func (e LanguageEnum) IsValid() bool {
+	switch e {
+	case LanguageEnumTai, LanguageEnumEng:
+		return true
+	}
+	return false
+}
+
+func (e LanguageEnum) String() string {
+	return string(e)
+}
+
+func (e *LanguageEnum) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = LanguageEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid LanguageEnum", str)
+	}
+	return nil
+}
+
+func (e LanguageEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
