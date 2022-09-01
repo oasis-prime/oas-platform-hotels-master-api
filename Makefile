@@ -8,6 +8,11 @@ run-dev:
 	-export $(grep -v '^#' .env | xargs);
 	-air
 
+dcup-build:
+	docker build \
+		--build-arg ACCESS_TOKEN=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 \
+		-t oas-platform-hotels-master-api ./build/
+
 dcup-local:
 	docker-compose up
 
