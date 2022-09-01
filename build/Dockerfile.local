@@ -4,16 +4,13 @@ FROM golang:1.19-alpine
 RUN apk update && apk upgrade && \
     apk add git && \
     apk add build-base && \
-    go install github.com/cosmtrek/air@latest
+    go install github.com/cosmtrek/air@latest && \
+    go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core && \ 
+    GOCACHE=OFF
 
-RUN go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core
-RUN GOCACHE=OFF
-ARG GITHUB_USER
 ARG ACCESS_TOKEN
 ENV ACCESS_TOKEN=$ACCESS_TOKEN
-ENV GITHUB_USER=$GITHUB_USER
 
 RUN git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
-
 
 ENTRYPOINT ["/go/bin/air"]

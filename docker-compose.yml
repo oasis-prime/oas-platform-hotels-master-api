@@ -13,4 +13,4 @@ services:
     env_file:
       - .env
     ports:
-      - "1000:8080"
+      - "${APP_PORT}:${APP_PORT}"

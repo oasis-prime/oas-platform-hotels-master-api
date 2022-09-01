@@ -45,6 +45,9 @@ jobs:
           push: true
           tags: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }}
           build-args: |-
+            GIN_MODE=${{ secrets.GIN_MODE }}
+            APP_ENV=${{ secrets.APP_ENV }}
+            APP_PORT=${{ secrets.APP_PORT }}
             ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
             DATABASE_NAME=${{ secrets.DATABASE_NAME }}
             DATABASE_USER=${{ secrets.DATABASE_USER }}
