@@ -1,10 +1,8 @@
-FROM golang:1.19-alpine as builder
+FROM golang:1.16-alpine as builder
 
 ENV APP_HOME /go/src/app
 
 WORKDIR /app
-
-COPY ./go.* ./
 
 RUN set -ex; \
     apk update; \
@@ -14,15 +12,17 @@ RUN set -ex; \
     musl-dev \
     make
 
+COPY go.mod ./
+COPY go.sum ./
+
 #Set Env
 ARG ACCESS_TOKEN
 
 ENV ACCESS_TOKEN=$ACCESS_TOKEN
 
 #Set github login
-RUN go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core
-RUN GOCACHE=OFF
-RUN git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+RUN go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core && \
+    git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
 RUN go mod download
 
