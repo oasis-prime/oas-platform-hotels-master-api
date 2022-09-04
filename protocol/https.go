@@ -8,9 +8,11 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/configs"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/googleserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelbedsserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelsserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/memberserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/googlehdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelbedshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/memberhdl"
@@ -72,6 +74,12 @@ func graphqlHandler() gin.HandlerFunc {
 		hotelsHandler = hotelshdl.NewHandler(hotelsServ)
 	}
 
+	var googleHAndler *googlehdl.Handler
+	{
+		servPlance := googleserv.NewService("AIzaSyDOS6MedhWdvMMyRvGkRTROvTXnf8exZW8")
+		googleHAndler = googlehdl.NewHandler(servPlance)
+	}
+
 	h := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
 			generated.Config{
@@ -79,6 +87,7 @@ func graphqlHandler() gin.HandlerFunc {
 					MemberHandler:    memberHandler,
 					HotelbedsHandler: hotelbedsHandler,
 					HotelsHandler:    hotelsHandler,
+					GoogleHandler:    googleHAndler,
 				},
 			},
 		),
@@ -103,10 +112,26 @@ func ServeHTTP() error {
 	configs.ConfigsInit()
 	con = configs.GetConfig()
 	DBInit()
-
+	r.Use(CORSMiddleware())
 	r.POST("/graphql", graphqlHandler())
 	r.GET("/graphql", playgroundHandler())
 	r.Run(":" + configs.GetConfig().App.Port)
 
 	return nil
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization,X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Expose-Headers", "Origin")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(200)
+		} else {
+			c.Next()
+		}
+	}
 }

@@ -17,7 +17,7 @@ type HotelsRepository interface {
 	Create(record *hotelrepo.Hotels) (result *hotelrepo.Hotels, RowsAffected int64, err error)
 	Update(argID uint, updated *hotelrepo.Hotels) (result *hotelrepo.Hotels, RowsAffected int64, err error)
 	Delete(argID uint32) (rowsAffected int64, err error)
-	GetByCoordinates(condition hoteldm.GetByCoordinatesRequest) (record []*hotelrepo.Hotels, err error)
+	GetByCoordinates(condition hoteldm.GetByCoordinatesRequest) (record []*hotelrepo.Hotels, totalRows int64, err error)
 }
 
 type HotelNameRepository interface {

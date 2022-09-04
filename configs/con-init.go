@@ -45,9 +45,6 @@ func getEnv() {
 		Delimiter: "_",
 	})
 
-	j, _ := json.Marshal(addEnv)
-	fmt.Println(string(j))
-
 	if err != nil {
 		panic(err.Error())
 	}

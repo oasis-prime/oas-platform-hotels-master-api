@@ -141,17 +141,18 @@ type ComplexityRoot struct {
 		Description           func(childComplexity int) int
 		DestinationCode       func(childComplexity int) int
 		Email                 func(childComplexity int) int
-		Facilities            func(childComplexity int) int
-		Images                func(childComplexity int) int
-		InterestPoints        func(childComplexity int) int
-		Issues                func(childComplexity int) int
+		Facilities            func(childComplexity int, offset int, limit int) int
+		HotelName             func(childComplexity int) int
+		Images                func(childComplexity int, offset int, limit int) int
+		InterestPoints        func(childComplexity int, offset int, limit int) int
+		Issues                func(childComplexity int, offset int, limit int) int
 		Language              func(childComplexity int) int
 		LastUpdate            func(childComplexity int) int
 		Name                  func(childComplexity int) int
-		Phones                func(childComplexity int) int
+		Phones                func(childComplexity int, offset int, limit int) int
 		PostalCode            func(childComplexity int) int
 		Ranking               func(childComplexity int) int
-		Rooms                 func(childComplexity int) int
+		Rooms                 func(childComplexity int, offset int, limit int) int
 		S2c                   func(childComplexity int) int
 		SegmentCodes          func(childComplexity int) int
 		StateCode             func(childComplexity int) int
@@ -204,9 +205,19 @@ type ComplexityRoot struct {
 		PhoneType   func(childComplexity int) int
 	}
 
+	Places struct {
+		Description func(childComplexity int) int
+		PlaceID     func(childComplexity int) int
+	}
+
+	PlacesData struct {
+		Places func(childComplexity int) int
+	}
+
 	Query struct {
 		Availability func(childComplexity int, input model.AvailabilityInput) int
 		GetHotels    func(childComplexity int, input model.HotelsInput) int
+		GetPlaces    func(childComplexity int, input model.GetPlacesInput) int
 	}
 
 	RoomFacilities struct {
@@ -246,12 +257,12 @@ type ComplexityRoot struct {
 }
 
 type HotelsResolver interface {
-	Images(ctx context.Context, obj *model.Hotels) ([]*model.Images, error)
-	InterestPoints(ctx context.Context, obj *model.Hotels) ([]*model.InterestPoints, error)
-	Issues(ctx context.Context, obj *model.Hotels) ([]*model.Issues, error)
-	Facilities(ctx context.Context, obj *model.Hotels) ([]*model.Facilities, error)
-	Rooms(ctx context.Context, obj *model.Hotels) ([]*model.Rooms, error)
-	Phones(ctx context.Context, obj *model.Hotels) ([]*model.Phones, error)
+	Images(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Images, error)
+	InterestPoints(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.InterestPoints, error)
+	Issues(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Issues, error)
+	Facilities(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Facilities, error)
+	Rooms(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Rooms, error)
+	Phones(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Phones, error)
 	City(ctx context.Context, obj *model.Hotels) (*model.City, error)
 	Address(ctx context.Context, obj *model.Hotels) (*model.Address, error)
 
@@ -259,6 +270,7 @@ type HotelsResolver interface {
 	Name(ctx context.Context, obj *model.Hotels) (*model.Name, error)
 }
 type QueryResolver interface {
+	GetPlaces(ctx context.Context, input model.GetPlacesInput) (*model.PlacesData, error)
 	Availability(ctx context.Context, input model.AvailabilityInput) (*model.AvailabilityData, error)
 	GetHotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error)
 }
@@ -724,28 +736,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Hotels.Facilities(childComplexity), true
+		args, err := ec.field_Hotels_facilities_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Hotels.Facilities(childComplexity, args["offset"].(int), args["limit"].(int)), true
+
+	case "Hotels.hotelName":
+		if e.complexity.Hotels.HotelName == nil {
+			break
+		}
+
+		return e.complexity.Hotels.HotelName(childComplexity), true
 
 	case "Hotels.images":
 		if e.complexity.Hotels.Images == nil {
 			break
 		}
 
-		return e.complexity.Hotels.Images(childComplexity), true
+		args, err := ec.field_Hotels_images_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Hotels.Images(childComplexity, args["offset"].(int), args["limit"].(int)), true
 
 	case "Hotels.interestPoints":
 		if e.complexity.Hotels.InterestPoints == nil {
 			break
 		}
 
-		return e.complexity.Hotels.InterestPoints(childComplexity), true
+		args, err := ec.field_Hotels_interestPoints_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Hotels.InterestPoints(childComplexity, args["offset"].(int), args["limit"].(int)), true
 
 	case "Hotels.issues":
 		if e.complexity.Hotels.Issues == nil {
 			break
 		}
 
-		return e.complexity.Hotels.Issues(childComplexity), true
+		args, err := ec.field_Hotels_issues_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Hotels.Issues(childComplexity, args["offset"].(int), args["limit"].(int)), true
 
 	case "Hotels.language":
 		if e.complexity.Hotels.Language == nil {
@@ -773,7 +812,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Hotels.Phones(childComplexity), true
+		args, err := ec.field_Hotels_phones_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Hotels.Phones(childComplexity, args["offset"].(int), args["limit"].(int)), true
 
 	case "Hotels.postalCode":
 		if e.complexity.Hotels.PostalCode == nil {
@@ -794,7 +838,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Hotels.Rooms(childComplexity), true
+		args, err := ec.field_Hotels_rooms_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Hotels.Rooms(childComplexity, args["offset"].(int), args["limit"].(int)), true
 
 	case "Hotels.S2C":
 		if e.complexity.Hotels.S2c == nil {
@@ -999,6 +1048,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Phones.PhoneType(childComplexity), true
 
+	case "Places.description":
+		if e.complexity.Places.Description == nil {
+			break
+		}
+
+		return e.complexity.Places.Description(childComplexity), true
+
+	case "Places.placeId":
+		if e.complexity.Places.PlaceID == nil {
+			break
+		}
+
+		return e.complexity.Places.PlaceID(childComplexity), true
+
+	case "PlacesData.places":
+		if e.complexity.PlacesData.Places == nil {
+			break
+		}
+
+		return e.complexity.PlacesData.Places(childComplexity), true
+
 	case "Query.availability":
 		if e.complexity.Query.Availability == nil {
 			break
@@ -1022,6 +1092,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetHotels(childComplexity, args["input"].(model.HotelsInput)), true
+
+	case "Query.getPlaces":
+		if e.complexity.Query.GetPlaces == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getPlaces_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetPlaces(childComplexity, args["input"].(model.GetPlacesInput)), true
 
 	case "RoomFacilities.facilityCode":
 		if e.complexity.RoomFacilities.FacilityCode == nil {
@@ -1198,8 +1280,10 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAvailabilityOccupanciesInput,
 		ec.unmarshalInputAvailabilityStayInput,
 		ec.unmarshalInputBookingInput,
+		ec.unmarshalInputGetPlacesInput,
 		ec.unmarshalInputHotelsGeolocationInput,
 		ec.unmarshalInputHotelsInput,
+		ec.unmarshalInputHotelsKeywordsInput,
 		ec.unmarshalInputPaginationInput,
 	)
 	first := true
@@ -1270,6 +1354,25 @@ input BookingInput {
 
 # extend type Mutation {
 # }
+`, BuiltIn: false},
+	{Name: "../schemas/googlemap.graphqls", Input: `# Hotels
+type PlacesData {
+  places: [Places]
+}
+
+type Places {
+  description: String!
+  placeId: String!
+}
+
+input GetPlacesInput {
+  query: String
+}
+
+# Query
+extend type Query {
+  getPlaces(input: GetPlacesInput!): PlacesData!
+}
 `, BuiltIn: false},
 	{Name: "../schemas/hotelbeds.graphqls", Input: `# GraphQL Basic enum
 
@@ -1370,6 +1473,7 @@ extend type Query {
 `, BuiltIn: false},
 	{Name: "../schemas/hotels.graphqls", Input: `# Hotels
 type Hotels {
+  hotelName: String
   language: LanguageEnum!
   code: Int
   type: HotelTypeEnum!
@@ -1387,12 +1491,12 @@ type Hotels {
   lastUpdate: String
   S2C: String
   ranking: Int
-  images: [Images]
-  interestPoints: [InterestPoints]
-  issues: [Issues]
-  facilities: [Facilities]
-  rooms: [Rooms]
-  phones: [Phones]
+  images(offset: Int!, limit: Int!): [Images]
+  interestPoints(offset: Int!, limit: Int!): [InterestPoints]
+  issues(offset: Int!, limit: Int!): [Issues]
+  facilities(offset: Int!, limit: Int!): [Facilities]
+  rooms(offset: Int!, limit: Int!): [Rooms]
+  phones(offset: Int!, limit: Int!): [Phones]
   city: City
   address: Address
   amenityCodes: [Int]
@@ -1506,8 +1610,13 @@ type HotelsData {
 input HotelsInput {
   language: LanguageEnum!
   pagination: PaginationInput!
-  geolocation: HotelsGeolocationInput!
-  id: Int!
+  geolocation: HotelsGeolocationInput
+  keywords: HotelsKeywordsInput
+  id: Int
+}
+
+input HotelsKeywordsInput {
+  keyword: [String!]!
 }
 
 input HotelsGeolocationInput {
@@ -1564,6 +1673,150 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
+func (ec *executionContext) field_Hotels_facilities_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Hotels_images_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Hotels_interestPoints_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Hotels_issues_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Hotels_phones_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Hotels_rooms_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1601,6 +1854,21 @@ func (ec *executionContext) field_Query_getHotels_args(ctx context.Context, rawA
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNHotelsInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getPlaces_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.GetPlacesInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNGetPlacesInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐGetPlacesInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3737,6 +4005,47 @@ func (ec *executionContext) fieldContext_Facilities_voucher(ctx context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _Hotels_hotelName(ctx context.Context, field graphql.CollectedField, obj *model.Hotels) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Hotels_hotelName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HotelName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Hotels_hotelName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Hotels",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Hotels_language(ctx context.Context, field graphql.CollectedField, obj *model.Hotels) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Hotels_language(ctx, field)
 	if err != nil {
@@ -4454,7 +4763,7 @@ func (ec *executionContext) _Hotels_images(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Hotels().Images(rctx, obj)
+		return ec.resolvers.Hotels().Images(rctx, obj, fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4488,6 +4797,17 @@ func (ec *executionContext) fieldContext_Hotels_images(ctx context.Context, fiel
 			return nil, fmt.Errorf("no field named %q was found under type Images", field.Name)
 		},
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Hotels_images_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
 	return fc, nil
 }
 
@@ -4505,7 +4825,7 @@ func (ec *executionContext) _Hotels_interestPoints(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Hotels().InterestPoints(rctx, obj)
+		return ec.resolvers.Hotels().InterestPoints(rctx, obj, fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4541,6 +4861,17 @@ func (ec *executionContext) fieldContext_Hotels_interestPoints(ctx context.Conte
 			return nil, fmt.Errorf("no field named %q was found under type InterestPoints", field.Name)
 		},
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Hotels_interestPoints_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
 	return fc, nil
 }
 
@@ -4558,7 +4889,7 @@ func (ec *executionContext) _Hotels_issues(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Hotels().Issues(rctx, obj)
+		return ec.resolvers.Hotels().Issues(rctx, obj, fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4596,6 +4927,17 @@ func (ec *executionContext) fieldContext_Hotels_issues(ctx context.Context, fiel
 			return nil, fmt.Errorf("no field named %q was found under type Issues", field.Name)
 		},
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Hotels_issues_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
 	return fc, nil
 }
 
@@ -4613,7 +4955,7 @@ func (ec *executionContext) _Hotels_facilities(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Hotels().Facilities(rctx, obj)
+		return ec.resolvers.Hotels().Facilities(rctx, obj, fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4649,6 +4991,17 @@ func (ec *executionContext) fieldContext_Hotels_facilities(ctx context.Context, 
 			return nil, fmt.Errorf("no field named %q was found under type Facilities", field.Name)
 		},
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Hotels_facilities_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
 	return fc, nil
 }
 
@@ -4666,7 +5019,7 @@ func (ec *executionContext) _Hotels_rooms(ctx context.Context, field graphql.Col
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Hotels().Rooms(rctx, obj)
+		return ec.resolvers.Hotels().Rooms(rctx, obj, fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4714,6 +5067,17 @@ func (ec *executionContext) fieldContext_Hotels_rooms(ctx context.Context, field
 			return nil, fmt.Errorf("no field named %q was found under type Rooms", field.Name)
 		},
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Hotels_rooms_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
 	return fc, nil
 }
 
@@ -4731,7 +5095,7 @@ func (ec *executionContext) _Hotels_phones(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Hotels().Phones(rctx, obj)
+		return ec.resolvers.Hotels().Phones(rctx, obj, fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4760,6 +5124,17 @@ func (ec *executionContext) fieldContext_Hotels_phones(ctx context.Context, fiel
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Phones", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Hotels_phones_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
 	}
 	return fc, nil
 }
@@ -5157,6 +5532,8 @@ func (ec *executionContext) fieldContext_HotelsData_hotels(ctx context.Context, 
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "hotelName":
+				return ec.fieldContext_Hotels_hotelName(ctx, field)
 			case "language":
 				return ec.fieldContext_Hotels_language(ctx, field)
 			case "code":
@@ -6144,6 +6521,200 @@ func (ec *executionContext) fieldContext_Phones_phoneType(ctx context.Context, f
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Places_description(ctx context.Context, field graphql.CollectedField, obj *model.Places) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Places_description(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Description, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Places_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Places",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Places_placeId(ctx context.Context, field graphql.CollectedField, obj *model.Places) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Places_placeId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PlaceID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Places_placeId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Places",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PlacesData_places(ctx context.Context, field graphql.CollectedField, obj *model.PlacesData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PlacesData_places(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Places, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Places)
+	fc.Result = res
+	return ec.marshalOPlaces2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPlaces(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PlacesData_places(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PlacesData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "description":
+				return ec.fieldContext_Places_description(ctx, field)
+			case "placeId":
+				return ec.fieldContext_Places_placeId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Places", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getPlaces(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getPlaces(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetPlaces(rctx, fc.Args["input"].(model.GetPlacesInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PlacesData)
+	fc.Result = res
+	return ec.marshalNPlacesData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPlacesData(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getPlaces(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "places":
+				return ec.fieldContext_PlacesData_places(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PlacesData", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getPlaces_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
 	}
 	return fc, nil
 }
@@ -9399,6 +9970,34 @@ func (ec *executionContext) unmarshalInputBookingInput(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputGetPlacesInput(ctx context.Context, obj interface{}) (model.GetPlacesInput, error) {
+	var it model.GetPlacesInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"query"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "query":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("query"))
+			it.Query, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputHotelsGeolocationInput(ctx context.Context, obj interface{}) (model.HotelsGeolocationInput, error) {
 	var it model.HotelsGeolocationInput
 	asMap := map[string]interface{}{}
@@ -9450,7 +10049,7 @@ func (ec *executionContext) unmarshalInputHotelsInput(ctx context.Context, obj i
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"language", "pagination", "geolocation", "id"}
+	fieldsInOrder := [...]string{"language", "pagination", "geolocation", "keywords", "id"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -9477,7 +10076,15 @@ func (ec *executionContext) unmarshalInputHotelsInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("geolocation"))
-			it.Geolocation, err = ec.unmarshalNHotelsGeolocationInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsGeolocationInput(ctx, v)
+			it.Geolocation, err = ec.unmarshalOHotelsGeolocationInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsGeolocationInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "keywords":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("keywords"))
+			it.Keywords, err = ec.unmarshalOHotelsKeywordsInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsKeywordsInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9485,7 +10092,35 @@ func (ec *executionContext) unmarshalInputHotelsInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			it.ID, err = ec.unmarshalNInt2int(ctx, v)
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputHotelsKeywordsInput(ctx context.Context, obj interface{}) (model.HotelsKeywordsInput, error) {
+	var it model.HotelsKeywordsInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"keyword"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "keyword":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("keyword"))
+			it.Keyword, err = ec.unmarshalNString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -9987,6 +10622,10 @@ func (ec *executionContext) _Hotels(ctx context.Context, sel ast.SelectionSet, o
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Hotels")
+		case "hotelName":
+
+			out.Values[i] = ec._Hotels_hotelName(ctx, field, obj)
+
 		case "language":
 
 			out.Values[i] = ec._Hotels_language(ctx, field, obj)
@@ -10512,6 +11151,66 @@ func (ec *executionContext) _Phones(ctx context.Context, sel ast.SelectionSet, o
 	return out
 }
 
+var placesImplementors = []string{"Places"}
+
+func (ec *executionContext) _Places(ctx context.Context, sel ast.SelectionSet, obj *model.Places) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, placesImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Places")
+		case "description":
+
+			out.Values[i] = ec._Places_description(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "placeId":
+
+			out.Values[i] = ec._Places_placeId(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var placesDataImplementors = []string{"PlacesData"}
+
+func (ec *executionContext) _PlacesData(ctx context.Context, sel ast.SelectionSet, obj *model.PlacesData) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, placesDataImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PlacesData")
+		case "places":
+
+			out.Values[i] = ec._PlacesData_places(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -10531,6 +11230,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
+		case "getPlaces":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getPlaces(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "availability":
 			field := field
 
@@ -11229,6 +11951,11 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 	return res
 }
 
+func (ec *executionContext) unmarshalNGetPlacesInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐGetPlacesInput(ctx context.Context, v interface{}) (model.GetPlacesInput, error) {
+	res, err := ec.unmarshalInputGetPlacesInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNHotelTypeEnum2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelTypeEnum(ctx context.Context, v interface{}) (model.HotelTypeEnum, error) {
 	var res model.HotelTypeEnum
 	err := res.UnmarshalGQL(v)
@@ -11305,11 +12032,6 @@ func (ec *executionContext) marshalNHotelsData2ᚖgithubᚗcomᚋoasisᚑprime�
 		return graphql.Null
 	}
 	return ec._HotelsData(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNHotelsGeolocationInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsGeolocationInput(ctx context.Context, v interface{}) (*model.HotelsGeolocationInput, error) {
-	res, err := ec.unmarshalInputHotelsGeolocationInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNHotelsInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsInput(ctx context.Context, v interface{}) (model.HotelsInput, error) {
@@ -11389,6 +12111,20 @@ func (ec *executionContext) marshalNPaginationType2ᚖgithubᚗcomᚋoasisᚑpri
 	return ec._PaginationType(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNPlacesData2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPlacesData(ctx context.Context, sel ast.SelectionSet, v model.PlacesData) graphql.Marshaler {
+	return ec._PlacesData(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPlacesData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPlacesData(ctx context.Context, sel ast.SelectionSet, v *model.PlacesData) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._PlacesData(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -11402,6 +12138,38 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -11927,6 +12695,22 @@ func (ec *executionContext) marshalOFloat2ᚖfloat64(ctx context.Context, sel as
 	return res
 }
 
+func (ec *executionContext) unmarshalOHotelsGeolocationInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsGeolocationInput(ctx context.Context, v interface{}) (*model.HotelsGeolocationInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputHotelsGeolocationInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOHotelsKeywordsInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsKeywordsInput(ctx context.Context, v interface{}) (*model.HotelsKeywordsInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputHotelsKeywordsInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalOImages2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐImages(ctx context.Context, sel ast.SelectionSet, v []*model.Images) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -12172,6 +12956,54 @@ func (ec *executionContext) marshalOPhones2ᚖgithubᚗcomᚋoasisᚑprimeᚋoas
 		return graphql.Null
 	}
 	return ec._Phones(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOPlaces2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPlaces(ctx context.Context, sel ast.SelectionSet, v []*model.Places) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOPlaces2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPlaces(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOPlaces2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPlaces(ctx context.Context, sel ast.SelectionSet, v *model.Places) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Places(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalORoomFacilities2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐRoomFacilities(ctx context.Context, sel ast.SelectionSet, v []*model.RoomFacilities) graphql.Marshaler {

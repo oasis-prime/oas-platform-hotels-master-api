@@ -8,6 +8,7 @@ import (
 	"github.com/oasis-prime/oas-platform-core/domain/hoteldm"
 	"github.com/oasis-prime/oas-platform-core/repositories/enums/htenums"
 	"github.com/oasis-prime/oas-platform-core/repositories/enums/langenums"
+	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
 	"github.com/sirupsen/logrus"
@@ -26,17 +27,9 @@ func NewHandler(
 }
 
 func (h *Handler) GetAllHotel(ctx context.Context, input model.HotelsInput) (display *model.HotelsData, err error) {
-	// condition := input.ParseToAvailabilityRequest()
+	var hotelsRepo []*hotelrepo.Hotels
 
-	hotelsRepo, err := h.servHotels.GetByCoordinates(hoteldm.GetByCoordinatesRequest{
-		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
-			Page:     input.Pagination.Page,
-			PageSize: input.Pagination.PageSize,
-		},
-		Latitude:  input.Geolocation.Latitude,
-		Longitude: input.Geolocation.Longitude,
-		Distance:  uint(input.Geolocation.Radius),
-	})
+	hotelsRepo, total, err := h.servHotels.GetHotel(input)
 
 	if err != nil {
 		return nil, fmt.Errorf("")
@@ -52,9 +45,11 @@ func (h *Handler) GetAllHotel(ctx context.Context, input model.HotelsInput) (dis
 	}
 
 	display = &model.HotelsData{
-		Hotels:     hotels,
+		Hotels: hotels,
 		Pagination: &model.PaginationType{
-			// Page: ,
+			Page:     input.Pagination.Page,
+			PageSize: input.Pagination.PageSize,
+			Total:    int(total),
 		},
 	}
 
@@ -62,6 +57,10 @@ func (h *Handler) GetAllHotel(ctx context.Context, input model.HotelsInput) (dis
 }
 
 func (h *Handler) GetAllHotelName(ctx context.Context, obj *model.Hotels) (display *model.Name, err error) {
+	if obj == nil {
+		return nil, nil
+	}
+
 	var code uint = 0
 	if obj.Code != nil {
 		code = uint(*obj.Code)
@@ -74,7 +73,7 @@ func (h *Handler) GetAllHotelName(ctx context.Context, obj *model.Hotels) (displ
 	hotelNames, _, err := h.servHotels.GetHotelName(hoteldm.GetAllHotelNameRequest{
 		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
 			Page:     1,
-			PageSize: 1,
+			PageSize: 2,
 		},
 		HotelCode: &code,
 		HotelType: &hotelType,
@@ -102,10 +101,14 @@ func (h *Handler) GetAllHotelName(ctx context.Context, obj *model.Hotels) (displ
 		}
 	}
 
-	return display, err
+	return display, nil
 }
 
-func (h *Handler) GetAllHotelImages(ctx context.Context, obj *model.Hotels) ([]*model.Images, error) {
+func (h *Handler) GetAllHotelImages(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Images, error) {
+	if obj == nil {
+		return nil, nil
+	}
+
 	display := []*model.Images{}
 	var code uint = 0
 	if obj.Code != nil {
@@ -116,9 +119,10 @@ func (h *Handler) GetAllHotelImages(ctx context.Context, obj *model.Hotels) ([]*
 
 	result, _, err := h.servHotels.GetHotelImages(hoteldm.GetAllHotelImagesRequest{
 		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
-			Page:     1,
-			PageSize: 20,
+			Offset:   offset,
+			Limit:    limit,
 			Order:    "order",
+			IsOffset: true,
 		},
 		HotelCode: &code,
 		HotelType: &hotelType,
@@ -140,7 +144,10 @@ func (h *Handler) GetAllHotelImages(ctx context.Context, obj *model.Hotels) ([]*
 	return display, nil
 }
 
-func (h *Handler) GetAllHotelFacilities(ctx context.Context, obj *model.Hotels) ([]*model.Facilities, error) {
+func (h *Handler) GetAllHotelFacilities(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Facilities, error) {
+	if obj == nil {
+		return nil, nil
+	}
 	display := []*model.Facilities{}
 
 	var code uint = 0
@@ -177,31 +184,51 @@ func (h *Handler) GetAllHotelFacilities(ctx context.Context, obj *model.Hotels) 
 	return display, nil
 }
 
-func (h *Handler) GetAllHotelRooms(ctx context.Context, obj *model.Hotels) ([]*model.Rooms, error) {
+func (h *Handler) GetAllHotelRooms(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Rooms, error) {
+	if obj == nil {
+		return nil, nil
+	}
+
 	display := []*model.Rooms{}
 
 	return display, nil
 }
 
-func (h *Handler) GetAllHotelPhones(ctx context.Context, obj *model.Hotels) ([]*model.Phones, error) {
+func (h *Handler) GetAllHotelPhones(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Phones, error) {
+	if obj == nil {
+		return nil, nil
+	}
+
 	display := []*model.Phones{}
 
 	return display, nil
 }
 
 func (h *Handler) GetAllHotelCity(ctx context.Context, obj *model.Hotels) (*model.City, error) {
+	if obj == nil {
+		return nil, nil
+	}
+
 	display := &model.City{}
 
 	return display, nil
 }
 
 func (h *Handler) GetAllHotelAddress(ctx context.Context, obj *model.Hotels) (*model.Address, error) {
+	if obj == nil {
+		return nil, nil
+	}
+
 	display := &model.Address{}
 
 	return display, nil
 }
 
 func (h *Handler) GetAllHotelDescription(ctx context.Context, obj *model.Hotels) (*model.Description, error) {
+	if obj == nil {
+		return nil, nil
+	}
+
 	display := &model.Description{}
 
 	return display, nil

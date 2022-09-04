@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type Service struct {
+type service struct {
 	repoMasterACD  ports.MasterAccommodationsDescriptionRepository
 	repoMasterAC   ports.MasterAccommodationsRepository
 	repoMasterAM   ports.MasterAmenitiesRepository
@@ -47,7 +47,7 @@ type Service struct {
 	repoMasterTE   ports.MasterTerminalsRepository
 }
 
-func NewService(db *gorm.DB) *Service {
+func NewService(db *gorm.DB) *service {
 	repoMasterACD := masterrepo.NewAccommodationsDescriptionRepo(db)
 	repoMasterAC := masterrepo.NewAccommodationsRepo(db)
 	repoMasterAM := masterrepo.NewAmenitiesRepo(db)
@@ -87,7 +87,7 @@ func NewService(db *gorm.DB) *Service {
 	repoMasterTEN := masterrepo.NewTerminalsNameRepo(db)
 	repoMasterTE := masterrepo.NewTerminalsRepo(db)
 
-	return &Service{
+	return &service{
 		repoMasterACD:  repoMasterACD,
 		repoMasterAC:   repoMasterAC,
 		repoMasterAM:   repoMasterAM,

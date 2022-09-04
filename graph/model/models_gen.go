@@ -125,7 +125,12 @@ type Facilities struct {
 	Voucher           *bool `json:"voucher"`
 }
 
+type GetPlacesInput struct {
+	Query *string `json:"query"`
+}
+
 type Hotels struct {
+	HotelName             *string           `json:"hotelName"`
 	Language              LanguageEnum      `json:"language"`
 	Code                  *int              `json:"code"`
 	Type                  HotelTypeEnum     `json:"type"`
@@ -174,7 +179,12 @@ type HotelsInput struct {
 	Language    LanguageEnum            `json:"language"`
 	Pagination  *PaginationInput        `json:"pagination"`
 	Geolocation *HotelsGeolocationInput `json:"geolocation"`
-	ID          int                     `json:"id"`
+	Keywords    *HotelsKeywordsInput    `json:"keywords"`
+	ID          *int                    `json:"id"`
+}
+
+type HotelsKeywordsInput struct {
+	Keyword []string `json:"keyword"`
 }
 
 type Images struct {
@@ -220,6 +230,15 @@ type PaginationType struct {
 type Phones struct {
 	PhoneNumber *string `json:"phoneNumber"`
 	PhoneType   *string `json:"phoneType"`
+}
+
+type Places struct {
+	Description string `json:"description"`
+	PlaceID     string `json:"placeId"`
+}
+
+type PlacesData struct {
+	Places []*Places `json:"places"`
 }
 
 type RoomFacilities struct {

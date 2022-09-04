@@ -4,12 +4,12 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
 )
 
-type Service struct {
+type service struct {
 	repo ports.MemberRepository
 }
 
-func NewService(repo ports.MemberRepository) *Service {
-	return &Service{
+func NewService(repo ports.MemberRepository) *service {
+	return &service{
 		repo: repo,
 	}
 }

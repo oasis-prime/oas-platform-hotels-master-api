@@ -1,5 +1,6 @@
 # Hotels
 type Hotels {
+  hotelName: String
   language: LanguageEnum!
   code: Int
   type: HotelTypeEnum!
@@ -17,12 +18,12 @@ type Hotels {
   lastUpdate: String
   S2C: String
   ranking: Int
-  images: [Images]
-  interestPoints: [InterestPoints]
-  issues: [Issues]
-  facilities: [Facilities]
-  rooms: [Rooms]
-  phones: [Phones]
+  images(offset: Int!, limit: Int!): [Images]
+  interestPoints(offset: Int!, limit: Int!): [InterestPoints]
+  issues(offset: Int!, limit: Int!): [Issues]
+  facilities(offset: Int!, limit: Int!): [Facilities]
+  rooms(offset: Int!, limit: Int!): [Rooms]
+  phones(offset: Int!, limit: Int!): [Phones]
   city: City
   address: Address
   amenityCodes: [Int]
@@ -136,8 +137,13 @@ type HotelsData {
 input HotelsInput {
   language: LanguageEnum!
   pagination: PaginationInput!
-  geolocation: HotelsGeolocationInput!
-  id: Int!
+  geolocation: HotelsGeolocationInput
+  keywords: HotelsKeywordsInput
+  id: Int
+}
+
+input HotelsKeywordsInput {
+  keyword: [String!]!
 }
 
 input HotelsGeolocationInput {

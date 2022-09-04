@@ -12,33 +12,33 @@ import (
 )
 
 // Images is the resolver for the images field.
-func (r *hotelsResolver) Images(ctx context.Context, obj *model.Hotels) ([]*model.Images, error) {
-	return r.HotelsHandler.GetAllHotelImages(ctx, obj)
+func (r *hotelsResolver) Images(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Images, error) {
+	return r.HotelsHandler.GetAllHotelImages(ctx, obj, offset, limit)
 }
 
 // InterestPoints is the resolver for the interestPoints field.
-func (r *hotelsResolver) InterestPoints(ctx context.Context, obj *model.Hotels) ([]*model.InterestPoints, error) {
+func (r *hotelsResolver) InterestPoints(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.InterestPoints, error) {
 	panic(fmt.Errorf("not implemented: InterestPoints - interestPoints"))
 }
 
 // Issues is the resolver for the issues field.
-func (r *hotelsResolver) Issues(ctx context.Context, obj *model.Hotels) ([]*model.Issues, error) {
+func (r *hotelsResolver) Issues(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Issues, error) {
 	panic(fmt.Errorf("not implemented: Issues - issues"))
 }
 
 // Facilities is the resolver for the facilities field.
-func (r *hotelsResolver) Facilities(ctx context.Context, obj *model.Hotels) ([]*model.Facilities, error) {
-	return r.HotelsHandler.GetAllHotelFacilities(ctx, obj)
+func (r *hotelsResolver) Facilities(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Facilities, error) {
+	return r.HotelsHandler.GetAllHotelFacilities(ctx, obj, offset, limit)
 }
 
 // Rooms is the resolver for the rooms field.
-func (r *hotelsResolver) Rooms(ctx context.Context, obj *model.Hotels) ([]*model.Rooms, error) {
-	return r.HotelsHandler.GetAllHotelRooms(ctx, obj)
+func (r *hotelsResolver) Rooms(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Rooms, error) {
+	return r.HotelsHandler.GetAllHotelRooms(ctx, obj, offset, limit)
 }
 
 // Phones is the resolver for the phones field.
-func (r *hotelsResolver) Phones(ctx context.Context, obj *model.Hotels) ([]*model.Phones, error) {
-	return r.HotelsHandler.GetAllHotelPhones(ctx, obj)
+func (r *hotelsResolver) Phones(ctx context.Context, obj *model.Hotels, offset int, limit int) ([]*model.Phones, error) {
+	return r.HotelsHandler.GetAllHotelPhones(ctx, obj, offset, limit)
 }
 
 // City is the resolver for the city field.
@@ -70,13 +70,3 @@ func (r *queryResolver) GetHotels(ctx context.Context, input model.HotelsInput) 
 func (r *Resolver) Hotels() generated.HotelsResolver { return &hotelsResolver{r} }
 
 type hotelsResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-// func (r *queryResolver) Hotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error) {
-// 	return r.HotelsHandler.GetAllHotel(ctx, input)
-// }
