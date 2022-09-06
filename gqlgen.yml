@@ -8,9 +8,9 @@ exec:
   package: generated
 
 # Uncomment to enable federation
-# federation:
-#   filename: graph/generated/federation.go
-#   package: generated
+federation:
+  filename: graph/generated/federation.go
+  package: generated
 
 # Where should any generated models go?
 model:
@@ -36,7 +36,7 @@ resolver:
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
 autobind:
-#  - "ota-hotels-services/graph/model"
+  - "github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 
 # This section declares type mapping between the GraphQL and go type systems
 #
@@ -55,7 +55,14 @@ models:
       facilities:
         resolver: true
       rooms:
+        # roomStays:
+        #   resolver: true
+        # roomFacilities:
+        #   resolver: true
+        # images:
+        #   resolver: true
         resolver: true
+
       phones:
         resolver: true
       city:
@@ -66,17 +73,23 @@ models:
         resolver: true
       name:
         resolver: true
+  Rooms:
+    fields:
+      roomStays:
+        resolver: true
+      roomFacilities:
+        resolver: true
+      roomImages:
+        resolver: true
   ID:
     model:
-      - github.com/99designs/gqlgen/graphql.ID
       - github.com/99designs/gqlgen/graphql.Int
-      - github.com/99designs/gqlgen/graphql.Int64
-      - github.com/99designs/gqlgen/graphql.Int32
   Int:
     model:
       - github.com/99designs/gqlgen/graphql.Int
-      - github.com/99designs/gqlgen/graphql.Int64
-      - github.com/99designs/gqlgen/graphql.Int32
   Float:
     model:
       - github.com/99designs/gqlgen/graphql.Float
+  Boolean:
+    model:
+      - github.com/99designs/gqlgen/graphql.Boolean

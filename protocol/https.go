@@ -53,6 +53,8 @@ func graphqlHandler() gin.HandlerFunc {
 		repoHotelIssues := hotelrepo.NewHotelIssuesRepo(db)
 		repoHotelFacility := hotelrepo.NewHotelFacilityRepo(db)
 		repoHotelRooms := hotelrepo.NewHotelRoomsRepo(db)
+		repoHotelRoomsFacilities := hotelrepo.NewHotelRoomFacilitiesRepo(db)
+		repoHotelRoomsStay := hotelrepo.NewHotelRoomStayRepo(db)
 		repoHotelPhones := hotelrepo.NewHotelPhoneRepo(db)
 		repoHotelCity := hotelrepo.NewHotelCityRepo(db)
 		repoHotelAddress := hotelrepo.NewHotelAddressRepo(db)
@@ -66,6 +68,8 @@ func graphqlHandler() gin.HandlerFunc {
 			repoHotelIssues,
 			repoHotelFacility,
 			repoHotelRooms,
+			repoHotelRoomsFacilities,
+			repoHotelRoomsStay,
 			repoHotelPhones,
 			repoHotelCity,
 			repoHotelAddress,

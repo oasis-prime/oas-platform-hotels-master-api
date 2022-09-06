@@ -64,16 +64,6 @@ jobs:
             HOTELBEDS_SECRET=${{ secrets.HOTELBEDS_SECRET }}
             HOTELBEDS_FORMAT=${{ secrets.HOTELBEDS_FORMAT }}
 
-      # - name: Deploy to Cloud Run
-      #   run: |-
-      #     gcloud run deploy ${{ env.SERVICE }} \
-      #       --cpu=1 \
-      #       --memory=1Gi \
-      #       --region ${{ env.REGION }} \
-      #       --image gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:${{  github.sha }} \
-      #       --platform "managed" \
-      #       --port=8080 \
-      #       --allow-unauthenticated
       - name: "Deploy to Cloud Run"
         uses: "google-github-actions/deploy-cloudrun@v0"
         with:

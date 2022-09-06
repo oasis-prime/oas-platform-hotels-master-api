@@ -18,12 +18,12 @@ type Hotels {
   lastUpdate: String
   S2C: String
   ranking: Int
-  images(offset: Int!, limit: Int!): [Images]
-  interestPoints(offset: Int!, limit: Int!): [InterestPoints]
-  issues(offset: Int!, limit: Int!): [Issues]
-  facilities(offset: Int!, limit: Int!): [Facilities]
-  rooms(offset: Int!, limit: Int!): [Rooms]
-  phones(offset: Int!, limit: Int!): [Phones]
+  images(input: ImagesInput): [Images]
+  interestPoints(input: HotelInterestPointsInput): [InterestPoints]
+  issues(input: HotelIssuesInput): [Issues]
+  facilities(input: FacilitiesInput): [Facilities]
+  rooms(input: HotelRoomsInput): [Rooms]
+  phones(input: HotelPhonesInput): [Phones]
   city: City
   address: Address
   amenityCodes: [Int]
@@ -59,7 +59,9 @@ type Issues {
 }
 
 type Facilities {
+  facilityName: String
   facilityCode: Int
+  facilityGroupName: String
   facilityGroupCode: Int
   order: Int
   number: Int
@@ -67,7 +69,9 @@ type Facilities {
 }
 
 type RoomStayFacilities {
+  facilityName: String
   facilityCode: Int
+  facilityGroupName: String
   facilityGroupCode: Int
   number: Int
 }
@@ -80,7 +84,9 @@ type RoomStays {
 }
 
 type RoomFacilities {
+  facilityName: String
   facilityCode: Int
+  facilityGroupName: String
   facilityGroupCode: Int
   indLogic: Boolean
   number: Int
@@ -88,6 +94,8 @@ type RoomFacilities {
 }
 
 type Rooms {
+  hotelCode: Int
+  hotelType: HotelTypeEnum!
   roomCode: String
   isParentRoom: Boolean
   minPax: Int
@@ -97,8 +105,9 @@ type Rooms {
   minAdults: Int
   roomType: String
   characteristicCode: String
-  roomStays: [RoomStays]
-  roomFacilities: [RoomFacilities]
+  roomStays(input: StaysInput): [RoomStays]
+  roomFacilities(input: FacilitiesInput): [RoomFacilities]
+  roomImages(input: ImagesInput): [Images]
 }
 
 type Phones {
@@ -140,6 +149,51 @@ input HotelsInput {
   geolocation: HotelsGeolocationInput
   keywords: HotelsKeywordsInput
   id: Int
+  IsPrice: Boolean
+  occupancies: HotelsOccupanciesInput!
+}
+
+input HotelsOccupanciesInput {
+  rooms: Int!
+  adults: Int!
+  children: Int!
+}
+
+input ImagesInput {
+  typeCode: String!
+  offset: Int!
+  limit: Int!
+}
+
+input HotelInterestPointsInput {
+  offset: Int!
+  limit: Int!
+}
+
+input HotelIssuesInput {
+  offset: Int!
+  limit: Int!
+}
+
+input StaysInput {
+  offset: Int!
+  limit: Int!
+}
+
+input FacilitiesInput {
+  groupCode: Int!
+  offset: Int!
+  limit: Int!
+}
+
+input HotelRoomsInput {
+  offset: Int!
+  limit: Int!
+}
+
+input HotelPhonesInput {
+  offset: Int!
+  limit: Int!
 }
 
 input HotelsKeywordsInput {

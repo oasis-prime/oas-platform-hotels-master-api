@@ -118,15 +118,43 @@ type Description struct {
 }
 
 type Facilities struct {
-	FacilityCode      *int  `json:"facilityCode"`
-	FacilityGroupCode *int  `json:"facilityGroupCode"`
-	Order             *int  `json:"order"`
-	Number            *int  `json:"number"`
-	Voucher           *bool `json:"voucher"`
+	FacilityName      *string `json:"facilityName"`
+	FacilityCode      *int    `json:"facilityCode"`
+	FacilityGroupName *string `json:"facilityGroupName"`
+	FacilityGroupCode *int    `json:"facilityGroupCode"`
+	Order             *int    `json:"order"`
+	Number            *int    `json:"number"`
+	Voucher           *bool   `json:"voucher"`
+}
+
+type FacilitiesInput struct {
+	GroupCode int `json:"groupCode"`
+	Offset    int `json:"offset"`
+	Limit     int `json:"limit"`
 }
 
 type GetPlacesInput struct {
 	Query *string `json:"query"`
+}
+
+type HotelInterestPointsInput struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
+}
+
+type HotelIssuesInput struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
+}
+
+type HotelPhonesInput struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
+}
+
+type HotelRoomsInput struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
 }
 
 type Hotels struct {
@@ -181,10 +209,18 @@ type HotelsInput struct {
 	Geolocation *HotelsGeolocationInput `json:"geolocation"`
 	Keywords    *HotelsKeywordsInput    `json:"keywords"`
 	ID          *int                    `json:"id"`
+	IsPrice     *bool                   `json:"IsPrice"`
+	Occupancies *HotelsOccupanciesInput `json:"occupancies"`
 }
 
 type HotelsKeywordsInput struct {
 	Keyword []string `json:"keyword"`
+}
+
+type HotelsOccupanciesInput struct {
+	Rooms    int `json:"rooms"`
+	Adults   int `json:"adults"`
+	Children int `json:"children"`
 }
 
 type Images struct {
@@ -192,6 +228,12 @@ type Images struct {
 	Path          *string `json:"path"`
 	Order         *int    `json:"order"`
 	VisualOrder   *int    `json:"visualOrder"`
+}
+
+type ImagesInput struct {
+	TypeCode string `json:"typeCode"`
+	Offset   int    `json:"offset"`
+	Limit    int    `json:"limit"`
 }
 
 type InterestPoints struct {
@@ -242,17 +284,21 @@ type PlacesData struct {
 }
 
 type RoomFacilities struct {
-	FacilityCode      *int  `json:"facilityCode"`
-	FacilityGroupCode *int  `json:"facilityGroupCode"`
-	IndLogic          *bool `json:"indLogic"`
-	Number            *int  `json:"number"`
-	Voucher           *bool `json:"voucher"`
+	FacilityName      *string `json:"facilityName"`
+	FacilityCode      *int    `json:"facilityCode"`
+	FacilityGroupName *string `json:"facilityGroupName"`
+	FacilityGroupCode *int    `json:"facilityGroupCode"`
+	IndLogic          *bool   `json:"indLogic"`
+	Number            *int    `json:"number"`
+	Voucher           *bool   `json:"voucher"`
 }
 
 type RoomStayFacilities struct {
-	FacilityCode      *int `json:"facilityCode"`
-	FacilityGroupCode *int `json:"facilityGroupCode"`
-	Number            *int `json:"number"`
+	FacilityName      *string `json:"facilityName"`
+	FacilityCode      *int    `json:"facilityCode"`
+	FacilityGroupName *string `json:"facilityGroupName"`
+	FacilityGroupCode *int    `json:"facilityGroupCode"`
+	Number            *int    `json:"number"`
 }
 
 type RoomStays struct {
@@ -263,6 +309,8 @@ type RoomStays struct {
 }
 
 type Rooms struct {
+	HotelCode          *int              `json:"hotelCode"`
+	HotelType          HotelTypeEnum     `json:"hotelType"`
 	RoomCode           *string           `json:"roomCode"`
 	IsParentRoom       *bool             `json:"isParentRoom"`
 	MinPax             *int              `json:"minPax"`
@@ -274,6 +322,12 @@ type Rooms struct {
 	CharacteristicCode *string           `json:"characteristicCode"`
 	RoomStays          []*RoomStays      `json:"roomStays"`
 	RoomFacilities     []*RoomFacilities `json:"roomFacilities"`
+	RoomImages         []*Images         `json:"roomImages"`
+}
+
+type StaysInput struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
 }
 
 type HotelTypeEnum string

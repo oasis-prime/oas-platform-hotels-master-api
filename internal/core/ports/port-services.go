@@ -20,6 +20,14 @@ type HotelsService interface {
 	GetHotelName(condition hoteldm.GetAllHotelNameRequest) (results []*hotelrepo.HotelName, totalRows int64, err error)
 	GetHotelImages(condition hoteldm.GetAllHotelImagesRequest) (results []*hotelrepo.HotelImages, totalRows int64, err error)
 	GetHotelFacility(condition hoteldm.GetAllHotelFacilityRequest) (results []*hotelrepo.HotelFacility, totalRows int64, err error)
+	GetHotelAddress(condition hoteldm.GetAllHotelAddressRequest) (results []*hotelrepo.HotelAddress, totalRows int64, err error)
+	GetHotelDescription(condition hoteldm.GetAllHotelDescriptionRequest) (results []*hotelrepo.HotelDescription, totalRows int64, err error)
+	GetHotelInterestPoints(condition hoteldm.GetAllHotelInterestPointsRequest) (results []*hotelrepo.HotelInterestPoints, totalRows int64, err error)
+	GetHotelIssues(condition hoteldm.GetAllHotelIssuesRequest) (results []*hotelrepo.HotelIssues, totalRows int64, err error)
+	GetHotelPhones(condition hoteldm.GetAllHotelPhoneRequest) (results []*hotelrepo.HotelPhone, totalRows int64, err error)
+	GetRooms(condition hoteldm.GetAllHotelRoomsRequest) (results []*hotelrepo.HotelRooms, totalRows int64, err error)
+	GetRoomsFacility(condition hoteldm.GetAllHotelRoomFacilitiesRequest) (results []*hotelrepo.HotelRoomFacilities, totalRows int64, err error)
+	GetRoomsStay(condition hoteldm.GetAllHotelRoomStayRequest) (results []*hotelrepo.HotelRoomStay, totalRows int64, err error)
 }
 
 type GooglePlaceService interface {
