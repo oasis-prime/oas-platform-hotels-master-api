@@ -120,6 +120,14 @@ func (h *Handler) GetAllHotelImages(
 		return nil, nil
 	}
 
+	if input == nil {
+		input = &model.ImagesInput{
+			Offset:   0,
+			Limit:    5,
+			TypeCode: "GEN",
+		}
+	}
+
 	display := []*model.Images{}
 	var code uint = 0
 	if obj.Code != nil {
@@ -135,8 +143,9 @@ func (h *Handler) GetAllHotelImages(
 			Order:    "order",
 			IsOffset: true,
 		},
-		HotelCode: &code,
-		HotelType: &hotelType,
+		ImageTypeCode: &input.TypeCode,
+		HotelCode:     &code,
+		HotelType:     &hotelType,
 	})
 
 	if err != nil {
@@ -163,6 +172,13 @@ func (h *Handler) GetAllHotelFacilities(
 ) ([]*model.Facilities, error) {
 	if obj == nil {
 		return nil, nil
+	}
+	if input == nil {
+		input = &model.FacilitiesInput{
+			GroupCode: 70,
+			Offset:    0,
+			Limit:     100,
+		}
 	}
 	display := []*model.Facilities{}
 
