@@ -78,6 +78,14 @@ func (svc *service) GetHotel(
 	}
 
 	if input.Keywords != nil {
+		rooms, adults, children := 0, 0, 0
+
+		if input.Occupancies != nil {
+			rooms = input.Occupancies.Rooms
+			adults = input.Occupancies.Adults
+			children = input.Occupancies.Children
+		}
+
 		return svc.repoHotels.GetAll(hoteldm.GetAllHotelRequest{
 			GetAllRequestBasic: hoteldm.GetAllRequestBasic{
 				Page:     input.Pagination.Page,
@@ -85,9 +93,9 @@ func (svc *service) GetHotel(
 				Keyword:  &input.Keywords.Keyword,
 				Language: (*langenums.Language)(&input.Language),
 			},
-			Rooms:    input.Occupancies.Rooms,
-			Adults:   input.Occupancies.Adults,
-			Children: input.Occupancies.Children,
+			Rooms:    rooms,
+			Adults:   adults,
+			Children: children,
 		})
 	}
 

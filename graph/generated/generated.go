@@ -1744,7 +1744,7 @@ input HotelsInput {
   keywords: HotelsKeywordsInput
   id: Int
   IsPrice: Boolean
-  occupancies: HotelsOccupanciesInput!
+  occupancies: HotelsOccupanciesInput
 }
 
 input HotelsOccupanciesInput {
@@ -11004,7 +11004,7 @@ func (ec *executionContext) unmarshalInputHotelsInput(ctx context.Context, obj i
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("occupancies"))
-			it.Occupancies, err = ec.unmarshalNHotelsOccupanciesInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsOccupanciesInput(ctx, v)
+			it.Occupancies, err = ec.unmarshalOHotelsOccupanciesInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsOccupanciesInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -13201,11 +13201,6 @@ func (ec *executionContext) unmarshalNHotelsInput2githubᚗcomᚋoasisᚑprime�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNHotelsOccupanciesInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsOccupanciesInput(ctx context.Context, v interface{}) (*model.HotelsOccupanciesInput, error) {
-	res, err := ec.unmarshalInputHotelsOccupanciesInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -13934,6 +13929,14 @@ func (ec *executionContext) unmarshalOHotelsKeywordsInput2ᚖgithubᚗcomᚋoasi
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputHotelsKeywordsInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOHotelsOccupanciesInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsOccupanciesInput(ctx context.Context, v interface{}) (*model.HotelsOccupanciesInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputHotelsOccupanciesInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

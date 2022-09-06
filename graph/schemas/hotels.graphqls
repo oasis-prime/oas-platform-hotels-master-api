@@ -150,7 +150,7 @@ input HotelsInput {
   keywords: HotelsKeywordsInput
   id: Int
   IsPrice: Boolean
-  occupancies: HotelsOccupanciesInput!
+  occupancies: HotelsOccupanciesInput
 }
 
 input HotelsOccupanciesInput {
