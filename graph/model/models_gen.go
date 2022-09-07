@@ -209,7 +209,6 @@ type HotelsInput struct {
 	Geolocation *HotelsGeolocationInput `json:"geolocation"`
 	Keywords    *HotelsKeywordsInput    `json:"keywords"`
 	ID          *int                    `json:"id"`
-	IsPrice     *bool                   `json:"IsPrice"`
 	Occupancies *HotelsOccupanciesInput `json:"occupancies"`
 }
 
@@ -221,6 +220,11 @@ type HotelsOccupanciesInput struct {
 	Rooms    int `json:"rooms"`
 	Adults   int `json:"adults"`
 	Children int `json:"children"`
+}
+
+type HotelsStayInput struct {
+	CheckIn  string `json:"checkIn"`
+	CheckOut string `json:"checkOut"`
 }
 
 type Images struct {

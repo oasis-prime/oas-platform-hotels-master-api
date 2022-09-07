@@ -143,13 +143,17 @@ type HotelsData {
   pagination: PaginationType!
 }
 
+input HotelsStayInput {
+  checkIn: String!
+  checkOut: String!
+}
+
 input HotelsInput {
   language: LanguageEnum!
   pagination: PaginationInput!
   geolocation: HotelsGeolocationInput
   keywords: HotelsKeywordsInput
   id: Int
-  IsPrice: Boolean
   occupancies: HotelsOccupanciesInput
 }
 

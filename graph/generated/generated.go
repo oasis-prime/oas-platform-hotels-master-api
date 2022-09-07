@@ -1403,6 +1403,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputHotelsInput,
 		ec.unmarshalInputHotelsKeywordsInput,
 		ec.unmarshalInputHotelsOccupanciesInput,
+		ec.unmarshalInputHotelsStayInput,
 		ec.unmarshalInputImagesInput,
 		ec.unmarshalInputPaginationInput,
 		ec.unmarshalInputStaysInput,
@@ -1737,13 +1738,17 @@ type HotelsData {
   pagination: PaginationType!
 }
 
+input HotelsStayInput {
+  checkIn: String!
+  checkOut: String!
+}
+
 input HotelsInput {
   language: LanguageEnum!
   pagination: PaginationInput!
   geolocation: HotelsGeolocationInput
   keywords: HotelsKeywordsInput
   id: Int
-  IsPrice: Boolean
   occupancies: HotelsOccupanciesInput
 }
 
@@ -10945,7 +10950,7 @@ func (ec *executionContext) unmarshalInputHotelsInput(ctx context.Context, obj i
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"language", "pagination", "geolocation", "keywords", "id", "IsPrice", "occupancies"}
+	fieldsInOrder := [...]string{"language", "pagination", "geolocation", "keywords", "id", "occupancies"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -10989,14 +10994,6 @@ func (ec *executionContext) unmarshalInputHotelsInput(ctx context.Context, obj i
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "IsPrice":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsPrice"))
-			it.IsPrice, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -11077,6 +11074,42 @@ func (ec *executionContext) unmarshalInputHotelsOccupanciesInput(ctx context.Con
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("children"))
 			it.Children, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputHotelsStayInput(ctx context.Context, obj interface{}) (model.HotelsStayInput, error) {
+	var it model.HotelsStayInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"checkIn", "checkOut"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "checkIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("checkIn"))
+			it.CheckIn, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "checkOut":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("checkOut"))
+			it.CheckOut, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
