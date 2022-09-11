@@ -257,6 +257,14 @@ type Issues struct {
 	Alternative *bool   `json:"alternative"`
 }
 
+type MemberVerifyEmailData struct {
+	Message string `json:"message"`
+}
+
+type MemberVerifyEmailInput struct {
+	Email *string `json:"email"`
+}
+
 type Name struct {
 	Content *string `json:"content"`
 }

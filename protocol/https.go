@@ -32,8 +32,8 @@ func graphqlHandler() gin.HandlerFunc {
 	var memberHandler *memberhdl.Handler
 	{
 		memberRepo := customerrepo.NewMemberRepo(db)
-		memberServ := memberserv.NewService(memberRepo)
-		memberHandler = memberhdl.NewHandler(memberServ, "")
+		memberServ := memberserv.NewService(memberRepo, con.Google.Projectid, con.Google.Pubsubkey)
+		memberHandler = memberhdl.NewHandler(memberServ)
 	}
 
 	var hotelbedsHandler *hotelbedshdl.Handler

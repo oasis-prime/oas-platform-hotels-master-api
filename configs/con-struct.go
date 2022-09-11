@@ -25,6 +25,12 @@ type database struct {
 	} `mapstructure:"socket"`
 }
 
+type google struct {
+	Places    string `mapstructure:"places"`
+	Pubsubkey string `mapstructure:"pubsubkey"`
+	Projectid string `mapstructure:"projectid"`
+}
+
 type redis struct {
 	Address  string `mapstructure:"address"`
 	Password string `mapstructure:"password"`
@@ -45,4 +51,5 @@ type Config struct {
 	Redis     redis     `mapstructure:"redis"`
 	Jwt       jwt       `mapstructure:"jwt"`
 	Hotelbeds hotelbeds `mapstructure:"hotelbeds"`
+	Google    google    `mapstructure:"google"`
 }

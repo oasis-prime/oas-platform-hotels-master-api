@@ -1,0 +1,16 @@
+# Query
+input MemberVerifyEmailInput {
+  email: String
+}
+
+type MemberVerifyEmailData {
+  message: String!
+}
+
+# Mutation
+type Mutation {
+  memberVerify(input: MemberVerifyEmailInput!): MemberVerifyEmailData!
+}
+
+# type Query {
+# }

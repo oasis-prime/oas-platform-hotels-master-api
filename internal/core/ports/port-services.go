@@ -9,6 +9,7 @@ import (
 )
 
 type MemberService interface {
+	PublisherVerifyEmail() (err error)
 }
 
 type HotelbedsService interface {
