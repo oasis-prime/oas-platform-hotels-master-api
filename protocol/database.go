@@ -26,7 +26,9 @@ func DBInit() {
 	}
 	var err error
 	db, err = gorm.Open(mysql.Open(dbURI), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger:                 logger.Default.LogMode(logger.Info),
+		SkipDefaultTransaction: true,
+		PrepareStmt:            true,
 	})
 
 	if err != nil {

@@ -1,60 +1,86 @@
-FROM golang:1.19-alpine as builder
+FROM golang:1.16-alpine as builder
+
+ENV APP_HOME /go/src/app
 
 WORKDIR /app
 
-COPY go.* ./
+RUN set -ex; \
+    apk update; \
+    apk add --no-cache \
+    git \
+    gcc \
+    musl-dev \
+    make
 
-RUN apk update && apk upgrade && \
-    apk add git
+COPY go.mod ./
+COPY go.sum ./
 
 #Set Env
 ARG ACCESS_TOKEN
-# ARG DATABASE_NAME=oasis-master
-# ARG DATABASE_USER=root
-# ARG DATABASE_PWD=iHA3i4JumM4Ap
-# ARG DATABASE_INSTANCE_CONNECTION_NAME=127.0.0.1
-# ARG DATABASE_SOCKET_DIR=true
-
-# ARG JWT_SECRET=xxxx
-# ARG JWT_EXPIRATIONDELTA=72
-
-# ARG REDIS_ADDR=127.0.0.1:6379
-# ARG REDIS_PASSWORD=xxxx
-# ARG REDIS_DB=0
-
-# ARG HOTELBEDS_ENDPOINT=https://api.test.hotelbeds.com
-# ARG HOTELBEDS_SECUREENDOPINT=https://api-secure.test.hotelbeds.com
-# ARG HOTELBEDS_KEY=rq9mtpfyjmedv77rdy3h7uhm
-# ARG HOTELBEDS_SECRET=TqzaWFcvg6
-# ARG HOTELBEDS_FORMAT=application/json
 
 ENV ACCESS_TOKEN=$ACCESS_TOKEN
 
 #Set github login
-RUN go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core
-RUN GOCACHE=OFF
-RUN git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+RUN go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core && \
+    git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
 RUN go mod download
 
-COPY . .
+COPY ./ .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o goapp cmd/api/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o goapp ./cmd/api/main.go
 
 ##########################################
 
 FROM alpine:3.13.1 as release
 
-ARG APP_ENV
-ARG VAULT_TOKEN
-ARG APP_VERSION
-
-ENV APP_ENV=${APP_ENV} \
-    VAULT_TOKEN=${VAULT_TOKEN} \
-    APP_VERSION=${APP_VERSION}
-
 WORKDIR /app
 
-COPY --from=builder /app/goapp ./goapp
+#Set Env
+ARG ACCESS_TOKEN \
+    GIN_MODE \
+    APP_ENV \
+    APP_PORT \
+    ACCESS_TOKEN \
+    DATABASE_NAME \
+    DATABASE_USER \
+    DATABASE_PWD \
+    DATABASE_INSTANCE_CONNECTION_NAME \
+    DATABASE_SOCKET_DIR \
+    JWT_SECRET \
+    JWT_EXPIRATIONDELTA \
+    REDIS_ADDR \
+    REDIS_PASSWORD \
+    REDIS_DB \
+    HOTELBEDS_ENDPOINT \
+    HOTELBEDS_SECUREENDOPINT \
+    HOTELBEDS_KEY \
+    HOTELBEDS_SECRET \
+    HOTELBEDS_FORMAT
+
+ENV ACCESS_TOKEN=$ACCESS_TOKEN \
+    GIN_MODE=$GIN_MODE \
+    APP_ENV=$APP_ENV \
+    APP_PORT=$APP_PORT \
+    ACCESS_TOKEN=$ACCESS_TOKEN \
+    DATABASE_NAME=$DATABASE_NAME \
+    DATABASE_USER=$DATABASE_USER \
+    DATABASE_PWD=$DATABASE_PWD \
+    DATABASE_INSTANCE_CONNECTION_NAME=$DATABASE_INSTANCE_CONNECTION_NAME \
+    DATABASE_SOCKET_DIR=$DATABASE_SOCKET_DIR \
+    JWT_SECRET=$JWT_SECRET \
+    JWT_EXPIRATIONDELTA=$JWT_EXPIRATIONDELTA \
+    REDIS_ADDR=$REDIS_ADDR \
+    REDIS_PASSWORD=$REDIS_PASSWORD \
+    REDIS_DB=$REDIS_DB \
+    HOTELBEDS_ENDPOINT=$HOTELBEDS_ENDPOINT \
+    HOTELBEDS_SECUREENDOPINT=$HOTELBEDS_SECUREENDOPINT \
+    HOTELBEDS_KEY=$HOTELBEDS_KEY \
+    HOTELBEDS_SECRET=$HOTELBEDS_SECRET \
+    HOTELBEDS_FORMAT=$HOTELBEDS_FORMAT
+
+COPY --from=builder ./app/goapp ./goapp
+
+EXPOSE 8080
 
 CMD ["./goapp"]

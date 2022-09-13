@@ -28,7 +28,7 @@ func ConfigsInit() {
 	case "develop":
 		getEnv()
 	default:
-		panic("errors env")
+		getEnv()
 	}
 }
 

@@ -92,5 +92,5 @@ input AvailabilityFilterInput {
 
 # Query
 extend type Query {
-  availability(input: AvailabilityInput!): AvailabilityData!
+  getAvailability(input: AvailabilityInput!): AvailabilityData!
 }

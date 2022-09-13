@@ -2,16 +2,17 @@ package hotelbedshdl
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/jinzhu/copier"
 	"github.com/oasis-prime/oas-platform-core/domain/hotelbedsdm"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
+	"github.com/sirupsen/logrus"
 )
 
 type Handler struct {
 	servHotelbeds ports.HotelbedsService
-	servHotels    ports.HotelsService
 }
 
 func NewHandler(
@@ -23,7 +24,7 @@ func NewHandler(
 }
 
 func (h *Handler) AvailabilityHotel(ctx context.Context, input model.AvailabilityInput) (display *model.AvailabilityData, err error) {
-	condition := input.ParseToAvailabilityRequest()
+	// condition := input.ParseToAvailabilityRequest()
 
 	if err != nil {
 		return nil, err
@@ -31,13 +32,14 @@ func (h *Handler) AvailabilityHotel(ctx context.Context, input model.Availabilit
 
 	availability := []*model.AvailabilityHotels{}
 
-	response, err := h.servHotelbeds.AvailabilityHotelbeds(&hotelbedsdm.AvailabilityRequest{
-		Stay:        condition.Stay,
-		Occupancies: condition.Occupancies,
-		Filter:      condition.Filter,
-		Language:    condition.Language,
-		Hotels:      condition.Hotels,
-	})
+	condition := &hotelbedsdm.AvailabilityRequest{}
+
+	copier.CopyWithOption(&condition, &input, copier.Option{IgnoreEmpty: true})
+
+	f, _ := json.Marshal(condition)
+	logrus.Info(string(f))
+
+	response, err := h.servHotelbeds.AvailabilityHotelbeds(condition)
 
 	if err == nil {
 		for _, v := range response.Hotels.Hotels {

@@ -5,78 +5,91 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 )
 
 // Images is the resolver for the images field.
-func (r *hotelsResolver) Images(ctx context.Context, obj *model.Hotels) ([]*model.Images, error) {
-	return r.HotelsHandler.GetAllHotelImages(ctx, obj)
+func (r *hotelResolver) Images(ctx context.Context, obj *model.Hotel, input *model.ImagesInput) ([]*model.Images, error) {
+	return r.HotelsHandler.GetAllHotelImages(ctx, obj, input)
 }
 
 // InterestPoints is the resolver for the interestPoints field.
-func (r *hotelsResolver) InterestPoints(ctx context.Context, obj *model.Hotels) ([]*model.InterestPoints, error) {
-	panic(fmt.Errorf("not implemented: InterestPoints - interestPoints"))
+func (r *hotelResolver) InterestPoints(ctx context.Context, obj *model.Hotel, input *model.HotelInterestPointsInput) ([]*model.InterestPoints, error) {
+	return r.HotelsHandler.GetAllInterestPoints(ctx, obj, input)
 }
 
 // Issues is the resolver for the issues field.
-func (r *hotelsResolver) Issues(ctx context.Context, obj *model.Hotels) ([]*model.Issues, error) {
-	panic(fmt.Errorf("not implemented: Issues - issues"))
+func (r *hotelResolver) Issues(ctx context.Context, obj *model.Hotel, input *model.HotelIssuesInput) ([]*model.Issues, error) {
+	return r.HotelsHandler.GetAllIssues(ctx, obj, input)
 }
 
 // Facilities is the resolver for the facilities field.
-func (r *hotelsResolver) Facilities(ctx context.Context, obj *model.Hotels) ([]*model.Facilities, error) {
-	return r.HotelsHandler.GetAllHotelFacilities(ctx, obj)
+func (r *hotelResolver) Facilities(ctx context.Context, obj *model.Hotel, input *model.FacilitiesInput) ([]*model.Facilities, error) {
+	return r.HotelsHandler.GetAllHotelFacilities(ctx, obj, input)
 }
 
 // Rooms is the resolver for the rooms field.
-func (r *hotelsResolver) Rooms(ctx context.Context, obj *model.Hotels) ([]*model.Rooms, error) {
-	return r.HotelsHandler.GetAllHotelRooms(ctx, obj)
+func (r *hotelResolver) Rooms(ctx context.Context, obj *model.Hotel, input *model.HotelRoomsInput) ([]*model.Rooms, error) {
+	return r.HotelsHandler.GetAllHotelRooms(ctx, obj, input)
 }
 
 // Phones is the resolver for the phones field.
-func (r *hotelsResolver) Phones(ctx context.Context, obj *model.Hotels) ([]*model.Phones, error) {
-	return r.HotelsHandler.GetAllHotelPhones(ctx, obj)
+func (r *hotelResolver) Phones(ctx context.Context, obj *model.Hotel, input *model.HotelPhonesInput) ([]*model.Phones, error) {
+	return r.HotelsHandler.GetAllHotelPhones(ctx, obj, input)
 }
 
 // City is the resolver for the city field.
-func (r *hotelsResolver) City(ctx context.Context, obj *model.Hotels) (*model.City, error) {
+func (r *hotelResolver) City(ctx context.Context, obj *model.Hotel) (*model.City, error) {
 	return r.HotelsHandler.GetAllHotelCity(ctx, obj)
 }
 
 // Address is the resolver for the address field.
-func (r *hotelsResolver) Address(ctx context.Context, obj *model.Hotels) (*model.Address, error) {
+func (r *hotelResolver) Address(ctx context.Context, obj *model.Hotel) (*model.Address, error) {
 	return r.HotelsHandler.GetAllHotelAddress(ctx, obj)
 }
 
 // Description is the resolver for the description field.
-func (r *hotelsResolver) Description(ctx context.Context, obj *model.Hotels) (*model.Description, error) {
+func (r *hotelResolver) Description(ctx context.Context, obj *model.Hotel) (*model.Description, error) {
 	return r.HotelsHandler.GetAllHotelDescription(ctx, obj)
 }
 
 // Name is the resolver for the name field.
-func (r *hotelsResolver) Name(ctx context.Context, obj *model.Hotels) (*model.Name, error) {
+func (r *hotelResolver) Name(ctx context.Context, obj *model.Hotel) (*model.Name, error) {
 	return r.HotelsHandler.GetAllHotelName(ctx, obj)
 }
 
 // GetHotels is the resolver for the getHotels field.
 func (r *queryResolver) GetHotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error) {
+	return r.HotelsHandler.GetAllHotels(ctx, input)
+}
+
+// GetHotel is the resolver for the getHotel field.
+func (r *queryResolver) GetHotel(ctx context.Context, input model.HotelInput) (*model.Hotel, error) {
 	return r.HotelsHandler.GetAllHotel(ctx, input)
 }
 
-// Hotels returns generated.HotelsResolver implementation.
-func (r *Resolver) Hotels() generated.HotelsResolver { return &hotelsResolver{r} }
+// RoomStays is the resolver for the roomStays field.
+func (r *roomsResolver) RoomStays(ctx context.Context, obj *model.Rooms, input *model.StaysInput) ([]*model.RoomStays, error) {
+	return r.HotelsHandler.GetAllRoomStays(ctx, obj, input)
+}
 
-type hotelsResolver struct{ *Resolver }
+// RoomFacilities is the resolver for the roomFacilities field.
+func (r *roomsResolver) RoomFacilities(ctx context.Context, obj *model.Rooms, input *model.FacilitiesInput) ([]*model.RoomFacilities, error) {
+	return r.HotelsHandler.GetAllRoomFacilities(ctx, obj, input)
+}
 
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-// func (r *queryResolver) Hotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error) {
-// 	return r.HotelsHandler.GetAllHotel(ctx, input)
-// }
+// RoomImages is the resolver for the roomImages field.
+func (r *roomsResolver) RoomImages(ctx context.Context, obj *model.Rooms, input *model.ImagesInput) ([]*model.Images, error) {
+	return r.HotelsHandler.GetAllRoomImages(ctx, obj, input)
+}
+
+// Hotel returns generated.HotelResolver implementation.
+func (r *Resolver) Hotel() generated.HotelResolver { return &hotelResolver{r} }
+
+// Rooms returns generated.RoomsResolver implementation.
+func (r *Resolver) Rooms() generated.RoomsResolver { return &roomsResolver{r} }
+
+type hotelResolver struct{ *Resolver }
+type roomsResolver struct{ *Resolver }

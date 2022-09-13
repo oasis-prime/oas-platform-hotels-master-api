@@ -1,0 +1,18 @@
+# Hotels
+type PlacesData {
+  places: [Places]
+}
+
+type Places {
+  description: String!
+  placeId: String!
+}
+
+input GetPlacesInput {
+  query: String
+}
+
+# Query
+extend type Query {
+  getPlaces(input: GetPlacesInput!): PlacesData!
+}

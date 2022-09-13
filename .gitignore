@@ -16,6 +16,6 @@
 
 .env
 
-go.sum
-
 tmp/
+
+serviceAccountKey.json

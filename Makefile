@@ -1,4 +1,4 @@
-generate:
+gen:
 	- go get github.com/99designs/gqlgen
 	- go run github.com/99designs/gqlgen generate
 make-env:
@@ -14,8 +14,8 @@ set-mod:
 
 dcup-build:
 	docker build \
-		--build-arg ACCESS_TOKEN=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 \
-		-t oas-platform-hotels-master-api ./build/
+		--build-arg ACCESS_TOKEN=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 \
+		-t oas-platform-hotels-master-api -f ./build/Dockerfile .
 
 dcup-local:
 	docker-compose up

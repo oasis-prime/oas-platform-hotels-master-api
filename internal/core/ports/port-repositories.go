@@ -11,13 +11,9 @@ type MemberRepository interface {
 }
 
 type HotelsRepository interface {
-	GetAll(condition hoteldm.GetAllRequestBasic) (results []*hotelrepo.Hotels, totalRows int64, err error)
-	Get(argID uint) (record *hotelrepo.Hotels, err error)
-	CreateBatch(record *[]hotelrepo.Hotels) (RowsAffected int64, err error)
-	Create(record *hotelrepo.Hotels) (result *hotelrepo.Hotels, RowsAffected int64, err error)
-	Update(argID uint, updated *hotelrepo.Hotels) (result *hotelrepo.Hotels, RowsAffected int64, err error)
-	Delete(argID uint32) (rowsAffected int64, err error)
-	GetByCoordinates(condition hoteldm.GetByCoordinatesRequest) (record []*hotelrepo.Hotels, err error)
+	GetAll(condition hoteldm.GetAllHotelRequest) (results []*hotelrepo.Hotels, totalRows int64, err error)
+	GetByCoordinates(condition hoteldm.GetByCoordinatesRequest) (record []*hotelrepo.Hotels, totalRows int64, err error)
+	Get(condition hoteldm.GetHotelRequest) (record *hotelrepo.Hotels, err error)
 }
 
 type HotelNameRepository interface {
@@ -46,6 +42,14 @@ type HotelFacilityRepository interface {
 
 type HotelRoomsRepository interface {
 	GetAll(condition hoteldm.GetAllHotelRoomsRequest) (results []*hotelrepo.HotelRooms, totalRows int64, err error)
+}
+
+type HotelRoomsFacilitiesRepository interface {
+	GetAll(condition hoteldm.GetAllHotelRoomFacilitiesRequest) (results []*hotelrepo.HotelRoomFacilities, totalRows int64, err error)
+}
+
+type HotelRoomsStayRepository interface {
+	GetAll(condition hoteldm.GetAllHotelRoomStayRequest) (results []*hotelrepo.HotelRoomStay, totalRows int64, err error)
 }
 
 type HotelPhonesRepository interface {

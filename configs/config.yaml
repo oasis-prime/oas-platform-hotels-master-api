@@ -24,3 +24,7 @@ hotelbeds:
   key: HOTELBEDS_KEY
   secret: HOTELBEDS_SECRET
   format: HOTELBEDS_FORMAT
+google:
+  places: GOOGLE_PLACES
+  pubsubkey: GOOGLE_PUBSUBKEY
+  projectid: GOOGLE_PROJECTID

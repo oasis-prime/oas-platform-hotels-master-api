@@ -5,19 +5,19 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
 )
 
-type Service struct {
+type service struct {
 	httpContent ports.HotelbedsHttp
 }
 
 func NewService(
 	httpContent ports.HotelbedsHttp,
-) *Service {
-	return &Service{
+) *service {
+	return &service{
 		httpContent: httpContent,
 	}
 }
 
-func (svc *Service) AvailabilityHotelbeds(condition *hotelbedsdm.AvailabilityRequest) (res *hotelbedsdm.AvailabilityResponse, err error) {
+func (svc *service) AvailabilityHotelbeds(condition *hotelbedsdm.AvailabilityRequest) (res *hotelbedsdm.AvailabilityResponse, err error) {
 	res, err = svc.httpContent.GetAvailability(condition)
 	return res, err
 }
