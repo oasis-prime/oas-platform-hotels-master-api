@@ -295,6 +295,36 @@ func (h *Handler) GetAllHotelPhones(
 	}
 
 	display := []*model.Phones{}
+	var code uint = 0
+	if obj.Code != nil {
+		code = uint(*obj.Code)
+	}
+
+	hotelType := htenums.HotelTypes(obj.Type)
+
+	results, _, err := h.servHotels.GetHotelPhones(hoteldm.GetAllHotelPhoneRequest{
+		HotelCode: &code,
+		HotelType: &hotelType,
+		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
+			Offset:   input.Offset,
+			Limit:    input.Limit,
+			IsOffset: true,
+		},
+	})
+
+	if err != nil {
+		logrus.Error(err)
+		return nil, nil
+	}
+
+	if len(results) > 0 {
+		for _, n := range results {
+			display = append(display, &model.Phones{
+				PhoneNumber: &n.PhoneNumber,
+				PhoneType:   &n.PhoneType,
+			})
+		}
+	}
 
 	return display, nil
 }
@@ -308,6 +338,35 @@ func (h *Handler) GetAllHotelCity(
 	}
 
 	display := &model.City{}
+	var code uint = 0
+	if obj.Code != nil {
+		code = uint(*obj.Code)
+	}
+
+	hotelType := htenums.HotelTypes(obj.Type)
+
+	results, _, err := h.servHotels.GetCity(hoteldm.GetAllHotelCityRequest{
+		HotelCode: &code,
+		HotelType: &hotelType,
+		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
+			Offset:   0,
+			Limit:    1,
+			IsOffset: true,
+		},
+	})
+
+	if err != nil {
+		logrus.Error(err)
+		return nil, nil
+	}
+
+	if len(results) > 0 {
+		for _, n := range results {
+			display = &model.City{
+				Content: &n.Content,
+			}
+		}
+	}
 
 	return display, nil
 }
@@ -321,6 +380,38 @@ func (h *Handler) GetAllHotelAddress(
 	}
 
 	display := &model.Address{}
+
+	var code uint = 0
+	if obj.Code != nil {
+		code = uint(*obj.Code)
+	}
+
+	hotelType := htenums.HotelTypes(obj.Type)
+
+	results, _, err := h.servHotels.GetHotelAddress(hoteldm.GetAllHotelAddressRequest{
+		HotelType: &hotelType,
+		HotelCode: &code,
+		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
+			Offset:   0,
+			Limit:    1,
+			IsOffset: true,
+		},
+	})
+
+	if err != nil {
+		logrus.Error(err)
+		return nil, nil
+	}
+
+	if len(results) > 0 {
+		for _, n := range results {
+			display = &model.Address{
+				Content: &n.Content,
+				Street:  &n.Street,
+				Number:  &n.Number,
+			}
+		}
+	}
 
 	return display, nil
 }
@@ -340,7 +431,6 @@ func (h *Handler) GetAllHotelDescription(
 
 	hotelType := htenums.HotelTypes(obj.Type)
 	languageType := langenums.Language(obj.Language)
-	// var language langenums.Language
 
 	hotelDes, _, err := h.servHotels.GetHotelDescription(hoteldm.GetAllHotelDescriptionRequest{
 		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
