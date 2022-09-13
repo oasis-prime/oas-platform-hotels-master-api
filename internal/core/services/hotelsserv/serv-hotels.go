@@ -2,6 +2,7 @@ package hotelsserv
 
 import (
 	"github.com/oasis-prime/oas-platform-core/domain/hoteldm"
+	"github.com/oasis-prime/oas-platform-core/repositories/enums/htenums"
 	"github.com/oasis-prime/oas-platform-core/repositories/enums/langenums"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
@@ -56,7 +57,7 @@ func NewService(
 	}
 }
 
-func (svc *service) GetHotel(
+func (svc *service) GetHotels(
 	input model.HotelsInput,
 ) (record []*hotelrepo.Hotels, totalRows int64, err error) {
 	pageSize := input.Pagination.PageSize
@@ -100,6 +101,17 @@ func (svc *service) GetHotel(
 	}
 
 	return nil, 0, nil
+}
+
+func (svc *service) GetHotel(
+	input model.HotelInput,
+) (record *hotelrepo.Hotels, err error) {
+	condition := hoteldm.GetHotelRequest{
+		Code:     uint(input.Code),
+		Type:     htenums.Hotelbeds,
+		Language: langenums.Language(input.Language),
+	}
+	return svc.repoHotels.Get(condition)
 }
 
 func (svc *service) GetHotelName(

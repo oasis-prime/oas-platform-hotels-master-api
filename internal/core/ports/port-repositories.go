@@ -13,6 +13,7 @@ type MemberRepository interface {
 type HotelsRepository interface {
 	GetAll(condition hoteldm.GetAllHotelRequest) (results []*hotelrepo.Hotels, totalRows int64, err error)
 	GetByCoordinates(condition hoteldm.GetByCoordinatesRequest) (record []*hotelrepo.Hotels, totalRows int64, err error)
+	Get(condition hoteldm.GetHotelRequest) (record *hotelrepo.Hotels, err error)
 }
 
 type HotelNameRepository interface {

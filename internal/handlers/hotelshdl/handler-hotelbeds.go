@@ -26,22 +26,22 @@ func NewHandler(
 	}
 }
 
-func (h *Handler) GetAllHotel(
+func (h *Handler) GetAllHotels(
 	ctx context.Context,
 	input model.HotelsInput,
 ) (display *model.HotelsData, err error) {
 	var hotelsRepo []*hotelrepo.Hotels
 
-	hotelsRepo, total, err := h.servHotels.GetHotel(input)
+	hotelsRepo, total, err := h.servHotels.GetHotels(input)
 
 	if err != nil {
 		return nil, fmt.Errorf("")
 	}
 
-	var hotels []*model.Hotels
+	var hotels []*model.Hotel
 
 	for _, hotel := range hotelsRepo {
-		var h model.Hotels
+		var h model.Hotel
 		copier.Copy(&h, &hotel)
 		h.Language = input.Language
 		hotels = append(hotels, &h)
@@ -59,9 +59,21 @@ func (h *Handler) GetAllHotel(
 	return display, nil
 }
 
+func (h *Handler) GetAllHotel(ctx context.Context, input model.HotelInput) (*model.Hotel, error) {
+	display := &model.Hotel{}
+	hotel, err := h.servHotels.GetHotel(input)
+	if err != nil {
+		return nil, fmt.Errorf("Not Found")
+	}
+
+	copier.Copy(&display, &hotel)
+
+	return display, nil
+}
+
 func (h *Handler) GetAllHotelName(
 	ctx context.Context,
-	obj *model.Hotels,
+	obj *model.Hotel,
 ) (display *model.Name, err error) {
 	if obj == nil {
 		return nil, nil
@@ -113,7 +125,7 @@ func (h *Handler) GetAllHotelName(
 
 func (h *Handler) GetAllHotelImages(
 	ctx context.Context,
-	obj *model.Hotels,
+	obj *model.Hotel,
 	input *model.ImagesInput,
 ) ([]*model.Images, error) {
 	if obj == nil {
@@ -167,7 +179,7 @@ func (h *Handler) GetAllHotelImages(
 
 func (h *Handler) GetAllHotelFacilities(
 	ctx context.Context,
-	obj *model.Hotels,
+	obj *model.Hotel,
 	input *model.FacilitiesInput,
 ) ([]*model.Facilities, error) {
 	if obj == nil {
@@ -225,7 +237,7 @@ func (h *Handler) GetAllHotelFacilities(
 
 func (h *Handler) GetAllHotelRooms(
 	ctx context.Context,
-	obj *model.Hotels,
+	obj *model.Hotel,
 	input *model.HotelRoomsInput,
 ) ([]*model.Rooms, error) {
 	if obj == nil {
@@ -275,7 +287,7 @@ func (h *Handler) GetAllHotelRooms(
 
 func (h *Handler) GetAllHotelPhones(
 	ctx context.Context,
-	obj *model.Hotels,
+	obj *model.Hotel,
 	input *model.HotelPhonesInput,
 ) ([]*model.Phones, error) {
 	if obj == nil {
@@ -289,7 +301,7 @@ func (h *Handler) GetAllHotelPhones(
 
 func (h *Handler) GetAllHotelCity(
 	ctx context.Context,
-	obj *model.Hotels,
+	obj *model.Hotel,
 ) (*model.City, error) {
 	if obj == nil {
 		return nil, nil
@@ -302,7 +314,7 @@ func (h *Handler) GetAllHotelCity(
 
 func (h *Handler) GetAllHotelAddress(
 	ctx context.Context,
-	obj *model.Hotels,
+	obj *model.Hotel,
 ) (*model.Address, error) {
 	if obj == nil {
 		return nil, nil
@@ -315,7 +327,7 @@ func (h *Handler) GetAllHotelAddress(
 
 func (h *Handler) GetAllHotelDescription(
 	ctx context.Context,
-	obj *model.Hotels,
+	obj *model.Hotel,
 ) (display *model.Description, err error) {
 	if obj == nil {
 		return nil, nil
@@ -367,7 +379,7 @@ func (h *Handler) GetAllHotelDescription(
 
 func (h *Handler) GetAllInterestPoints(
 	ctx context.Context,
-	obj *model.Hotels,
+	obj *model.Hotel,
 	input *model.HotelInterestPointsInput,
 ) ([]*model.InterestPoints, error) {
 	if obj == nil {
@@ -381,7 +393,7 @@ func (h *Handler) GetAllInterestPoints(
 
 func (h *Handler) GetAllIssues(
 	ctx context.Context,
-	obj *model.Hotels,
+	obj *model.Hotel,
 	input *model.HotelIssuesInput,
 ) ([]*model.Issues, error) {
 	if obj == nil {

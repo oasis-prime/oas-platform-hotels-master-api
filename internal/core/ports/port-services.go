@@ -17,7 +17,8 @@ type HotelbedsService interface {
 }
 
 type HotelsService interface {
-	GetHotel(input model.HotelsInput) (record []*hotelrepo.Hotels, totalRows int64, err error)
+	GetHotels(input model.HotelsInput) (record []*hotelrepo.Hotels, totalRows int64, err error)
+	GetHotel(input model.HotelInput) (record *hotelrepo.Hotels, err error)
 	GetHotelName(condition hoteldm.GetAllHotelNameRequest) (results []*hotelrepo.HotelName, totalRows int64, err error)
 	GetHotelImages(condition hoteldm.GetAllHotelImagesRequest) (results []*hotelrepo.HotelImages, totalRows int64, err error)
 	GetHotelFacility(condition hoteldm.GetAllHotelFacilityRequest) (results []*hotelrepo.HotelFacility, totalRows int64, err error)

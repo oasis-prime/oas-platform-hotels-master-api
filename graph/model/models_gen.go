@@ -137,27 +137,7 @@ type GetPlacesInput struct {
 	Query *string `json:"query"`
 }
 
-type HotelInterestPointsInput struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
-}
-
-type HotelIssuesInput struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
-}
-
-type HotelPhonesInput struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
-}
-
-type HotelRoomsInput struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
-}
-
-type Hotels struct {
+type Hotel struct {
 	HotelName             *string           `json:"hotelName"`
 	Language              LanguageEnum      `json:"language"`
 	Code                  *int              `json:"code"`
@@ -192,8 +172,33 @@ type Hotels struct {
 	Name                  *Name             `json:"name"`
 }
 
+type HotelInput struct {
+	Language LanguageEnum `json:"language"`
+	Code     int          `json:"code"`
+}
+
+type HotelInterestPointsInput struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
+}
+
+type HotelIssuesInput struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
+}
+
+type HotelPhonesInput struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
+}
+
+type HotelRoomsInput struct {
+	Offset int `json:"offset"`
+	Limit  int `json:"limit"`
+}
+
 type HotelsData struct {
-	Hotels     []*Hotels       `json:"hotels"`
+	Hotels     []*Hotel        `json:"hotels"`
 	Pagination *PaginationType `json:"pagination"`
 }
 
@@ -208,7 +213,6 @@ type HotelsInput struct {
 	Pagination  *PaginationInput        `json:"pagination"`
 	Geolocation *HotelsGeolocationInput `json:"geolocation"`
 	Keywords    *HotelsKeywordsInput    `json:"keywords"`
-	ID          *int                    `json:"id"`
 	Occupancies *HotelsOccupanciesInput `json:"occupancies"`
 }
 

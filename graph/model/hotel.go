@@ -2,10 +2,10 @@ package model
 
 import "github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
 
-func (h *Hotels) ParseModel(record hotelrepo.Hotels) error {
+func (h *Hotel) ParseModel(record hotelrepo.Hotels) error {
 	code := int(record.Code)
 
-	h = &Hotels{
+	h = &Hotel{
 		Code:        &code,
 		CountryCode: &record.CountryCode,
 	}

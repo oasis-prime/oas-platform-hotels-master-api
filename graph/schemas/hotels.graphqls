@@ -1,5 +1,5 @@
 # Hotels
-type Hotels {
+type Hotel {
   hotelName: String
   language: LanguageEnum!
   code: Int
@@ -139,7 +139,7 @@ type Name {
 }
 
 type HotelsData {
-  hotels: [Hotels!]!
+  hotels: [Hotel!]!
   pagination: PaginationType!
 }
 
@@ -153,8 +153,12 @@ input HotelsInput {
   pagination: PaginationInput!
   geolocation: HotelsGeolocationInput
   keywords: HotelsKeywordsInput
-  id: Int
   occupancies: HotelsOccupanciesInput
+}
+
+input HotelInput {
+  language: LanguageEnum!
+  code: Int!
 }
 
 input HotelsOccupanciesInput {
@@ -213,4 +217,5 @@ input HotelsGeolocationInput {
 # Query
 extend type Query {
   getHotels(input: HotelsInput!): HotelsData!
+  getHotel(input: HotelInput!): Hotel!
 }
