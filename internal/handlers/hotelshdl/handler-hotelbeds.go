@@ -294,6 +294,13 @@ func (h *Handler) GetAllHotelPhones(
 		return nil, nil
 	}
 
+	if input == nil {
+		input = &model.HotelPhonesInput{
+			Offset: 0,
+			Limit:  20,
+		}
+	}
+
 	display := []*model.Phones{}
 	var code uint = 0
 	if obj.Code != nil {
@@ -476,6 +483,13 @@ func (h *Handler) GetAllInterestPoints(
 		return nil, nil
 	}
 
+	if input == nil {
+		input = &model.HotelInterestPointsInput{
+			Offset: 0,
+			Limit:  20,
+		}
+	}
+
 	display := []*model.InterestPoints{}
 
 	return display, nil
@@ -488,6 +502,13 @@ func (h *Handler) GetAllIssues(
 ) ([]*model.Issues, error) {
 	if obj == nil {
 		return nil, nil
+	}
+
+	if input == nil {
+		input = &model.HotelIssuesInput{
+			Offset: 0,
+			Limit:  20,
+		}
 	}
 
 	display := []*model.Issues{}
@@ -504,6 +525,13 @@ func (h *Handler) GetAllRoomStays(
 		return nil, nil
 	}
 
+	if input == nil {
+		input = &model.StaysInput{
+			Offset: 0,
+			Limit:  20,
+		}
+	}
+
 	display := []*model.RoomStays{}
 
 	return display, nil
@@ -516,6 +544,13 @@ func (h *Handler) GetAllRoomFacilities(
 ) ([]*model.RoomFacilities, error) {
 	if obj == nil {
 		return nil, nil
+	}
+
+	if input == nil {
+		input = &model.FacilitiesInput{
+			Offset: 0,
+			Limit:  20,
+		}
 	}
 
 	display := []*model.RoomFacilities{}
@@ -566,6 +601,13 @@ func (h *Handler) GetAllRoomImages(
 ) ([]*model.Images, error) {
 	if obj == nil {
 		return nil, nil
+	}
+
+	if input == nil {
+		input = &model.ImagesInput{
+			Offset: 0,
+			Limit:  20,
+		}
 	}
 
 	display := []*model.Images{}
