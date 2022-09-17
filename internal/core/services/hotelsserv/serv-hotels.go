@@ -179,3 +179,9 @@ func (svc *service) GetRoomsStay(
 ) (results []*hotelrepo.HotelRoomStay, totalRows int64, err error) {
 	return svc.repoHotelRoomsStay.GetAll(condition)
 }
+
+func (svc *service) GetCity(
+	condition hoteldm.GetAllHotelCityRequest,
+) (results []*hotelrepo.HotelCity, totalRows int64, err error) {
+	return svc.repoHotelCity.GetAll(condition)
+}

@@ -292,6 +292,7 @@ type HotelResolver interface {
 	City(ctx context.Context, obj *model.Hotel) (*model.City, error)
 	Address(ctx context.Context, obj *model.Hotel) (*model.Address, error)
 
+	Coordinates(ctx context.Context, obj *model.Hotel) (*model.Coordinates, error)
 	Description(ctx context.Context, obj *model.Hotel) (*model.Description, error)
 	Name(ctx context.Context, obj *model.Hotel) (*model.Name, error)
 }
@@ -1849,11 +1850,14 @@ input FacilitiesInput {
   groupCode: Int!
   offset: Int!
   limit: Int!
+  language: LanguageEnum!
 }
 
 input HotelRoomsInput {
-  offset: Int!
-  limit: Int!
+  roomCode: [String!]
+  offset: Int
+  limit: Int
+  language: LanguageEnum!
 }
 
 input HotelPhonesInput {
@@ -5767,7 +5771,7 @@ func (ec *executionContext) _Hotel_coordinates(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Coordinates, nil
+		return ec.resolvers.Hotel().Coordinates(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5785,8 +5789,8 @@ func (ec *executionContext) fieldContext_Hotel_coordinates(ctx context.Context, 
 	fc = &graphql.FieldContext{
 		Object:     "Hotel",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "longitude":
@@ -11028,7 +11032,7 @@ func (ec *executionContext) unmarshalInputFacilitiesInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"groupCode", "offset", "limit"}
+	fieldsInOrder := [...]string{"groupCode", "offset", "limit", "language"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -11056,6 +11060,14 @@ func (ec *executionContext) unmarshalInputFacilitiesInput(ctx context.Context, o
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
 			it.Limit, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "language":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("language"))
+			it.Language, err = ec.unmarshalNLanguageEnum2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐLanguageEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -11244,18 +11256,26 @@ func (ec *executionContext) unmarshalInputHotelRoomsInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"offset", "limit"}
+	fieldsInOrder := [...]string{"roomCode", "offset", "limit", "language"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
+		case "roomCode":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roomCode"))
+			it.RoomCode, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "offset":
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
-			it.Offset, err = ec.unmarshalNInt2int(ctx, v)
+			it.Offset, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -11263,7 +11283,15 @@ func (ec *executionContext) unmarshalInputHotelRoomsInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
-			it.Limit, err = ec.unmarshalNInt2int(ctx, v)
+			it.Limit, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "language":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("language"))
+			it.Language, err = ec.unmarshalNLanguageEnum2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐLanguageEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -12320,9 +12348,22 @@ func (ec *executionContext) _Hotel(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = ec._Hotel_boardCodes(ctx, field, obj)
 
 		case "coordinates":
+			field := field
 
-			out.Values[i] = ec._Hotel_coordinates(ctx, field, obj)
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Hotel_coordinates(ctx, field, obj)
+				return res
+			}
 
+			out.Concurrently(i, func() graphql.Marshaler {
+				return innerFunc(ctx)
+
+			})
 		case "description":
 			field := field
 
@@ -14996,6 +15037,44 @@ func (ec *executionContext) unmarshalOString2string(ctx context.Context, v inter
 func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	res := graphql.MarshalString(v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
