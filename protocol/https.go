@@ -1,7 +1,6 @@
 package protocol
 
 import (
-	"github.com/joho/godotenv"
 	"github.com/oasis-prime/oas-platform-core/http/hotelbedshttp"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
@@ -111,7 +110,6 @@ func playgroundHandler() gin.HandlerFunc {
 }
 
 func ServeHTTP() error {
-	godotenv.Load()
 	r := gin.Default()
 	configs.ConfigsInit()
 	con = configs.GetConfig()

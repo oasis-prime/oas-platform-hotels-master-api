@@ -55,14 +55,7 @@ models:
       facilities:
         resolver: true
       rooms:
-        # roomStays:
-        #   resolver: true
-        # roomFacilities:
-        #   resolver: true
-        # images:
-        #   resolver: true
         resolver: true
-
       phones:
         resolver: true
       city:
@@ -72,6 +65,8 @@ models:
       description:
         resolver: true
       name:
+        resolver: true
+      coordinates:
         resolver: true
   Rooms:
     fields:

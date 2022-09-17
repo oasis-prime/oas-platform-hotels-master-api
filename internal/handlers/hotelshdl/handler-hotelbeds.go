@@ -2,6 +2,7 @@ package hotelshdl
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/jinzhu/copier"
@@ -105,7 +106,7 @@ func (h *Handler) GetAllHotelName(
 
 	if len(hotelNames) > 0 {
 		for _, n := range hotelNames {
-			if n.Language == languageType {
+			if n.LanguageCode == languageType {
 				display = &model.Name{
 					Content: &n.Value,
 				}
@@ -207,7 +208,7 @@ func (h *Handler) GetAllHotelFacilities(
 			Limit:     input.Limit,
 			Order:     "order",
 			IsContent: true,
-			Language:  (*langenums.Language)(&obj.Language),
+			Language:  (*langenums.Language)(&input.Language),
 			IsOffset:  true,
 		},
 		HotelCode:         &code,
@@ -240,6 +241,7 @@ func (h *Handler) GetAllHotelRooms(
 	obj *model.Hotel,
 	input *model.HotelRoomsInput,
 ) ([]*model.Rooms, error) {
+	var limit, offset = 20, 0
 	if obj == nil {
 		return nil, nil
 	}
@@ -249,12 +251,23 @@ func (h *Handler) GetAllHotelRooms(
 		code = uint(*obj.Code)
 	}
 
+	if input.Limit == nil {
+		input.Limit = &limit
+	}
+
+	if input.Offset == nil {
+		input.Offset = &offset
+	}
+
 	result, _, err := h.servHotels.GetRooms(hoteldm.GetAllHotelRoomsRequest{
 		HotelCode: &code,
 		HotelType: (*htenums.HotelTypes)(&obj.Type),
 		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
-			Language:  (*langenums.Language)(&obj.Language),
+			Language:  (*langenums.Language)(&input.Language),
 			IsContent: true,
+			Offset:    *input.Offset,
+			Limit:     *input.Limit,
+			IsOffset:  true,
 		},
 	})
 
@@ -359,6 +372,8 @@ func (h *Handler) GetAllHotelCity(
 			Offset:   0,
 			Limit:    1,
 			IsOffset: true,
+			Language: (*langenums.Language)(&obj.Language),
+			Order:    "language_code",
 		},
 	})
 
@@ -367,13 +382,16 @@ func (h *Handler) GetAllHotelCity(
 		return nil, nil
 	}
 
-	if len(results) > 0 {
-		for _, n := range results {
-			display = &model.City{
-				Content: &n.Content,
-			}
+	f, _ := json.Marshal(results)
+	fmt.Println(string(f))
+
+	// if len(results) > 0 {
+	for _, n := range results {
+		display = &model.City{
+			Content: &n.Content,
 		}
 	}
+	// }
 
 	return display, nil
 }
@@ -423,6 +441,10 @@ func (h *Handler) GetAllHotelAddress(
 	return display, nil
 }
 
+func (h *Handler) GetAllHotelCoordinates(ctx context.Context, obj *model.Hotel) (*model.Coordinates, error) {
+	return nil, nil
+}
+
 func (h *Handler) GetAllHotelDescription(
 	ctx context.Context,
 	obj *model.Hotel,
@@ -456,7 +478,7 @@ func (h *Handler) GetAllHotelDescription(
 
 	if len(hotelDes) > 0 {
 		for _, n := range hotelDes {
-			if n.Language == languageType {
+			if n.LanguageCode == languageType {
 				display = &model.Description{
 					Content: &n.Value,
 				}
@@ -483,6 +505,8 @@ func (h *Handler) GetAllInterestPoints(
 		return nil, nil
 	}
 
+	display := []*model.InterestPoints{}
+
 	if input == nil {
 		input = &model.HotelInterestPointsInput{
 			Offset: 0,
@@ -490,7 +514,38 @@ func (h *Handler) GetAllInterestPoints(
 		}
 	}
 
-	display := []*model.InterestPoints{}
+	var code uint = 0
+	if obj.Code != nil {
+		code = uint(*obj.Code)
+	}
+
+	hotelType := htenums.HotelTypes(obj.Type)
+	languageType := langenums.Language(obj.Language)
+
+	hotelInterestPoints, _, err := h.servHotels.GetHotelInterestPoints(hoteldm.GetAllHotelInterestPointsRequest{
+		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
+			Offset:   input.Offset,
+			Limit:    input.Limit,
+			IsOffset: true,
+			Language: &languageType,
+		},
+		HotelCode: &code,
+		HotelType: &hotelType,
+	})
+
+	if err != nil {
+		logrus.Error(err)
+		return nil, nil
+	}
+
+	if len(hotelInterestPoints) > 0 {
+		for _, n := range hotelInterestPoints {
+			d := model.InterestPoints{}
+
+			copier.Copy(&d, &n)
+			display = append(display, &d)
+		}
+	}
 
 	return display, nil
 }
@@ -567,6 +622,7 @@ func (h *Handler) GetAllRoomFacilities(
 			Limit:     input.Limit,
 			IsContent: true,
 			IsOffset:  true,
+			// Language: input.GroupCode,
 		},
 		FacilityGroupCode: &input.GroupCode,
 		RoomCode:          obj.RoomCode,

@@ -128,9 +128,10 @@ type Facilities struct {
 }
 
 type FacilitiesInput struct {
-	GroupCode int `json:"groupCode"`
-	Offset    int `json:"offset"`
-	Limit     int `json:"limit"`
+	GroupCode int          `json:"groupCode"`
+	Offset    int          `json:"offset"`
+	Limit     int          `json:"limit"`
+	Language  LanguageEnum `json:"language"`
 }
 
 type GetPlacesInput struct {
@@ -193,8 +194,10 @@ type HotelPhonesInput struct {
 }
 
 type HotelRoomsInput struct {
-	Offset int `json:"offset"`
-	Limit  int `json:"limit"`
+	RoomCode []string     `json:"roomCode"`
+	Offset   *int         `json:"offset"`
+	Limit    *int         `json:"limit"`
+	Language LanguageEnum `json:"language"`
 }
 
 type HotelsData struct {

@@ -50,6 +50,11 @@ func (r *hotelResolver) Address(ctx context.Context, obj *model.Hotel) (*model.A
 	return r.HotelsHandler.GetAllHotelAddress(ctx, obj)
 }
 
+// Coordinates is the resolver for the coordinates field.
+func (r *hotelResolver) Coordinates(ctx context.Context, obj *model.Hotel) (*model.Coordinates, error) {
+	return r.HotelsHandler.GetAllHotelCoordinates(ctx, obj)
+}
+
 // Description is the resolver for the description field.
 func (r *hotelResolver) Description(ctx context.Context, obj *model.Hotel) (*model.Description, error) {
 	return r.HotelsHandler.GetAllHotelDescription(ctx, obj)

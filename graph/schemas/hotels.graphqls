@@ -192,11 +192,14 @@ input FacilitiesInput {
   groupCode: Int!
   offset: Int!
   limit: Int!
+  language: LanguageEnum!
 }
 
 input HotelRoomsInput {
-  offset: Int!
-  limit: Int!
+  roomCode: [String!]
+  offset: Int
+  limit: Int
+  language: LanguageEnum!
 }
 
 input HotelPhonesInput {
