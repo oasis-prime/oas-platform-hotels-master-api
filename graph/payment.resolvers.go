@@ -9,7 +9,7 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 )
 
-// MemberVerify is the resolver for the memberVerify field.
-func (r *mutationResolver) MemberVerify(ctx context.Context, input model.MemberVerifyEmailInput) (*model.MemberVerifyEmailData, error) {
-	return r.MemberHandler.GetAllHotel(ctx, input)
+// Payment is the resolver for the payment field.
+func (r *mutationResolver) Payment(ctx context.Context, input model.PaymentInput) (*model.PaymentData, error) {
+	return r.PaymentHandler.Payment(ctx, input)
 }

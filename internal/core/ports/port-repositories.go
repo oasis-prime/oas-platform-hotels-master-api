@@ -1,6 +1,7 @@
 package ports
 
 import (
+	"github.com/oasis-prime/oas-platform-core/domain/customerdm"
 	"github.com/oasis-prime/oas-platform-core/domain/hoteldm"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
@@ -8,6 +9,13 @@ import (
 
 type MemberRepository interface {
 	GetAll(page, pagesize int, order string) (results []*customerrepo.CustomerMember, totalRows int64, err error)
+}
+
+type PaymentRepository interface {
+	GetAll(condition customerdm.GetAllPaymentRequest) (results []*customerrepo.CustomerPayment, totalRows int64, err error)
+	Get(argCode uint) (record *customerrepo.CustomerPayment, err error)
+	Create(record *customerrepo.CustomerPayment) (result *customerrepo.CustomerPayment, RowsAffected int64, err error)
+	Update(argCode uint, updated *customerrepo.CustomerPayment) (result *customerrepo.CustomerPayment, RowsAffected int64, err error)
 }
 
 type HotelsRepository interface {

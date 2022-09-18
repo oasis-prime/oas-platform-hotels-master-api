@@ -2,13 +2,11 @@ package hotelbedshdl
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/jinzhu/copier"
 	"github.com/oasis-prime/oas-platform-core/domain/hotelbedsdm"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
-	"github.com/sirupsen/logrus"
 )
 
 type Handler struct {
@@ -24,8 +22,6 @@ func NewHandler(
 }
 
 func (h *Handler) AvailabilityHotel(ctx context.Context, input model.AvailabilityInput) (display *model.AvailabilityData, err error) {
-	// condition := input.ParseToAvailabilityRequest()
-
 	if err != nil {
 		return nil, err
 	}
@@ -35,9 +31,6 @@ func (h *Handler) AvailabilityHotel(ctx context.Context, input model.Availabilit
 	condition := &hotelbedsdm.AvailabilityRequest{}
 
 	copier.CopyWithOption(&condition, &input, copier.Option{IgnoreEmpty: true})
-
-	f, _ := json.Marshal(condition)
-	logrus.Info(string(f))
 
 	response, err := h.servHotelbeds.AvailabilityHotelbeds(condition)
 
@@ -54,4 +47,23 @@ func (h *Handler) AvailabilityHotel(ctx context.Context, input model.Availabilit
 	}
 
 	return display, nil
+}
+
+func (h *Handler) CheckRate(ctx context.Context, input model.CheckRateInput) (*model.CheckRateData, error) {
+	display := model.CheckRateData{}
+
+	result, err := h.servHotelbeds.CheckRate(&hotelbedsdm.CheckRatesRequest{
+		Rooms: []hotelbedsdm.RateKey{
+			{RateKey: input.RateKey},
+		},
+		Language: hotelbedsdm.Language(input.Language),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	copier.Copy(&display, &result.Hotel)
+
+	return &display, nil
 }

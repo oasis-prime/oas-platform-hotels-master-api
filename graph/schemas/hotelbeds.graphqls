@@ -56,8 +56,85 @@ type AvailabilityCancellationPolicies {
   from: String
 }
 
+# checkRate
+
+type RaModificationPolicies {
+  cancellation: Boolean
+  modification: Boolean
+}
+
+type RaOffers {
+  code: String
+  name: String
+  amount: String
+}
+
+type RaRateDiscounts {
+  code: String
+  name: String
+  amount: String
+}
+
+type RaRateBreakDown {
+  rateDiscounts: [RaRateDiscounts]
+}
+
+type RaCancellationPolicies {
+  amount: String
+  from: String
+}
+
+type RaRates {
+  rateKey: String
+  rateClass: String
+  rateType: String
+  net: String
+  discount: String
+  discountPCT: String
+  sellingRate: String
+  allotment: Int
+  rateComments: String
+  paymentType: String
+  packaging: Boolean
+  boardCode: String
+  boardName: String
+  rooms: Int
+  adults: Int
+  children: Int
+  offers: [RaOffers]
+  rateBreakDown: RaRateBreakDown
+  cancellationPolicies: [RaCancellationPolicies]
+}
+
+type RaRooms {
+  code: String
+  name: String
+  rates: [RaRates]
+}
+
+type CheckRateData {
+  checkOut: String
+  checkIn: String
+  code: Int
+  name: String
+  categoryCode: String
+  categoryName: String
+  destinationCode: String
+  destinationName: String
+  zoneCode: Int
+  zoneName: String
+  latitude: String
+  longitude: String
+  totalSellingRate: String
+  totalNet: String
+  currency: String
+  paymentDataRequired: Boolean
+  modificationPolicies: RaModificationPolicies
+  rooms: [RaRooms]
+}
+
 # GraphQl schema Input
-#
+# Availability
 
 input AvailabilityInput {
   hotels: AvailabilityHotelInput!
@@ -90,7 +167,19 @@ input AvailabilityFilterInput {
   maxRatesPerRoom: Int
 }
 
+# GraphQl schema Input
+# CheckRate
+
+input CheckRateInput {
+  rateKey: String!
+  language: LanguageEnum!
+}
+
+# Types with identical fields:
+# Offers RateDiscounts
+
 # Query
 extend type Query {
   getAvailability(input: AvailabilityInput!): AvailabilityData!
+  checkRate(input: CheckRateInput!): CheckRateData!
 }

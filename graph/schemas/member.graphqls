@@ -8,7 +8,7 @@ type MemberVerifyEmailData {
 }
 
 # Mutation
-type Mutation {
+extend type Mutation {
   memberVerify(input: MemberVerifyEmailInput!): MemberVerifyEmailData!
 }
 

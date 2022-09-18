@@ -45,6 +45,13 @@ type hotelbeds struct {
 	Format         string `mapstructure:"format"`
 }
 
+type chillpay struct {
+	MD5          string `mapstructure:"md5"`
+	Merchantcode string `mapstructure:"merchantcode"`
+	Apikey       string `mapstructure:"apikey"`
+	Url          string `mapstructure:"url"`
+}
+
 type Config struct {
 	App       app       `mapstructure:"app"`
 	Database  database  `mapstructure:"database"`
@@ -52,4 +59,5 @@ type Config struct {
 	Jwt       jwt       `mapstructure:"jwt"`
 	Hotelbeds hotelbeds `mapstructure:"hotelbeds"`
 	Google    google    `mapstructure:"google"`
+	Chillpay  chillpay  `mapstructure:"chillpay"`
 }
