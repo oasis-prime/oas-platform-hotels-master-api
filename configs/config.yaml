@@ -28,3 +28,8 @@ google:
   places: GOOGLE_PLACES
   pubsubkey: GOOGLE_PUBSUBKEY
   projectid: GOOGLE_PROJECTID
+chillpay:
+  md5: CHILLPAY_MD5
+  merchantcode: CHILLPAY_MERCHANTCODE
+  apikey: CHILLPAY_APIKEY
+  url: CHILLPAY_URL

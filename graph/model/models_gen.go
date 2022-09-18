@@ -96,12 +96,154 @@ type AvailabilityStayInput struct {
 	CheckOut string `json:"checkOut"`
 }
 
+type BCancellationPolicies struct {
+	Amount *string `json:"amount"`
+	From   *string `json:"from"`
+}
+
+type BHolder struct {
+	Name    *string `json:"name"`
+	Surname *string `json:"surname"`
+}
+
+type BHotel struct {
+	CheckOut           *string    `json:"checkOut"`
+	CheckIn            *string    `json:"checkIn"`
+	Code               *int       `json:"code"`
+	Name               *string    `json:"name"`
+	CategoryCode       *string    `json:"categoryCode"`
+	CategoryName       *string    `json:"categoryName"`
+	DestinationCode    *string    `json:"destinationCode"`
+	DestinationName    *string    `json:"destinationName"`
+	ZoneCode           *int       `json:"zoneCode"`
+	ZoneName           *string    `json:"zoneName"`
+	Latitude           *string    `json:"latitude"`
+	Longitude          *string    `json:"longitude"`
+	TotalSellingRate   *string    `json:"totalSellingRate"`
+	TotalNet           *string    `json:"totalNet"`
+	Currency           *string    `json:"currency"`
+	CancellationAmount *int       `json:"cancellationAmount"`
+	Supplier           *BSupplier `json:"supplier"`
+	Rooms              []*BRooms  `json:"rooms"`
+}
+
+type BInvoiceCompany struct {
+	Code               *string `json:"code"`
+	Company            *string `json:"company"`
+	RegistrationNumber *string `json:"registrationNumber"`
+}
+
+type BModificationPolicies struct {
+	Cancellation *bool `json:"cancellation"`
+	Modification *bool `json:"modification"`
+}
+
+type BPaxes struct {
+	RoomID  *int    `json:"roomId"`
+	Type    *string `json:"type"`
+	Name    *string `json:"name"`
+	Surname *string `json:"surname"`
+}
+
+type BRates struct {
+	RateClass            *string                  `json:"rateClass"`
+	Net                  *string                  `json:"net"`
+	Discount             *string                  `json:"discount"`
+	DiscountPct          *string                  `json:"discountPCT"`
+	SellingRate          *string                  `json:"sellingRate"`
+	RateComments         *string                  `json:"rateComments"`
+	PaymentType          *string                  `json:"paymentType"`
+	Packaging            *bool                    `json:"packaging"`
+	BoardCode            *string                  `json:"boardCode"`
+	BoardName            *string                  `json:"boardName"`
+	Rooms                *int                     `json:"rooms"`
+	Adults               *int                     `json:"adults"`
+	Children             *int                     `json:"children"`
+	CancellationPolicies []*BCancellationPolicies `json:"cancellationPolicies"`
+}
+
+type BRooms struct {
+	Status *string   `json:"status"`
+	ID     *int      `json:"id"`
+	Code   *string   `json:"code"`
+	Name   *string   `json:"name"`
+	Rates  []*BRates `json:"rates"`
+	Paxes  []*BPaxes `json:"paxes"`
+}
+
+type BSupplier struct {
+	Name      *string `json:"name"`
+	VatNumber *string `json:"vatNumber"`
+}
+
+type BoHolderInput struct {
+	Name    *string `json:"name"`
+	Surname *string `json:"surname"`
+}
+
+type BoPaxesInput struct {
+	RoomID  *int    `json:"roomId"`
+	Type    *string `json:"type"`
+	Name    *string `json:"name"`
+	Surname *string `json:"surname"`
+}
+
+type BoRoomsInput struct {
+	RateKey *string         `json:"rateKey"`
+	Paxes   []*BoPaxesInput `json:"paxes"`
+}
+
 type BookingData struct {
-	ID *string `json:"id"`
+	Reference             *string                `json:"reference"`
+	CancellationReference *string                `json:"cancellationReference"`
+	ClientReference       *string                `json:"clientReference"`
+	CreationDate          *string                `json:"creationDate"`
+	Status                *string                `json:"status"`
+	CreationUser          *string                `json:"creationUser"`
+	Remark                *string                `json:"remark"`
+	TotalSellingRate      *int                   `json:"totalSellingRate"`
+	TotalNet              *int                   `json:"totalNet"`
+	PendingAmount         *int                   `json:"pendingAmount"`
+	Currency              *string                `json:"currency"`
+	InvoiceCompany        *BInvoiceCompany       `json:"invoiceCompany"`
+	Hotel                 *BHotel                `json:"hotel"`
+	Holder                *BHolder               `json:"holder"`
+	ModificationPolicies  *BModificationPolicies `json:"modificationPolicies"`
 }
 
 type BookingInput struct {
-	ID *string `json:"id"`
+	ClientReference *string         `json:"clientReference"`
+	Remark          *string         `json:"remark"`
+	Tolerance       *int            `json:"tolerance"`
+	Rooms           []*BoRoomsInput `json:"rooms"`
+	Holder          *BoHolderInput  `json:"holder"`
+	Language        LanguageEnum    `json:"language"`
+}
+
+type CheckRateData struct {
+	CheckOut             *string                 `json:"checkOut"`
+	CheckIn              *string                 `json:"checkIn"`
+	Code                 *int                    `json:"code"`
+	Name                 *string                 `json:"name"`
+	CategoryCode         *string                 `json:"categoryCode"`
+	CategoryName         *string                 `json:"categoryName"`
+	DestinationCode      *string                 `json:"destinationCode"`
+	DestinationName      *string                 `json:"destinationName"`
+	ZoneCode             *int                    `json:"zoneCode"`
+	ZoneName             *string                 `json:"zoneName"`
+	Latitude             *string                 `json:"latitude"`
+	Longitude            *string                 `json:"longitude"`
+	TotalSellingRate     *string                 `json:"totalSellingRate"`
+	TotalNet             *string                 `json:"totalNet"`
+	Currency             *string                 `json:"currency"`
+	PaymentDataRequired  *bool                   `json:"paymentDataRequired"`
+	ModificationPolicies *RaModificationPolicies `json:"modificationPolicies"`
+	Rooms                []*RaRooms              `json:"rooms"`
+}
+
+type CheckRateInput struct {
+	RateKey  string       `json:"rateKey"`
+	Language LanguageEnum `json:"language"`
 }
 
 type City struct {
@@ -132,6 +274,11 @@ type FacilitiesInput struct {
 	Offset    int          `json:"offset"`
 	Limit     int          `json:"limit"`
 	Language  LanguageEnum `json:"language"`
+}
+
+type GetBookingInput struct {
+	BookingReference *string      `json:"BookingReference"`
+	Language         LanguageEnum `json:"language"`
 }
 
 type GetPlacesInput struct {
@@ -288,6 +435,20 @@ type PaginationType struct {
 	Total    int `json:"total"`
 }
 
+type PaymentData struct {
+	OrderNumber string `json:"orderNumber"`
+	PaymentURL  string `json:"paymentUrl"`
+	QRImage     string `json:"qrImage"`
+}
+
+type PaymentInput struct {
+	Email       string `json:"email"`
+	Name        string `json:"name"`
+	Surname     string `json:"surname"`
+	PhoneNumber string `json:"phoneNumber"`
+	RateKey     string `json:"rateKey"`
+}
+
 type Phones struct {
 	PhoneNumber *string `json:"phoneNumber"`
 	PhoneType   *string `json:"phoneType"`
@@ -300,6 +461,60 @@ type Places struct {
 
 type PlacesData struct {
 	Places []*Places `json:"places"`
+}
+
+type RaCancellationPolicies struct {
+	Amount *string `json:"amount"`
+	From   *string `json:"from"`
+}
+
+type RaModificationPolicies struct {
+	Cancellation *bool `json:"cancellation"`
+	Modification *bool `json:"modification"`
+}
+
+type RaOffers struct {
+	Code   *string `json:"code"`
+	Name   *string `json:"name"`
+	Amount *string `json:"amount"`
+}
+
+type RaRateBreakDown struct {
+	RateDiscounts []*RaRateDiscounts `json:"rateDiscounts"`
+}
+
+type RaRateDiscounts struct {
+	Code   *string `json:"code"`
+	Name   *string `json:"name"`
+	Amount *string `json:"amount"`
+}
+
+type RaRates struct {
+	RateKey              *string                   `json:"rateKey"`
+	RateClass            *string                   `json:"rateClass"`
+	RateType             *string                   `json:"rateType"`
+	Net                  *string                   `json:"net"`
+	Discount             *string                   `json:"discount"`
+	DiscountPct          *string                   `json:"discountPCT"`
+	SellingRate          *string                   `json:"sellingRate"`
+	Allotment            *int                      `json:"allotment"`
+	RateComments         *string                   `json:"rateComments"`
+	PaymentType          *string                   `json:"paymentType"`
+	Packaging            *bool                     `json:"packaging"`
+	BoardCode            *string                   `json:"boardCode"`
+	BoardName            *string                   `json:"boardName"`
+	Rooms                *int                      `json:"rooms"`
+	Adults               *int                      `json:"adults"`
+	Children             *int                      `json:"children"`
+	Offers               []*RaOffers               `json:"offers"`
+	RateBreakDown        *RaRateBreakDown          `json:"rateBreakDown"`
+	CancellationPolicies []*RaCancellationPolicies `json:"cancellationPolicies"`
+}
+
+type RaRooms struct {
+	Code  *string    `json:"code"`
+	Name  *string    `json:"name"`
+	Rates []*RaRates `json:"rates"`
 }
 
 type RoomFacilities struct {

@@ -1,8 +1,10 @@
 package ports
 
 import (
+	"github.com/oasis-prime/oas-platform-core/domain/chillpaydm"
 	"github.com/oasis-prime/oas-platform-core/domain/hotelbedsdm"
 	"github.com/oasis-prime/oas-platform-core/domain/hoteldm"
+	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/domain/googledm"
@@ -12,8 +14,14 @@ type MemberService interface {
 	PublisherVerifyEmail() (err error)
 }
 
+type PaymentService interface {
+	Generate(condition *chillpaydm.PaylinkGenerateRequest) (response *chillpaydm.PaylinkGenerateResponse, err error)
+	CreatePayment(record *customerrepo.CustomerPayment) (result *customerrepo.CustomerPayment, err error)
+}
+
 type HotelbedsService interface {
 	AvailabilityHotelbeds(condition *hotelbedsdm.AvailabilityRequest) (res *hotelbedsdm.AvailabilityResponse, err error)
+	CheckRate(condition *hotelbedsdm.CheckRatesRequest) (res *hotelbedsdm.CheckRatesResponse, err error)
 }
 
 type HotelsService interface {

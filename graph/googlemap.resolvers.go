@@ -6,7 +6,6 @@ package graph
 import (
 	"context"
 
-	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 )
 
@@ -14,8 +13,3 @@ import (
 func (r *queryResolver) GetPlaces(ctx context.Context, input model.GetPlacesInput) (*model.PlacesData, error) {
 	return r.GoogleHandler.GetPlaces(ctx, input)
 }
-
-// Query returns generated.QueryResolver implementation.
-func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
-
-type queryResolver struct{ *Resolver }

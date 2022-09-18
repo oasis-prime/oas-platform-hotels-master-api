@@ -13,3 +13,8 @@ import (
 func (r *queryResolver) GetAvailability(ctx context.Context, input model.AvailabilityInput) (*model.AvailabilityData, error) {
 	return r.HotelbedsHandler.AvailabilityHotel(ctx, input)
 }
+
+// CheckRate is the resolver for the checkRate field.
+func (r *queryResolver) CheckRate(ctx context.Context, input model.CheckRateInput) (*model.CheckRateData, error) {
+	return r.HotelbedsHandler.CheckRate(ctx, input)
+}

@@ -1,8 +1,6 @@
 name: Build and Deploy to Cloud Run
 
 on:
-  push:
-    branches: ["main"]
   pull_request:
     branches: ["main"]
 
@@ -63,6 +61,13 @@ jobs:
             HOTELBEDS_KEY=${{ secrets.HOTELBEDS_KEY }}
             HOTELBEDS_SECRET=${{ secrets.HOTELBEDS_SECRET }}
             HOTELBEDS_FORMAT=${{ secrets.HOTELBEDS_FORMAT }}
+            CHILLPAY_MD5=${{ secrets.CHILLPAY_MD5 }}
+            CHILLPAY_MERCHANTCODE=${{ secrets.CHILLPAY_MERCHANTCODE }}
+            CHILLPAY_APIKEY=${{ secrets.CHILLPAY_APIKEY }}
+            CHILLPAY_URL=${{ secrets.CHILLPAY_URL }}
+            GOOGLE_PLACES=${{ secrets.GOOGLE_PLACES }}
+            GOOGLE_PUBSUBKEY=${{ secrets.GOOGLE_PUBSUBKEY }}
+            GOOGLE_PROJECTID=${{ secrets.GOOGLE_PROJECTID }}
 
       - name: "Deploy to Cloud Run"
         uses: "google-github-actions/deploy-cloudrun@v0"
@@ -91,3 +96,10 @@ jobs:
             HOTELBEDS_KEY=${{ secrets.HOTELBEDS_KEY }}
             HOTELBEDS_SECRET=${{ secrets.HOTELBEDS_SECRET }}
             HOTELBEDS_FORMAT=${{ secrets.HOTELBEDS_FORMAT }}
+            CHILLPAY_MD5=${{ secrets.CHILLPAY_MD5 }}
+            CHILLPAY_MERCHANTCODE=${{ secrets.CHILLPAY_MERCHANTCODE }}
+            CHILLPAY_APIKEY=${{ secrets.CHILLPAY_APIKEY }}
+            CHILLPAY_URL=${{ secrets.CHILLPAY_URL }}
+            GOOGLE_PLACES=${{ secrets.GOOGLE_PLACES }}
+            GOOGLE_PUBSUBKEY=${{ secrets.GOOGLE_PUBSUBKEY }}
+            GOOGLE_PROJECTID=${{ secrets.GOOGLE_PROJECTID }}

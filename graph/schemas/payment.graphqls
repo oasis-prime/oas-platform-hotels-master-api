@@ -1,0 +1,32 @@
+# GraphQL Basic enum
+
+# GraphQL schema Type
+# Payment
+
+type PaymentData {
+  orderNumber: String!
+  paymentUrl: String!
+  qrImage: String!
+}
+
+# GraphQl schema Input
+# GetPaymentInput
+
+input PaymentInput {
+  email: String!
+  name: String!
+  surname: String!
+  phoneNumber: String!
+  rateKey: String!
+}
+
+# Query
+# extend type Query {
+#   getPayment(input: GetPaymentInput!): PaymentData!
+# }
+
+# Mutation
+
+extend type Mutation {
+  payment(input: PaymentInput!): PaymentData!
+}

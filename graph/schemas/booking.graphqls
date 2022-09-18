@@ -1,24 +1,150 @@
 # GraphQL Basic enum
 
 # GraphQL schema Type
-#
+# Booking
+
+type B_InvoiceCompany {
+  code: String
+  company: String
+  registrationNumber: String
+}
+
+type B_Supplier {
+  name: String
+  vatNumber: String
+}
+
+type B_CancellationPolicies {
+  amount: String
+  from: String
+}
+
+type B_Rates {
+  rateClass: String
+  net: String
+  discount: String
+  discountPCT: String
+  sellingRate: String
+  rateComments: String
+  paymentType: String
+  packaging: Boolean
+  boardCode: String
+  boardName: String
+  rooms: Int
+  adults: Int
+  children: Int
+  cancellationPolicies: [B_CancellationPolicies]
+}
+
+type B_Paxes {
+  roomId: Int
+  type: String
+  name: String
+  surname: String
+}
+
+type B_Rooms {
+  status: String
+  id: Int
+  code: String
+  name: String
+  rates: [B_Rates]
+  paxes: [B_Paxes]
+}
+
+type B_Hotel {
+  checkOut: String
+  checkIn: String
+  code: Int
+  name: String
+  categoryCode: String
+  categoryName: String
+  destinationCode: String
+  destinationName: String
+  zoneCode: Int
+  zoneName: String
+  latitude: String
+  longitude: String
+  totalSellingRate: String
+  totalNet: String
+  currency: String
+  cancellationAmount: Int
+  supplier: B_Supplier
+  rooms: [B_Rooms]
+}
+
+type B_Holder {
+  name: String
+  surname: String
+}
+
+type B_ModificationPolicies {
+  cancellation: Boolean
+  modification: Boolean
+}
 
 type BookingData {
-  id: String
+  reference: String
+  cancellationReference: String
+  clientReference: String
+  creationDate: String
+  status: String
+  creationUser: String
+  remark: String
+  totalSellingRate: Int
+  totalNet: Int
+  pendingAmount: Int
+  currency: String
+  invoiceCompany: B_InvoiceCompany
+  hotel: B_Hotel
+  holder: B_Holder
+  modificationPolicies: B_ModificationPolicies
 }
 
 # GraphQl schema Input
-#
+# GetBookingInput
+
+input GetBookingInput {
+  BookingReference: String
+  language: LanguageEnum!
+}
+
+# GraphQl schema Input
+# BookingInput
+
+input BoPaxesInput {
+  roomId: Int
+  type: String
+  name: String
+  surname: String
+}
+
+input BoRoomsInput {
+  rateKey: String
+  paxes: [BoPaxesInput]
+}
+
+input BoHolderInput {
+  name: String
+  surname: String
+}
 
 input BookingInput {
-  id: String
+  clientReference: String
+  remark: String
+  tolerance: Int
+  rooms: [BoRoomsInput]
+  holder: BoHolderInput
+  language: LanguageEnum!
 }
 
 # Query
-# extend type Query {
-# }
+extend type Query {
+  getBooking(input: GetBookingInput!): BookingData!
+}
 
 # Mutation
 
-# extend type Mutation {
-# }
+extend type Mutation {
+  booking(input: BookingInput!): BookingData!
+}

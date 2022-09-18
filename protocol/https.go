@@ -1,6 +1,7 @@
 package protocol
 
 import (
+	"github.com/oasis-prime/oas-platform-core/http/chillpayhttp"
 	"github.com/oasis-prime/oas-platform-core/http/hotelbedshttp"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
@@ -11,10 +12,12 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelbedsserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelsserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/memberserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/paymentserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/googlehdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelbedshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/memberhdl"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/paymenthdl"
 	"gorm.io/gorm"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -77,10 +80,24 @@ func graphqlHandler() gin.HandlerFunc {
 		hotelsHandler = hotelshdl.NewHandler(hotelsServ)
 	}
 
-	var googleHAndler *googlehdl.Handler
+	var googleHandler *googlehdl.Handler
 	{
 		servPlance := googleserv.NewService("AIzaSyDOS6MedhWdvMMyRvGkRTROvTXnf8exZW8")
-		googleHAndler = googlehdl.NewHandler(servPlance)
+		googleHandler = googlehdl.NewHandler(servPlance)
+	}
+
+	var paymentHandler *paymenthdl.Handler
+	{
+		apprequestChillpay := chillpayhttp.NewRequester(con.Chillpay.Merchantcode, con.Chillpay.Apikey)
+		customerPaymentRepo := customerrepo.NewCustomerPaymentRepo(db)
+		cillpayHttp := chillpayhttp.NewChillpayHTTP(con.Chillpay.Url, con.Chillpay.MD5, apprequestChillpay)
+		servPayment := paymentserv.NewService(cillpayHttp, customerPaymentRepo)
+
+		apprequest := hotelbedshttp.NewRequester(con.Hotelbeds.Key, con.Hotelbeds.Secret, con.Hotelbeds.Format)
+		hotelbedsContentHttp := hotelbedshttp.NewHotelbedsContentHTTP(con.Hotelbeds.Endpoint, apprequest)
+		hotelbedsServ := hotelbedsserv.NewService(hotelbedsContentHttp)
+
+		paymentHandler = paymenthdl.NewHandler(hotelbedsServ, servPayment)
 	}
 
 	h := handler.NewDefaultServer(
@@ -90,7 +107,8 @@ func graphqlHandler() gin.HandlerFunc {
 					MemberHandler:    memberHandler,
 					HotelbedsHandler: hotelbedsHandler,
 					HotelsHandler:    hotelsHandler,
-					GoogleHandler:    googleHAndler,
+					GoogleHandler:    googleHandler,
+					PaymentHandler:   paymentHandler,
 				},
 			},
 		),
