@@ -1,14 +1,32 @@
-# Query
-input MemberVerifyEmailInput {
-  email: String
-}
+# GraphQL Basic enum
+
+# GraphQL schema Type
+#
 
 type MemberVerifyEmailData {
   message: String!
 }
 
+type MemberRegisterData {
+  message: String!
+}
+
+# GraphQl schema Input
+#
+
+input MemberVerifyEmailInput {
+  email: String
+}
+
+input MemberRegisterInput {
+  display: string!
+  email: string!
+  password: string!
+}
+
 # Mutation
 extend type Mutation {
+  memberRegister(input: MemberRegisterInput!): MemberRegisterData!
   memberVerify(input: MemberVerifyEmailInput!): MemberVerifyEmailData!
 }
 

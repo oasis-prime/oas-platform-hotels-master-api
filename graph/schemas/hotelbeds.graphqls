@@ -56,7 +56,7 @@ type AvailabilityCancellationPolicies {
   from: String
 }
 
-# checkRate
+# CheckRate
 
 type RaModificationPolicies {
   cancellation: Boolean

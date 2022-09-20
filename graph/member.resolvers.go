@@ -11,5 +11,5 @@ import (
 
 // MemberVerify is the resolver for the memberVerify field.
 func (r *mutationResolver) MemberVerify(ctx context.Context, input model.MemberVerifyEmailInput) (*model.MemberVerifyEmailData, error) {
-	return r.MemberHandler.GetAllHotel(ctx, input)
+	return r.MemberHandler.VerifyEmail(ctx, input)
 }
