@@ -281,6 +281,10 @@ type GetBookingInput struct {
 	Language         LanguageEnum `json:"language"`
 }
 
+type GetPaymentInput struct {
+	OrderNumber string `json:"orderNumber"`
+}
+
 type GetPlacesInput struct {
 	Query *string `json:"query"`
 }

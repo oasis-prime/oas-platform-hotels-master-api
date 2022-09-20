@@ -20,10 +20,14 @@ input PaymentInput {
   rateKey: String!
 }
 
+input GetPaymentInput {
+  orderNumber: String!
+}
+
 # Query
-# extend type Query {
-#   getPayment(input: GetPaymentInput!): PaymentData!
-# }
+extend type Query {
+  getPayment(input: GetPaymentInput!): PaymentData!
+}
 
 # Mutation
 

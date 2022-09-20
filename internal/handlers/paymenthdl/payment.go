@@ -2,7 +2,9 @@ package paymenthdl
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -27,6 +29,27 @@ func NewHandler(
 		servPaymentService: servPaymentService,
 	}
 }
+func (h *Handler) GetPayment(ctx context.Context, input model.GetPaymentInput) (display *model.PaymentData, err error) {
+	argCode, err := strconv.ParseInt(input.OrderNumber, 10, 32)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = h.servPaymentService.GetPayment(int(argCode))
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := h.servPaymentService.GetChillPay(uint(argCode))
+	if err != nil {
+		return nil, err
+	}
+
+	f, _ := json.Marshal(response)
+	fmt.Println(string(f))
+
+	return display, nil
+}
 
 // Payment(ctx context.Context, input model.PaymentInput) (*model.PaymentData, error)
 func (h *Handler) Payment(ctx context.Context, input model.PaymentInput) (display *model.PaymentData, err error) {
@@ -39,7 +62,7 @@ func (h *Handler) Payment(ctx context.Context, input model.PaymentInput) (displa
 	startDate := time.Now()
 	expiredDate := time.Now().Add(time.Minute * 5)
 
-	pay, err := h.servPaymentService.Generate(&chillpaydm.PaylinkGenerateRequest{
+	condition := &chillpaydm.PaylinkGenerateRequest{
 		ProductImage:       "",
 		ProductName:        rate.Hotel.Name,
 		ProductDescription: rate.Hotel.ZoneName,
@@ -48,7 +71,12 @@ func (h *Handler) Payment(ctx context.Context, input model.PaymentInput) (displa
 		ExpiredDate:        expiredDate.Format("02/01/2006 15:04:05"),
 		Currency:           "THB",
 		Amount:             strings.Replace(rate.Hotel.TotalNet, ".", "", 3),
-	})
+	}
+
+	f, _ := json.Marshal(condition)
+	fmt.Println(string(f))
+
+	pay, err := h.servPaymentService.Generate(condition)
 
 	if err != nil {
 		return nil, err

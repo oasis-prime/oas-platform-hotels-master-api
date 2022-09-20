@@ -356,6 +356,7 @@ type ComplexityRoot struct {
 		GetBooking         func(childComplexity int, input model.GetBookingInput) int
 		GetHotel           func(childComplexity int, input model.HotelInput) int
 		GetHotels          func(childComplexity int, input model.HotelsInput) int
+		GetPayment         func(childComplexity int, input model.GetPaymentInput) int
 		GetPlaces          func(childComplexity int, input model.GetPlacesInput) int
 		__resolve__service func(childComplexity int) int
 	}
@@ -487,6 +488,7 @@ type QueryResolver interface {
 	CheckRate(ctx context.Context, input model.CheckRateInput) (*model.CheckRateData, error)
 	GetHotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error)
 	GetHotel(ctx context.Context, input model.HotelInput) (*model.Hotel, error)
+	GetPayment(ctx context.Context, input model.GetPaymentInput) (*model.PaymentData, error)
 }
 type RoomsResolver interface {
 	RoomStays(ctx context.Context, obj *model.Rooms, input *model.StaysInput) ([]*model.RoomStays, error)
@@ -2021,6 +2023,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetHotels(childComplexity, args["input"].(model.HotelsInput)), true
 
+	case "Query.getPayment":
+		if e.complexity.Query.GetPayment == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getPayment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetPayment(childComplexity, args["input"].(model.GetPaymentInput)), true
+
 	case "Query.getPlaces":
 		if e.complexity.Query.GetPlaces == nil {
 			break
@@ -2523,6 +2537,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputCheckRateInput,
 		ec.unmarshalInputFacilitiesInput,
 		ec.unmarshalInputGetBookingInput,
+		ec.unmarshalInputGetPaymentInput,
 		ec.unmarshalInputGetPlacesInput,
 		ec.unmarshalInputHotelInput,
 		ec.unmarshalInputHotelInterestPointsInput,
@@ -3219,10 +3234,14 @@ input PaymentInput {
   rateKey: String!
 }
 
+input GetPaymentInput {
+  orderNumber: String!
+}
+
 # Query
-# extend type Query {
-#   getPayment(input: GetPaymentInput!): PaymentData!
-# }
+extend type Query {
+  getPayment(input: GetPaymentInput!): PaymentData!
+}
 
 # Mutation
 
@@ -3510,6 +3529,21 @@ func (ec *executionContext) field_Query_getHotels_args(ctx context.Context, rawA
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNHotelsInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getPayment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.GetPaymentInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNGetPaymentInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐGetPaymentInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -12941,6 +12975,69 @@ func (ec *executionContext) fieldContext_Query_getHotel(ctx context.Context, fie
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_getPayment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getPayment(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetPayment(rctx, fc.Args["input"].(model.GetPaymentInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PaymentData)
+	fc.Result = res
+	return ec.marshalNPaymentData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPaymentData(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getPayment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "orderNumber":
+				return ec.fieldContext_PaymentData_orderNumber(ctx, field)
+			case "paymentUrl":
+				return ec.fieldContext_PaymentData_paymentUrl(ctx, field)
+			case "qrImage":
+				return ec.fieldContext_PaymentData_qrImage(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PaymentData", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getPayment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query__service(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query__service(ctx, field)
 	if err != nil {
@@ -18209,6 +18306,34 @@ func (ec *executionContext) unmarshalInputGetBookingInput(ctx context.Context, o
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputGetPaymentInput(ctx context.Context, obj interface{}) (model.GetPaymentInput, error) {
+	var it model.GetPaymentInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"orderNumber"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "orderNumber":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("orderNumber"))
+			it.OrderNumber, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputGetPlacesInput(ctx context.Context, obj interface{}) (model.GetPlacesInput, error) {
 	var it model.GetPlacesInput
 	asMap := map[string]interface{}{}
@@ -20749,6 +20874,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "getPayment":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getPayment(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "_service":
 			field := field
 
@@ -21838,6 +21986,11 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 
 func (ec *executionContext) unmarshalNGetBookingInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐGetBookingInput(ctx context.Context, v interface{}) (model.GetBookingInput, error) {
 	res, err := ec.unmarshalInputGetBookingInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNGetPaymentInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐGetPaymentInput(ctx context.Context, v interface{}) (model.GetPaymentInput, error) {
+	res, err := ec.unmarshalInputGetPaymentInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 

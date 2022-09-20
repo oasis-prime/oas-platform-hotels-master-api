@@ -7,6 +7,7 @@ WORKDIR /app
 RUN set -ex; \
     apk update; \
     apk add --no-cache \
+    tzdata \
     git \
     gcc \
     musl-dev \
@@ -64,6 +65,8 @@ ARG ACCESS_TOKEN \
     CHILLPAY_MERCHANTCODE \
     CHILLPAY_APIKEY \
     CHILLPAY_URL
+
+ENV TZ=Asia/Bangkok
 
 ENV ACCESS_TOKEN=$ACCESS_TOKEN \
     GIN_MODE=$GIN_MODE \
