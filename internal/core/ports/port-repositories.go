@@ -5,6 +5,7 @@ import (
 	"github.com/oasis-prime/oas-platform-core/domain/hoteldm"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
+	"github.com/oasis-prime/oas-platform-firebase-core/domain/firebasedm"
 )
 
 type MemberRepository interface {
@@ -74,4 +75,9 @@ type HotelAddressRepository interface {
 }
 
 type HotelbedsBookingRepository interface {
+}
+
+type FirebaseMemberRepository interface {
+	MemberRegister(condition firebasedm.MemberRegister) (result *firebasedm.MemberRegisterResponse, err error)
+	MemberUpdate(argID string, condition firebasedm.MemberUpdate) (result *firebasedm.MemberRegisterResponse, err error)
 }

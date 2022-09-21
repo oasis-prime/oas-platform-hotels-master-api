@@ -5,6 +5,7 @@ import (
 	"github.com/oasis-prime/oas-platform-core/http/hotelbedshttp"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
+	"github.com/oasis-prime/oas-platform-firebase-core/repositories/firebaserepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/googleserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelbedsserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelsserv"
@@ -77,6 +78,7 @@ func hotelbedsHandlerInit() *hotelbedshdl.Handler {
 
 func memberHandlerInit() *memberhdl.Handler {
 	memberRepo := customerrepo.NewMemberRepo(db)
-	memberServ := memberserv.NewService(memberRepo, con.Google.Projectid, con.Google.Pubsubkey)
+	firebaseMemberRepo := firebaserepo.NewFirebaseMemberRepo(app)
+	memberServ := memberserv.NewService(memberRepo, pub, firebaseMemberRepo)
 	return memberhdl.NewHandler(memberServ)
 }

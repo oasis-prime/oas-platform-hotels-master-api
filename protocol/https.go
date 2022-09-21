@@ -3,6 +3,7 @@ package protocol
 import (
 	"net/http"
 
+	"cloud.google.com/go/pubsub"
 	firebase "firebase.google.com/go/v4"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/configs"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph"
@@ -19,6 +20,7 @@ var (
 	db  *gorm.DB
 	con *configs.Config
 	app *firebase.App
+	pub *pubsub.Client
 )
 
 func graphqlHandler() gin.HandlerFunc {
@@ -59,7 +61,11 @@ func ServeHTTP() error {
 	r := gin.Default()
 	configs.ConfigsInit()
 	con = configs.GetConfig()
+
 	DBInit()
+	PubSubInit()
+	FirebaseInit()
+
 	r.Use(CORSMiddleware())
 	r.POST("/graphql", graphqlHandler())
 	r.GET("/graphql", playgroundHandler())

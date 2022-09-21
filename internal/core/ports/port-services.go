@@ -6,12 +6,15 @@ import (
 	"github.com/oasis-prime/oas-platform-core/domain/hoteldm"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
+	"github.com/oasis-prime/oas-platform-firebase-core/domain/firebasedm"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/domain"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/domain/googledm"
 )
 
 type MemberService interface {
-	PublisherVerifyEmail() (err error)
+	PublisherVerifyEmail(condition domain.PublisherVerifyEmail) (err error)
+	MemberRegister(condition firebasedm.MemberRegister) (err error)
 }
 
 type PaymentService interface {

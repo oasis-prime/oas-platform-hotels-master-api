@@ -33,3 +33,5 @@ chillpay:
   merchantcode: CHILLPAY_MERCHANTCODE
   apikey: CHILLPAY_APIKEY
   url: CHILLPAY_URL
+firebase:
+  key: FIREBASE_KEY

@@ -52,6 +52,10 @@ type chillpay struct {
 	Url          string `mapstructure:"url"`
 }
 
+type firebase struct {
+	Key string `mapstructure:"key"`
+}
+
 type Config struct {
 	App       app       `mapstructure:"app"`
 	Database  database  `mapstructure:"database"`
@@ -60,4 +64,5 @@ type Config struct {
 	Hotelbeds hotelbeds `mapstructure:"hotelbeds"`
 	Google    google    `mapstructure:"google"`
 	Chillpay  chillpay  `mapstructure:"chillpay"`
+	Firebase  firebase  `mapstructure:"firebase"`
 }
