@@ -17,6 +17,8 @@ type MemberService interface {
 type PaymentService interface {
 	Generate(condition *chillpaydm.PaylinkGenerateRequest) (response *chillpaydm.PaylinkGenerateResponse, err error)
 	CreatePayment(record *customerrepo.CustomerPayment) (result *customerrepo.CustomerPayment, err error)
+	GetPayment(payLinkId int) (result *customerrepo.CustomerPayment, err error)
+	GetChillPay(argCode uint) (response *chillpaydm.PaylinkGenerateResponse, err error)
 }
 
 type HotelbedsService interface {

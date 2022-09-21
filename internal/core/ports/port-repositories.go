@@ -14,6 +14,7 @@ type MemberRepository interface {
 type PaymentRepository interface {
 	GetAll(condition customerdm.GetAllPaymentRequest) (results []*customerrepo.CustomerPayment, totalRows int64, err error)
 	Get(argCode uint) (record *customerrepo.CustomerPayment, err error)
+	GetPayLinkId(payLinkId int) (record *customerrepo.CustomerPayment, err error)
 	Create(record *customerrepo.CustomerPayment) (result *customerrepo.CustomerPayment, RowsAffected int64, err error)
 	Update(argCode uint, updated *customerrepo.CustomerPayment) (result *customerrepo.CustomerPayment, RowsAffected int64, err error)
 }

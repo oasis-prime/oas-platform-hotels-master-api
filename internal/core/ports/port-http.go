@@ -16,4 +16,5 @@ type HotelbedsHttp interface {
 
 type PaymentChillpayHttp interface {
 	GetPaylinkGenerate(condition *chillpaydm.PaylinkGenerateRequest) (response *chillpaydm.PaylinkGenerateResponse, err error)
+	GetPaylinkDetail(condition *chillpaydm.PaylinkDetailsRequest) (response *chillpaydm.PaylinkGenerateResponse, err error)
 }

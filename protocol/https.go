@@ -135,7 +135,7 @@ func ServeHTTP() error {
 	r.Use(CORSMiddleware())
 	r.POST("/graphql", graphqlHandler())
 	r.GET("/graphql", playgroundHandler())
-	r.Run(":" + configs.GetConfig().App.Port)
+	r.Run(":" + con.App.Port)
 
 	return nil
 }

@@ -13,3 +13,8 @@ import (
 func (r *mutationResolver) Payment(ctx context.Context, input model.PaymentInput) (*model.PaymentData, error) {
 	return r.PaymentHandler.Payment(ctx, input)
 }
+
+// GetPayment is the resolver for the getPayment field.
+func (r *queryResolver) GetPayment(ctx context.Context, input model.GetPaymentInput) (*model.PaymentData, error) {
+	return r.PaymentHandler.GetPayment(ctx, input)
+}

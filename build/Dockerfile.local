@@ -4,12 +4,14 @@ FROM golang:1.19-alpine
 RUN apk update && apk upgrade && \
     apk add git && \
     apk add build-base && \
+    apk add tzdata && \
     go install github.com/cosmtrek/air@latest && \
     go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core && \ 
     GOCACHE=OFF
 
 ARG ACCESS_TOKEN
 ENV ACCESS_TOKEN=$ACCESS_TOKEN
+ENV TZ=Asia/Bangkok
 
 RUN git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
 

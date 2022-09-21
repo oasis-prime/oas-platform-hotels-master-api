@@ -7,6 +7,7 @@ WORKDIR /app
 RUN set -ex; \
     apk update; \
     apk add --no-cache \
+    tzdata \
     git \
     gcc \
     musl-dev \
@@ -28,20 +29,20 @@ RUN go mod download
 
 COPY ./ .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o goapp ./cmd/api/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o goapp ./cmd/api/main.go
+
+RUN strip goapp
 
 ##########################################
 
-FROM alpine:3.13.1 as release
+FROM alpine as release
 
 WORKDIR /app
 
 #Set Env
-ARG ACCESS_TOKEN \
-    GIN_MODE \
+ARG GIN_MODE \
     APP_ENV \
     APP_PORT \
-    ACCESS_TOKEN \
     DATABASE_NAME \
     DATABASE_USER \
     DATABASE_PWD \
@@ -65,11 +66,11 @@ ARG ACCESS_TOKEN \
     CHILLPAY_APIKEY \
     CHILLPAY_URL
 
-ENV ACCESS_TOKEN=$ACCESS_TOKEN \
-    GIN_MODE=$GIN_MODE \
+ENV TZ=Asia/Bangkok
+
+ENV GIN_MODE=$GIN_MODE \
     APP_ENV=$APP_ENV \
     APP_PORT=$APP_PORT \
-    ACCESS_TOKEN=$ACCESS_TOKEN \
     DATABASE_NAME=$DATABASE_NAME \
     DATABASE_USER=$DATABASE_USER \
     DATABASE_PWD=$DATABASE_PWD \

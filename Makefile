@@ -1,6 +1,9 @@
 gen:
 	- go get github.com/99designs/gqlgen
 	- go run github.com/99designs/gqlgen generate
+bu:
+	- go build -ldflags="-s -w" cmd/api/main.go
+	- strip main 
 make-env:
 	export $(grep -v '^#' .env | xargs)
 

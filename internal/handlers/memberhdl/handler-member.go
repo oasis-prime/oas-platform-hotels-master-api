@@ -17,7 +17,7 @@ func NewHandler(serv ports.MemberService) *Handler {
 	}
 }
 
-func (h *Handler) GetAllHotel(
+func (h *Handler) VerifyEmail(
 	ctx context.Context,
 	input model.MemberVerifyEmailInput,
 ) (display *model.MemberVerifyEmailData, err error) {
