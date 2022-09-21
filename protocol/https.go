@@ -1,23 +1,13 @@
 package protocol
 
 import (
-	"github.com/oasis-prime/oas-platform-core/http/chillpayhttp"
-	"github.com/oasis-prime/oas-platform-core/http/hotelbedshttp"
-	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
-	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
+	"net/http"
+
+	firebase "firebase.google.com/go/v4"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/configs"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/generated"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/googleserv"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelbedsserv"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelsserv"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/memberserv"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/paymentserv"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/googlehdl"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelbedshdl"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelshdl"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/memberhdl"
-	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/paymenthdl"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -28,77 +18,15 @@ import (
 var (
 	db  *gorm.DB
 	con *configs.Config
+	app *firebase.App
 )
 
 func graphqlHandler() gin.HandlerFunc {
-	var memberHandler *memberhdl.Handler
-	{
-		memberRepo := customerrepo.NewMemberRepo(db)
-		memberServ := memberserv.NewService(memberRepo, con.Google.Projectid, con.Google.Pubsubkey)
-		memberHandler = memberhdl.NewHandler(memberServ)
-	}
-
-	var hotelbedsHandler *hotelbedshdl.Handler
-	{
-		apprequest := hotelbedshttp.NewRequester(con.Hotelbeds.Key, con.Hotelbeds.Secret, con.Hotelbeds.Format)
-		hotelbedsContentHttp := hotelbedshttp.NewHotelbedsContentHTTP(con.Hotelbeds.Endpoint, apprequest)
-		hotelbedsServ := hotelbedsserv.NewService(hotelbedsContentHttp)
-		hotelbedsHandler = hotelbedshdl.NewHandler(hotelbedsServ)
-	}
-
-	var hotelsHandler *hotelshdl.Handler
-	{
-		repoHotels := hotelrepo.NewHotelsRepo(db)
-		repoHotelName := hotelrepo.NewHotelNameRepo(db)
-		repoHotelDescription := hotelrepo.NewHotelDescriptionRepo(db)
-		repoHotelInterestPoints := hotelrepo.NewHotelInterestPointsRepo(db)
-		repoHotelIssues := hotelrepo.NewHotelIssuesRepo(db)
-		repoHotelFacility := hotelrepo.NewHotelFacilityRepo(db)
-		repoHotelRooms := hotelrepo.NewHotelRoomsRepo(db)
-		repoHotelRoomsFacilities := hotelrepo.NewHotelRoomFacilitiesRepo(db)
-		repoHotelRoomsStay := hotelrepo.NewHotelRoomStayRepo(db)
-		repoHotelPhones := hotelrepo.NewHotelPhoneRepo(db)
-		repoHotelCity := hotelrepo.NewHotelCityRepo(db)
-		repoHotelAddress := hotelrepo.NewHotelAddressRepo(db)
-		repoHotelImages := hotelrepo.NewHotelImagesRepo(db)
-
-		hotelsServ := hotelsserv.NewService(
-			repoHotels,
-			repoHotelName,
-			repoHotelDescription,
-			repoHotelInterestPoints,
-			repoHotelIssues,
-			repoHotelFacility,
-			repoHotelRooms,
-			repoHotelRoomsFacilities,
-			repoHotelRoomsStay,
-			repoHotelPhones,
-			repoHotelCity,
-			repoHotelAddress,
-			repoHotelImages,
-		)
-		hotelsHandler = hotelshdl.NewHandler(hotelsServ)
-	}
-
-	var googleHandler *googlehdl.Handler
-	{
-		servPlance := googleserv.NewService("AIzaSyDOS6MedhWdvMMyRvGkRTROvTXnf8exZW8")
-		googleHandler = googlehdl.NewHandler(servPlance)
-	}
-
-	var paymentHandler *paymenthdl.Handler
-	{
-		apprequestChillpay := chillpayhttp.NewRequester(con.Chillpay.Merchantcode, con.Chillpay.Apikey)
-		customerPaymentRepo := customerrepo.NewCustomerPaymentRepo(db)
-		cillpayHttp := chillpayhttp.NewChillpayHTTP(con.Chillpay.Url, con.Chillpay.MD5, apprequestChillpay)
-		servPayment := paymentserv.NewService(cillpayHttp, customerPaymentRepo)
-
-		apprequest := hotelbedshttp.NewRequester(con.Hotelbeds.Key, con.Hotelbeds.Secret, con.Hotelbeds.Format)
-		hotelbedsContentHttp := hotelbedshttp.NewHotelbedsContentHTTP(con.Hotelbeds.Endpoint, apprequest)
-		hotelbedsServ := hotelbedsserv.NewService(hotelbedsContentHttp)
-
-		paymentHandler = paymenthdl.NewHandler(hotelbedsServ, servPayment)
-	}
+	memberHandler := memberHandlerInit()
+	hotelbedsHandler := hotelbedsHandlerInit()
+	hotelsHandler := hotelsHandlerInit()
+	googleHandler := googleHandlerInit()
+	paymentHandler := paymentHandlerInit()
 
 	h := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
@@ -135,6 +63,7 @@ func ServeHTTP() error {
 	r.Use(CORSMiddleware())
 	r.POST("/graphql", graphqlHandler())
 	r.GET("/graphql", playgroundHandler())
+	r.GET("/", HealthCheck())
 	r.Run(":" + con.App.Port)
 
 	return nil
@@ -152,6 +81,20 @@ func CORSMiddleware() gin.HandlerFunc {
 			c.AbortWithStatus(200)
 		} else {
 			c.Next()
+		}
+	}
+}
+
+func HealthCheck() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		sqlDB, _ := db.DB()
+		err := sqlDB.Ping()
+
+		if err != nil {
+			logrus.Errorln(err)
+			c.JSON(http.StatusBadGateway, gin.H{"status": "error"})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"status": "ok"})
 		}
 	}
 }

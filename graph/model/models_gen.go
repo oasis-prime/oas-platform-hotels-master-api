@@ -415,6 +415,16 @@ type Issues struct {
 	Alternative *bool   `json:"alternative"`
 }
 
+type MemberRegisterData struct {
+	Message string `json:"message"`
+}
+
+type MemberRegisterInput struct {
+	Display  string `json:"display"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type MemberVerifyEmailData struct {
 	Message string `json:"message"`
 }

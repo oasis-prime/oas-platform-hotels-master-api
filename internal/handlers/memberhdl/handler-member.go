@@ -30,3 +30,11 @@ func (h *Handler) VerifyEmail(
 		Message: "ok",
 	}, nil
 }
+
+func (h *Handler) MemberRegister(
+	ctx context.Context,
+	input model.MemberRegisterInput,
+) (*model.MemberRegisterData, error) {
+
+	return nil, nil
+}

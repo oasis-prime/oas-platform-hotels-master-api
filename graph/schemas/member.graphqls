@@ -19,9 +19,9 @@ input MemberVerifyEmailInput {
 }
 
 input MemberRegisterInput {
-  display: string!
-  email: string!
-  password: string!
+  display: String!
+  email: String!
+  password: String!
 }
 
 # Mutation
