@@ -17,6 +17,7 @@ require (
 	github.com/nqd/flat v0.1.1
 	// github.com/oasis-prime/oas-platform-core v0.1.6
 	github.com/oasis-prime/oas-platform-core v0.0.0-00010101000000-000000000000
+	github.com/pwaller/goupx v0.0.0-20160623083017-1d58e01d5ce2 // indirect
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.13.0
 	github.com/valyala/fasthttp v1.40.0
