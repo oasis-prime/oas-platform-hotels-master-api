@@ -39,6 +39,11 @@ FROM alpine as release
 
 WORKDIR /app
 
+RUN apk update && apk upgrade && \
+    apk add git && \
+    apk add build-base && \
+    apk add tzdata
+
 #Set Env
 ARG GIN_MODE \
     APP_ENV \
