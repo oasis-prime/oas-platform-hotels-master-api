@@ -70,7 +70,14 @@ func (h *Handler) GetPayment(ctx context.Context, input model.GetPaymentInput) (
 // Payment(ctx context.Context, input model.PaymentInput) (*model.PaymentData, error)
 func (h *Handler) Payment(ctx context.Context, input model.PaymentInput) (display *model.PaymentData, err error) {
 
-	rate, err := h.servHotelbeds.CheckRate(&hotelbedsdm.CheckRatesRequest{Rooms: []hotelbedsdm.RateKey{{RateKey: input.RateKey}}})
+	rate, err := h.servHotelbeds.CheckRate(&hotelbedsdm.CheckRatesRequest{
+		Rooms: []hotelbedsdm.RateKey{
+			{
+				RateKey: input.RateKey,
+			},
+		},
+	})
+
 	if err != nil {
 		return nil, err
 	}
