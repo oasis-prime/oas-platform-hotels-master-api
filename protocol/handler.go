@@ -6,6 +6,7 @@ import (
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
 	"github.com/oasis-prime/oas-platform-firebase-core/repositories/firebaserepo"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/bookingserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/googleserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelbedsserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelsserv"
@@ -22,13 +23,44 @@ func paymentHandlerInit() *paymenthdl.Handler {
 	apprequestChillpay := chillpayhttp.NewRequester(con.Chillpay.Merchantcode, con.Chillpay.Apikey)
 	customerPaymentRepo := customerrepo.NewCustomerPaymentRepo(db)
 	cillpayHttp := chillpayhttp.NewChillpayHTTP(con.Chillpay.Url, con.Chillpay.MD5, apprequestChillpay)
-	servPayment := paymentserv.NewService(cillpayHttp, customerPaymentRepo)
+	servPayment := paymentserv.NewService(cillpayHttp, customerPaymentRepo, pub)
+
+	repoHotels := hotelrepo.NewHotelsRepo(db)
+	repoHotelName := hotelrepo.NewHotelNameRepo(db)
+	repoHotelDescription := hotelrepo.NewHotelDescriptionRepo(db)
+	repoHotelInterestPoints := hotelrepo.NewHotelInterestPointsRepo(db)
+	repoHotelIssues := hotelrepo.NewHotelIssuesRepo(db)
+	repoHotelFacility := hotelrepo.NewHotelFacilityRepo(db)
+	repoHotelRooms := hotelrepo.NewHotelRoomsRepo(db)
+	repoHotelRoomsFacilities := hotelrepo.NewHotelRoomFacilitiesRepo(db)
+	repoHotelRoomsStay := hotelrepo.NewHotelRoomStayRepo(db)
+	repoHotelPhones := hotelrepo.NewHotelPhoneRepo(db)
+	repoHotelCity := hotelrepo.NewHotelCityRepo(db)
+	repoHotelAddress := hotelrepo.NewHotelAddressRepo(db)
+	repoHotelImages := hotelrepo.NewHotelImagesRepo(db)
+
+	repoBooking := customerrepo.NewCustomerBookingRepo(db)
 
 	apprequest := hotelbedshttp.NewRequester(con.Hotelbeds.Key, con.Hotelbeds.Secret, con.Hotelbeds.Format)
 	hotelbedsContentHttp := hotelbedshttp.NewHotelbedsContentHTTP(con.Hotelbeds.Endpoint, apprequest)
 	hotelbedsServ := hotelbedsserv.NewService(hotelbedsContentHttp)
-
-	return paymenthdl.NewHandler(hotelbedsServ, servPayment)
+	hotelsServ := hotelsserv.NewService(
+		repoHotels,
+		repoHotelName,
+		repoHotelDescription,
+		repoHotelInterestPoints,
+		repoHotelIssues,
+		repoHotelFacility,
+		repoHotelRooms,
+		repoHotelRoomsFacilities,
+		repoHotelRoomsStay,
+		repoHotelPhones,
+		repoHotelCity,
+		repoHotelAddress,
+		repoHotelImages,
+	)
+	bookingServ := bookingserv.NewService(repoBooking)
+	return paymenthdl.NewHandler(hotelbedsServ, servPayment, hotelsServ, bookingServ)
 }
 
 func googleHandlerInit() *googlehdl.Handler {

@@ -2555,9 +2555,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAvailabilityInput,
 		ec.unmarshalInputAvailabilityOccupanciesInput,
 		ec.unmarshalInputAvailabilityStayInput,
-		ec.unmarshalInputBoHolderInput,
-		ec.unmarshalInputBoPaxesInput,
-		ec.unmarshalInputBoRoomsInput,
 		ec.unmarshalInputBookingInput,
 		ec.unmarshalInputCheckRateInput,
 		ec.unmarshalInputFacilitiesInput,
@@ -2745,38 +2742,15 @@ type BookingData {
 
 # GraphQl schema Input
 # GetBookingInput
-
 input GetBookingInput {
-  BookingReference: String
+  bookingReference: String
   language: LanguageEnum!
 }
 
 # GraphQl schema Input
 # BookingInput
-
-input BoPaxesInput {
-  roomId: Int
-  type: String
-  name: String
-  surname: String
-}
-
-input BoRoomsInput {
-  rateKey: String
-  paxes: [BoPaxesInput]
-}
-
-input BoHolderInput {
-  name: String
-  surname: String
-}
-
 input BookingInput {
   clientReference: String
-  remark: String
-  tolerance: Int
-  rooms: [BoRoomsInput]
-  holder: BoHolderInput
   language: LanguageEnum!
 }
 
@@ -18152,130 +18126,6 @@ func (ec *executionContext) unmarshalInputAvailabilityStayInput(ctx context.Cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputBoHolderInput(ctx context.Context, obj interface{}) (model.BoHolderInput, error) {
-	var it model.BoHolderInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"name", "surname"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "name":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "surname":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("surname"))
-			it.Surname, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputBoPaxesInput(ctx context.Context, obj interface{}) (model.BoPaxesInput, error) {
-	var it model.BoPaxesInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"roomId", "type", "name", "surname"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "roomId":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roomId"))
-			it.RoomID, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "type":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			it.Type, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "name":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "surname":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("surname"))
-			it.Surname, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputBoRoomsInput(ctx context.Context, obj interface{}) (model.BoRoomsInput, error) {
-	var it model.BoRoomsInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"rateKey", "paxes"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "rateKey":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rateKey"))
-			it.RateKey, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "paxes":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("paxes"))
-			it.Paxes, err = ec.unmarshalOBoPaxesInput2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐBoPaxesInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputBookingInput(ctx context.Context, obj interface{}) (model.BookingInput, error) {
 	var it model.BookingInput
 	asMap := map[string]interface{}{}
@@ -18283,7 +18133,7 @@ func (ec *executionContext) unmarshalInputBookingInput(ctx context.Context, obj 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"clientReference", "remark", "tolerance", "rooms", "holder", "language"}
+	fieldsInOrder := [...]string{"clientReference", "language"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -18295,38 +18145,6 @@ func (ec *executionContext) unmarshalInputBookingInput(ctx context.Context, obj 
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clientReference"))
 			it.ClientReference, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "remark":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("remark"))
-			it.Remark, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "tolerance":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tolerance"))
-			it.Tolerance, err = ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "rooms":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rooms"))
-			it.Rooms, err = ec.unmarshalOBoRoomsInput2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐBoRoomsInput(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "holder":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("holder"))
-			it.Holder, err = ec.unmarshalOBoHolderInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐBoHolderInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -18439,17 +18257,17 @@ func (ec *executionContext) unmarshalInputGetBookingInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"BookingReference", "language"}
+	fieldsInOrder := [...]string{"bookingReference", "language"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "BookingReference":
+		case "bookingReference":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("BookingReference"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("bookingReference"))
 			it.BookingReference, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -23180,70 +22998,6 @@ func (ec *executionContext) marshalOB_Supplier2ᚖgithubᚗcomᚋoasisᚑprime�
 		return graphql.Null
 	}
 	return ec._B_Supplier(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOBoHolderInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐBoHolderInput(ctx context.Context, v interface{}) (*model.BoHolderInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputBoHolderInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOBoPaxesInput2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐBoPaxesInput(ctx context.Context, v interface{}) ([]*model.BoPaxesInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*model.BoPaxesInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOBoPaxesInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐBoPaxesInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOBoPaxesInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐBoPaxesInput(ctx context.Context, v interface{}) (*model.BoPaxesInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputBoPaxesInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOBoRoomsInput2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐBoRoomsInput(ctx context.Context, v interface{}) ([]*model.BoRoomsInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*model.BoRoomsInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOBoRoomsInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐBoRoomsInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalOBoRoomsInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐBoRoomsInput(ctx context.Context, v interface{}) (*model.BoRoomsInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputBoRoomsInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

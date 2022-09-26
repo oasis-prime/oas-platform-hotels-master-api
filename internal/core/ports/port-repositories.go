@@ -81,3 +81,11 @@ type FirebaseMemberRepository interface {
 	MemberRegister(condition firebasedm.MemberRegister) (result *firebasedm.MemberRegisterResponse, err error)
 	MemberUpdate(argID string, condition firebasedm.MemberUpdate) (result *firebasedm.MemberRegisterResponse, err error)
 }
+
+type CustomerBookingRepository interface {
+	GetAll(condition customerdm.GetAllRequestBasic) (results []*customerrepo.CustomerBooking, totalRows int64, err error)
+	Get(argID uint) (record *customerrepo.CustomerBooking, err error)
+	Create(record *customerrepo.CustomerBooking) (result *customerrepo.CustomerBooking, RowsAffected int64, err error)
+	Update(argID uint, updated *customerrepo.CustomerBooking) (result *customerrepo.CustomerBooking, RowsAffected int64, err error)
+	GetPayLinkId(payLinkId string) (record *customerrepo.CustomerBooking, err error)
+}

@@ -37,7 +37,7 @@ func (serv *service) MemberRegister(condition firebasedm.MemberRegister) (err er
 }
 
 func (serv *service) PublisherVerifyEmail(condition domain.PublisherVerifyEmail) (err error) {
-	topic := serv.pub.Topic("oas-trigger-event")
+	topic := serv.pub.Topic("oas-trigger-email-member")
 
 	b := googledm.VerifyEmailPublish{
 		Email: condition.Email,
@@ -46,7 +46,7 @@ func (serv *service) PublisherVerifyEmail(condition domain.PublisherVerifyEmail)
 
 	byteData, _ := json.Marshal(b)
 
-	result := topic.Publish(context.Background(), &pubsub.Message{
+	result := topic.Publish(context.TODO(), &pubsub.Message{
 		Data: []byte(byteData),
 		Attributes: map[string]string{
 			"email": condition.Email,

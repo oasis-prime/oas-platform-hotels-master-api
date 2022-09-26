@@ -26,3 +26,8 @@ func (svc *service) CheckRate(condition *hotelbedsdm.CheckRatesRequest) (res *ho
 	res, err = svc.httpContent.GetCheckRate(condition)
 	return res, err
 }
+
+func (svc *service) Booking(condition *hotelbedsdm.BookingsRequest) (res *hotelbedsdm.BookingsResponse, err error) {
+	res, err = svc.httpContent.Booking(condition)
+	return res, err
+}

@@ -103,38 +103,15 @@ type BookingData {
 
 # GraphQl schema Input
 # GetBookingInput
-
 input GetBookingInput {
-  BookingReference: String
+  bookingReference: String
   language: LanguageEnum!
 }
 
 # GraphQl schema Input
 # BookingInput
-
-input BoPaxesInput {
-  roomId: Int
-  type: String
-  name: String
-  surname: String
-}
-
-input BoRoomsInput {
-  rateKey: String
-  paxes: [BoPaxesInput]
-}
-
-input BoHolderInput {
-  name: String
-  surname: String
-}
-
 input BookingInput {
   clientReference: String
-  remark: String
-  tolerance: Int
-  rooms: [BoRoomsInput]
-  holder: BoHolderInput
   language: LanguageEnum!
 }
 

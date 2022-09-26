@@ -12,6 +12,9 @@ type HotelbedsHttp interface {
 	// Booking
 	GetAvailability(condition *hotelbedsdm.AvailabilityRequest) (response *hotelbedsdm.AvailabilityResponse, err error)
 	GetCheckRate(condition *hotelbedsdm.CheckRatesRequest) (response *hotelbedsdm.CheckRatesResponse, err error)
+
+	// Booking
+	Booking(condition *hotelbedsdm.BookingsRequest) (response *hotelbedsdm.BookingsResponse, err error)
 }
 
 type PaymentChillpayHttp interface {
