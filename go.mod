@@ -16,9 +16,10 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/joho/godotenv v1.4.0
 	github.com/nqd/flat v0.1.1
-	// github.com/oasis-prime/oas-platform-core v0.1.7
-	github.com/oasis-prime/oas-platform-core v0.0.0-00010101000000-000000000000
-	github.com/oasis-prime/oas-platform-firebase-core v0.0.0-00010101000000-000000000000
+	github.com/oasis-prime/oas-platform-core v0.1.8
+	github.com/oasis-prime/oas-platform-firebase-core v1.0.0
+	// github.com/oasis-prime/oas-platform-core v0.0.0-00010101000000-000000000000
+	// github.com/oasis-prime/oas-platform-firebase-core v0.0.0-00010101000000-000000000000
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.13.0
 	github.com/valyala/fasthttp v1.40.0
@@ -27,6 +28,6 @@ require (
 	gorm.io/gorm v1.23.9
 )
 
-replace github.com/oasis-prime/oas-platform-core => ../oas-platform-core
+// replace github.com/oasis-prime/oas-platform-core => ../oas-platform-core
 
-replace github.com/oasis-prime/oas-platform-firebase-core => ../oas-platform-firebase-core
+// replace github.com/oasis-prime/oas-platform-firebase-core => ../oas-platform-firebase-core

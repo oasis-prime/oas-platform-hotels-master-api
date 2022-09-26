@@ -22,7 +22,7 @@ ARG ACCESS_TOKEN
 ENV ACCESS_TOKEN=$ACCESS_TOKEN
 
 #Set github login
-RUN go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core && \
+RUN go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core,github.com/oasis-prime/oas-platform-firebase-core && \
     git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
 
 RUN go mod download
