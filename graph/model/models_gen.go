@@ -176,23 +176,6 @@ type BSupplier struct {
 	VatNumber *string `json:"vatNumber"`
 }
 
-type BoHolderInput struct {
-	Name    *string `json:"name"`
-	Surname *string `json:"surname"`
-}
-
-type BoPaxesInput struct {
-	RoomID  *int    `json:"roomId"`
-	Type    *string `json:"type"`
-	Name    *string `json:"name"`
-	Surname *string `json:"surname"`
-}
-
-type BoRoomsInput struct {
-	RateKey *string         `json:"rateKey"`
-	Paxes   []*BoPaxesInput `json:"paxes"`
-}
-
 type BookingData struct {
 	Reference             *string                `json:"reference"`
 	CancellationReference *string                `json:"cancellationReference"`
@@ -212,12 +195,8 @@ type BookingData struct {
 }
 
 type BookingInput struct {
-	ClientReference *string         `json:"clientReference"`
-	Remark          *string         `json:"remark"`
-	Tolerance       *int            `json:"tolerance"`
-	Rooms           []*BoRoomsInput `json:"rooms"`
-	Holder          *BoHolderInput  `json:"holder"`
-	Language        LanguageEnum    `json:"language"`
+	ClientReference *string      `json:"clientReference"`
+	Language        LanguageEnum `json:"language"`
 }
 
 type CheckRateData struct {
@@ -277,7 +256,7 @@ type FacilitiesInput struct {
 }
 
 type GetBookingInput struct {
-	BookingReference *string      `json:"BookingReference"`
+	BookingReference *string      `json:"bookingReference"`
 	Language         LanguageEnum `json:"language"`
 }
 
@@ -413,6 +392,16 @@ type Issues struct {
 	DateTo      *string `json:"dateTo"`
 	Order       *int    `json:"order"`
 	Alternative *bool   `json:"alternative"`
+}
+
+type MemberRegisterData struct {
+	Message string `json:"message"`
+}
+
+type MemberRegisterInput struct {
+	Display  string `json:"display"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type MemberVerifyEmailData struct {

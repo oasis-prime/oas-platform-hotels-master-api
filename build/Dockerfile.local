@@ -6,7 +6,7 @@ RUN apk update && apk upgrade && \
     apk add build-base && \
     apk add tzdata && \
     go install github.com/cosmtrek/air@latest && \
-    go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core && \ 
+    go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core,github.com/oasis-prime/oas-platform-firebase-core && \ 
     GOCACHE=OFF
 
 ARG ACCESS_TOKEN

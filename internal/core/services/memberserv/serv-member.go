@@ -2,69 +2,59 @@ package memberserv
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"log"
 
 	"cloud.google.com/go/pubsub"
+	"github.com/oasis-prime/oas-platform-firebase-core/domain/firebasedm"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/domain"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/domain/googledm"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
-	"google.golang.org/api/option"
 )
 
 type service struct {
-	repo      ports.MemberRepository
-	projectId string
-	pubsubkey string
+	memberRepo         ports.MemberRepository
+	pub                *pubsub.Client
+	firebaseMemberRepo ports.FirebaseMemberRepository
 }
 
-func NewService(repo ports.MemberRepository, projectId, pubsubkey string) *service {
+func NewService(repo ports.MemberRepository, pub *pubsub.Client, firebaseMemberRepo ports.FirebaseMemberRepository) *service {
 	return &service{
-		repo:      repo,
-		projectId: projectId,
-		pubsubkey: pubsubkey,
+		memberRepo:         repo,
+		pub:                pub,
+		firebaseMemberRepo: firebaseMemberRepo,
 	}
 }
 
-func (serv *service) PublisherVerifyEmail() (err error) {
-	sDec, _ := base64.StdEncoding.DecodeString(serv.pubsubkey)
-	opt := option.WithCredentialsJSON(sDec)
+func (serv *service) MemberRegister(condition firebasedm.MemberRegister) (err error) {
+	_, err = serv.firebaseMemberRepo.MemberRegister(condition)
 
-	// json.Unmarshal()
-
-	// fmt.Println(string(sDec))
-
-	ctx := context.Background()
-
-	client, err := pubsub.NewClient(ctx, serv.projectId, opt)
 	if err != nil {
 		return err
 	}
-	defer client.Close()
 
-	topic := client.Topic("oas-trigger-event")
+	return nil
+}
+
+func (serv *service) PublisherVerifyEmail(condition domain.PublisherVerifyEmail) (err error) {
+	topic := serv.pub.Topic("oas-trigger-email-member")
 
 	b := googledm.VerifyEmailPublish{
-		Email: "sittha.raksasawat@gmail.com",
-		Token: "tokenXXXYYY",
+		Email: condition.Email,
+		Token: condition.Token,
 	}
 
 	byteData, _ := json.Marshal(b)
 
-	// msg := "Hello World!!!!"
-
-	fmt.Println(byteData)
-
-	result := topic.Publish(ctx, &pubsub.Message{
+	result := topic.Publish(context.TODO(), &pubsub.Message{
 		Data: []byte(byteData),
 		Attributes: map[string]string{
-			"email": "reworldt@gmail.com",
-			"token": "tokenXXXYYY",
+			"email": condition.Email,
+			"token": condition.Token,
 		},
 	})
 
-	id, err := result.Get(ctx)
+	id, err := result.Get(context.Background())
 	if err != nil {
 		return err
 	}

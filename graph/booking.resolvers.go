@@ -13,7 +13,7 @@ import (
 
 // Booking is the resolver for the booking field.
 func (r *mutationResolver) Booking(ctx context.Context, input model.BookingInput) (*model.BookingData, error) {
-	panic(fmt.Errorf("not implemented: Booking - booking"))
+	return r.PaymentHandler.Booking(ctx, input)
 }
 
 // GetBooking is the resolver for the getBooking field.

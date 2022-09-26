@@ -10,13 +10,16 @@ require (
 require (
 	cloud.google.com/go/kms v1.4.0 // indirect
 	cloud.google.com/go/pubsub v1.3.1
+	firebase.google.com/go/v4 v4.8.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/google/go-querystring v1.1.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/joho/godotenv v1.4.0
 	github.com/nqd/flat v0.1.1
-	github.com/oasis-prime/oas-platform-core v0.1.7
+	github.com/oasis-prime/oas-platform-core v0.1.8
+	github.com/oasis-prime/oas-platform-firebase-core v1.0.0
 	// github.com/oasis-prime/oas-platform-core v0.0.0-00010101000000-000000000000
+	// github.com/oasis-prime/oas-platform-firebase-core v0.0.0-00010101000000-000000000000
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.13.0
 	github.com/valyala/fasthttp v1.40.0
@@ -26,3 +29,5 @@ require (
 )
 
 // replace github.com/oasis-prime/oas-platform-core => ../oas-platform-core
+
+// replace github.com/oasis-prime/oas-platform-firebase-core => ../oas-platform-firebase-core

@@ -2,16 +2,20 @@ package ports
 
 import (
 	"github.com/oasis-prime/oas-platform-core/domain/chillpaydm"
+	"github.com/oasis-prime/oas-platform-core/domain/customerdm"
 	"github.com/oasis-prime/oas-platform-core/domain/hotelbedsdm"
 	"github.com/oasis-prime/oas-platform-core/domain/hoteldm"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
+	"github.com/oasis-prime/oas-platform-firebase-core/domain/firebasedm"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/domain"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/domain/googledm"
 )
 
 type MemberService interface {
-	PublisherVerifyEmail() (err error)
+	PublisherVerifyEmail(condition domain.PublisherVerifyEmail) (err error)
+	MemberRegister(condition firebasedm.MemberRegister) (err error)
 }
 
 type PaymentService interface {
@@ -19,11 +23,14 @@ type PaymentService interface {
 	CreatePayment(record *customerrepo.CustomerPayment) (result *customerrepo.CustomerPayment, err error)
 	GetPayment(payLinkId int) (result *customerrepo.CustomerPayment, err error)
 	GetChillPay(argCode uint) (response *chillpaydm.PaylinkGenerateResponse, err error)
+	BookingMail(condition *domain.PublisherBookingEmail) (err error)
+	UpdatePayment(argCode uint, record *customerrepo.CustomerPayment) (result *customerrepo.CustomerPayment, err error)
 }
 
 type HotelbedsService interface {
 	AvailabilityHotelbeds(condition *hotelbedsdm.AvailabilityRequest) (res *hotelbedsdm.AvailabilityResponse, err error)
 	CheckRate(condition *hotelbedsdm.CheckRatesRequest) (res *hotelbedsdm.CheckRatesResponse, err error)
+	Booking(condition *hotelbedsdm.BookingsRequest) (res *hotelbedsdm.BookingsResponse, err error)
 }
 
 type HotelsService interface {
@@ -45,4 +52,12 @@ type HotelsService interface {
 
 type GooglePlaceService interface {
 	Queryautocomplete(condition *googledm.QueryautocompleteRequest) (res *googledm.QueryautocompleteResponse, err error)
+}
+
+type BookingService interface {
+	GetAll(condition customerdm.GetAllRequestBasic) (results []*customerrepo.CustomerBooking, totalRows int64, err error)
+	Get(argID uint) (record *customerrepo.CustomerBooking, err error)
+	Create(record *customerrepo.CustomerBooking) (result *customerrepo.CustomerBooking, RowsAffected int64, err error)
+	Update(argID uint, updated *customerrepo.CustomerBooking) (result *customerrepo.CustomerBooking, RowsAffected int64, err error)
+	GetPayLinkId(payLinkId string) (record *customerrepo.CustomerBooking, err error)
 }
