@@ -9,6 +9,8 @@ type PublisherBookingEmail struct {
 	Logo            string `json:"logo"`
 	BookingID       string `json:"bookingID"`
 	HotelName       string `json:"hotelName"`
+	Latitude        string `json:"latitude"`
+	Longitude       string `json:"longitude"`
 	CategoryName    string `json:"categoryName"`
 	HotelAddress    string `json:"hotelAddress"`
 	PostalCode      string `json:"postalCode"`

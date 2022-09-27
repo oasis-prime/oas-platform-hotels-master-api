@@ -164,12 +164,14 @@ func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model
 	}
 
 	if payment.Status == "Actived" || payment.Status == "Waiting" {
-		getChillPay, err := h.servPaymentService.GetChillPay(uint(payLinkId))
+		// getChillPay, err := h.servPaymentService.GetChillPay(uint(payLinkId))
+		getChillPay, err := h.servPaymentService.GetDetailByTransctionID(&chillpaydm.TransctionIDRequest{TransactionId: fmt.Sprintf("%d", payLinkId)})
 		if err != nil || getChillPay == nil {
 			return nil, fmt.Errorf("%s", "PaymentGatewayIsClose")
 		}
 
-		payment.Status = getChillPay.Data.Status
+		payment.Status = getChillPay.Data.PaymentStatus
+		copier.Copy(&payment, &getChillPay.Data)
 
 		_, err = h.servPaymentService.UpdatePayment(payment.Code, payment)
 		if err != nil {
