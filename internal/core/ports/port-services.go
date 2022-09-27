@@ -25,6 +25,7 @@ type PaymentService interface {
 	GetChillPay(argCode uint) (response *chillpaydm.PaylinkGenerateResponse, err error)
 	BookingMail(condition *domain.PublisherBookingEmail) (err error)
 	UpdatePayment(argCode uint, record *customerrepo.CustomerPayment) (result *customerrepo.CustomerPayment, err error)
+	GetDetailByTransctionID(condition *chillpaydm.TransctionIDRequest) (response *chillpaydm.DetailByTransctionResponse, err error)
 }
 
 type HotelbedsService interface {

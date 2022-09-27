@@ -89,3 +89,7 @@ func (svc *service) GetPayment(payLinkId int) (result *customerrepo.CustomerPaym
 	result, err = svc.repo.GetPayLinkId(payLinkId)
 	return result, err
 }
+
+func (svc *service) GetDetailByTransctionID(condition *chillpaydm.TransctionIDRequest) (response *chillpaydm.DetailByTransctionResponse, err error) {
+	return svc.cillpayHttp.GetDetailByTransctionID(condition)
+}
