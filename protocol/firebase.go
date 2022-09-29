@@ -11,8 +11,7 @@ import (
 
 func FirebaseInit() {
 	var err error
-	sEnc := ""
-	sDec, _ := base64.StdEncoding.DecodeString(sEnc)
+	sDec, _ := base64.StdEncoding.DecodeString(con.Firebase.Key)
 	opt := option.WithCredentialsJSON(sDec)
 	app, err = firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {

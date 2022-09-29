@@ -137,41 +137,57 @@ func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model
 	if input.ClientReference == nil {
 		return nil, fmt.Errorf("%s", "RequiredFieldClientReference")
 	}
-	payLinkId, err := strconv.ParseInt(*input.ClientReference, 10, 32)
+	transactionId, err := strconv.ParseInt(*input.ClientReference, 10, 32)
 	if err != nil {
 		return nil, fmt.Errorf("%s", "ParseIntClientReference")
 	}
 
-	booking, _ := h.servBooking.GetPayLinkId(fmt.Sprintf("SM-%d", payLinkId))
+	booking, err := h.servBooking.GetPayLinkId(fmt.Sprintf("SM-%d", transactionId))
 
-	if booking != nil {
+	if err == nil && booking != nil {
 		copier.Copy(&display, &booking)
 		display.Reference = &booking.ClientReference
 
 		return &display, nil
 	}
 
-	payment, err := h.servPaymentService.GetPayment(int(payLinkId))
+	getChillPay, err := h.servPaymentService.GetDetailByTransctionID(&chillpaydm.TransctionIDRequest{TransactionId: fmt.Sprintf("%d", transactionId)})
+
+	if err != nil {
+		return nil, fmt.Errorf("%s", "ClientReferenceNotFound")
+	}
+
+	paymentStatus := getChillPay.Data.PaymentStatus
+	payLinkId := getChillPay.Data.PayLinkID
+	if paymentStatus == "Actived" || paymentStatus == "Waiting" {
+		return nil, fmt.Errorf("%s", "PaymentGatewayIsClose")
+	}
+
+	if paymentStatus == "Expired" ||
+		paymentStatus == "Deleted" ||
+		paymentStatus == "Cancelled" ||
+		paymentStatus == "Closed" {
+		return nil, fmt.Errorf("%s", "ClientReferenceIsExpired")
+	}
+
+	payment, err := h.servPaymentService.GetPayment(payLinkId)
 	if err != nil || payment == nil {
 		return nil, fmt.Errorf("%s", "ClientReferenceNotFound")
 	}
 
-	if payment.Status == "Expired" ||
-		payment.Status == "Deleted" ||
-		payment.Status == "Cancelled" ||
-		payment.Status == "Closed" {
-		return nil, fmt.Errorf("%s", "ClientReferenceIsExpired")
-	}
-
-	if payment.Status == "Actived" || payment.Status == "Waiting" {
-		// getChillPay, err := h.servPaymentService.GetChillPay(uint(payLinkId))
-		getChillPay, err := h.servPaymentService.GetDetailByTransctionID(&chillpaydm.TransctionIDRequest{TransactionId: fmt.Sprintf("%d", payLinkId)})
-		if err != nil || getChillPay == nil {
-			return nil, fmt.Errorf("%s", "PaymentGatewayIsClose")
-		}
-
+	if payment.Status != paymentStatus {
 		payment.Status = getChillPay.Data.PaymentStatus
-		copier.Copy(&payment, &getChillPay.Data)
+		copier.Copy(payment, &getChillPay.Data)
+
+		layout := "02/01/2006 15:04:05"
+		transactionDate, _ := time.Parse(layout, getChillPay.Data.TransactionDate)
+		paymentDate, _ := time.Parse(layout, getChillPay.Data.PaymentDate)
+
+		payment.TransactionDate = &transactionDate
+		payment.PaymentDate = &paymentDate
+
+		fmt.Println(getChillPay.Data)
+		fmt.Println(payment)
 
 		_, err = h.servPaymentService.UpdatePayment(payment.Code, payment)
 		if err != nil {
@@ -180,6 +196,7 @@ func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model
 	}
 
 	if payment.Status == "Success" {
+		fmt.Println("running Success")
 		checkRate, err := h.servHotelbeds.CheckRate(&hotelbedsdm.CheckRatesRequest{
 			Rooms: []hotelbedsdm.RateKey{
 				{RateKey: payment.RateKey},
@@ -208,7 +225,9 @@ func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model
 			}
 		}
 
-		booking, err := h.servHotelbeds.Booking(&hotelbedsdm.BookingsRequest{
+		fmt.Println("running Success!!")
+
+		mb := &hotelbedsdm.BookingsRequest{
 			Language: hotelbedsdm.Language(input.Language),
 			Holder: hotelbedsdm.BookingHolder{
 				Name:    payment.Name,
@@ -223,10 +242,13 @@ func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model
 			ClientReference: fmt.Sprintf("SM-%d", payment.PayLinkId),
 			Remark:          "Smartgo.life",
 			Tolerance:       2,
-		})
+		}
+
+		fmt.Printf("running Success: %v \n", mb)
+		booking, err := h.servHotelbeds.Booking(mb)
 
 		if err != nil {
-			return nil, fmt.Errorf("%s", "BookingError")
+			return nil, err
 		}
 
 		fmt.Printf("booking: %v \n", booking)
@@ -264,6 +286,36 @@ func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model
 			return nil, fmt.Errorf("%s", "HotelAddressNotFound")
 		}
 
+		hotelImage, _, err := h.servHotel.GetHotelImages(hoteldm.GetAllHotelImagesRequest{
+			HotelCode: &hotelcode,
+			HotelType: &hoteltype,
+			GetAllRequestBasic: hoteldm.GetAllRequestBasic{
+				IsOffset: true,
+				Offset:   0,
+				Limit:    1,
+				Language: (*langenums.Language)(&input.Language),
+			},
+		})
+
+		if err != nil || len(hotelImage) < 1 {
+			return nil, fmt.Errorf("%s", "HotelImageNotFound")
+		}
+
+		hotelCoordinates, _, err := h.servHotel.GetCoordinates(hoteldm.GetAllHotelCoordinatesRequest{
+			HotelCode: &hotelcode,
+			HotelType: &hoteltype,
+			GetAllRequestBasic: hoteldm.GetAllRequestBasic{
+				IsOffset: true,
+				Offset:   0,
+				Limit:    1,
+				Language: (*langenums.Language)(&input.Language),
+			},
+		})
+
+		if err != nil || len(hotelCoordinates) < 1 {
+			return nil, fmt.Errorf("%s", "HotelCoordinatesNotFound")
+		}
+
 		checkIn, err := time.Parse(timeFormat, booking.Booking.Hotel.CheckIn)
 		if err != nil {
 			return nil, fmt.Errorf("%s", "")
@@ -272,26 +324,29 @@ func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model
 		if err != nil {
 			return nil, fmt.Errorf("%s", "")
 		}
-		days := checkIn.Sub(checkOut)
+		days := checkOut.Sub(checkIn)
 
 		if booking != nil {
 			h.servPaymentService.BookingMail(&domain.PublisherBookingEmail{
-				Logo:            "Logo",
+				Adults:          fmt.Sprintf("%d", maxAdults),
 				BookingID:       booking.Booking.ClientReference,
-				HotelName:       booking.Booking.Hotel.Name,
 				CategoryName:    booking.Booking.Hotel.CategoryName,
-				HotelAddress:    hoteladdress[0].Content,
-				PostalCode:      hotel.PostalCode,
-				ZoneName:        booking.Booking.Hotel.ZoneName,
-				DestinationName: booking.Booking.Hotel.DestinationName,
-				Days:            fmt.Sprintf("%.f", days.Hours()/24),
 				CheckIn:         booking.Booking.Hotel.CheckIn,
 				CheckOut:        booking.Booking.Hotel.CheckOut,
-				RoomType:        booking.Booking.Hotel.Rooms[0].Name,
-				RoomAmount:      fmt.Sprintf("%d", maxRoom),
-				Adults:          fmt.Sprintf("%d", maxAdults),
-				Cost:            fmt.Sprintf("%d", payment.Amount),
+				Cost:            fmt.Sprintf("%.2f", payment.Amount),
+				Days:            fmt.Sprintf("%.f", days.Hours()/24),
+				DestinationName: booking.Booking.Hotel.DestinationName,
 				Email:           payment.Email,
+				HotelAddress:    hoteladdress[0].Content,
+				HotelName:       booking.Booking.Hotel.Name,
+				HotelImage:      hotelImage[0].Path,
+				Latitude:        fmt.Sprintf("%f", hotelCoordinates[0].Latitude),
+				Logo:            "",
+				Longitude:       fmt.Sprintf("%f", hotelCoordinates[0].Longitude),
+				PostalCode:      hotel.PostalCode,
+				RoomAmount:      fmt.Sprintf("%d", maxRoom),
+				RoomType:        booking.Booking.Hotel.Rooms[0].Name,
+				ZoneName:        booking.Booking.Hotel.ZoneName,
 			})
 
 			copier.Copy(&display, &booking.Booking)

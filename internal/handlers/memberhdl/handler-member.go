@@ -50,12 +50,18 @@ func (h *Handler) MemberRegister(
 		Message: "ok",
 	}
 
+	fmt.Printf("%v \n", input)
+
 	err := h.serv.MemberRegister(firebasedm.MemberRegister{
 		Email:       input.Email,
 		PhoneNumber: "",
 		Password:    input.Password,
 		DisplayName: input.Display,
 	})
+
+	if err != nil {
+		return nil, err
+	}
 
 	h.serv.PublisherVerifyEmail(domain.PublisherVerifyEmail{
 		Email: input.Email,

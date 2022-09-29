@@ -30,6 +30,10 @@ type HotelNameRepository interface {
 	GetAll(condition hoteldm.GetAllHotelNameRequest) (results []*hotelrepo.HotelName, totalRows int64, err error)
 }
 
+type HotelCoordinatesRepository interface {
+	GetAll(condition hoteldm.GetAllHotelCoordinatesRequest) (results []*hotelrepo.HotelCoordinates, totalRows int64, err error)
+}
+
 type HotelImagesRepository interface {
 	GetAll(condition hoteldm.GetAllHotelImagesRequest) (results []*hotelrepo.HotelImages, totalRows int64, err error)
 }

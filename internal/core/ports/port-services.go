@@ -49,6 +49,7 @@ type HotelsService interface {
 	GetRoomsFacility(condition hoteldm.GetAllHotelRoomFacilitiesRequest) (results []*hotelrepo.HotelRoomFacilities, totalRows int64, err error)
 	GetRoomsStay(condition hoteldm.GetAllHotelRoomStayRequest) (results []*hotelrepo.HotelRoomStay, totalRows int64, err error)
 	GetCity(condition hoteldm.GetAllHotelCityRequest) (results []*hotelrepo.HotelCity, totalRows int64, err error)
+	GetCoordinates(condition hoteldm.GetAllHotelCoordinatesRequest) (results []*hotelrepo.HotelCoordinates, totalRows int64, err error)
 }
 
 type GooglePlaceService interface {
