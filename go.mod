@@ -17,7 +17,7 @@ require (
 	github.com/joho/godotenv v1.4.0
 	github.com/nqd/flat v0.1.1
 	github.com/oasis-prime/oas-platform-core v0.2.0
-	github.com/oasis-prime/oas-platform-firebase-core v1.0.0
+	github.com/oasis-prime/oas-platform-firebase-core v1.0.1
 	// github.com/oasis-prime/oas-platform-core v0.0.0-00010101000000-000000000000
 	// github.com/oasis-prime/oas-platform-firebase-core v0.0.0-00010101000000-000000000000
 	github.com/sirupsen/logrus v1.9.0
