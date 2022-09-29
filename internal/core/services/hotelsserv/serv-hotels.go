@@ -23,6 +23,7 @@ type service struct {
 	repoHotelCity            ports.HotelCityRepository
 	repoHotelAddress         ports.HotelAddressRepository
 	repoHotelImages          ports.HotelImagesRepository
+	repoCoordinates          ports.HotelCoordinatesRepository
 }
 
 func NewService(
@@ -39,6 +40,7 @@ func NewService(
 	repoHotelCity ports.HotelCityRepository,
 	repoHotelAddress ports.HotelAddressRepository,
 	repoHotelImages ports.HotelImagesRepository,
+	repoCoordinates ports.HotelCoordinatesRepository,
 ) *service {
 	return &service{
 		repoHotels:               repoHotels,
@@ -54,6 +56,7 @@ func NewService(
 		repoHotelCity:            repoHotelCity,
 		repoHotelAddress:         repoHotelAddress,
 		repoHotelImages:          repoHotelImages,
+		repoCoordinates:          repoCoordinates,
 	}
 }
 
@@ -184,4 +187,10 @@ func (svc *service) GetCity(
 	condition hoteldm.GetAllHotelCityRequest,
 ) (results []*hotelrepo.HotelCity, totalRows int64, err error) {
 	return svc.repoHotelCity.GetAll(condition)
+}
+
+func (svc *service) GetCoordinates(
+	condition hoteldm.GetAllHotelCoordinatesRequest,
+) (results []*hotelrepo.HotelCoordinates, totalRows int64, err error) {
+	return svc.repoCoordinates.GetAll(condition)
 }

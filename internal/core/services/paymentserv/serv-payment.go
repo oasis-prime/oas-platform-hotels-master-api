@@ -72,6 +72,9 @@ func (svc *service) BookingMail(condition *domain.PublisherBookingEmail) (err er
 			"postalCode":      condition.PostalCode,
 			"roomAmount":      condition.RoomAmount,
 			"roomType":        condition.RoomType,
+			"latitude":        condition.Latitude,
+			"longitude":       condition.Longitude,
+			"hotelImage":      condition.HotelImage,
 		},
 	})
 

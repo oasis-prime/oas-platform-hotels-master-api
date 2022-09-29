@@ -441,8 +441,45 @@ func (h *Handler) GetAllHotelAddress(
 	return display, nil
 }
 
-func (h *Handler) GetAllHotelCoordinates(ctx context.Context, obj *model.Hotel) (*model.Coordinates, error) {
-	return nil, nil
+func (h *Handler) GetAllHotelCoordinates(ctx context.Context, obj *model.Hotel) (display *model.Coordinates, err error) {
+	if obj == nil {
+		return nil, nil
+	}
+
+	var code uint = 0
+	if obj.Code != nil {
+		code = uint(*obj.Code)
+	}
+
+	hotelType := htenums.HotelTypes(obj.Type)
+	languageType := langenums.Language(obj.Language)
+
+	coordinates, _, err := h.servHotels.GetCoordinates(hoteldm.GetAllHotelCoordinatesRequest{
+		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
+			Page:     1,
+			PageSize: 1,
+			Language: &languageType,
+		},
+		HotelCode: &code,
+		HotelType: &hotelType,
+	})
+
+	if err != nil {
+		logrus.Error(err)
+		return nil, nil
+	}
+
+	if len(coordinates) > 0 {
+		for _, v := range coordinates {
+			display = &model.Coordinates{
+				Longitude: &v.Longitude,
+				Latitude:  &v.Latitude,
+			}
+		}
+
+	}
+
+	return display, nil
 }
 
 func (h *Handler) GetAllHotelDescription(

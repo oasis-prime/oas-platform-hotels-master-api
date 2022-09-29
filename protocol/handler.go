@@ -1,6 +1,9 @@
 package protocol
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/oasis-prime/oas-platform-core/http/chillpayhttp"
 	"github.com/oasis-prime/oas-platform-core/http/hotelbedshttp"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
@@ -38,6 +41,7 @@ func paymentHandlerInit() *paymenthdl.Handler {
 	repoHotelCity := hotelrepo.NewHotelCityRepo(db)
 	repoHotelAddress := hotelrepo.NewHotelAddressRepo(db)
 	repoHotelImages := hotelrepo.NewHotelImagesRepo(db)
+	repoCoordinates := hotelrepo.NewHotelCoordinatesRepo(db)
 
 	repoBooking := customerrepo.NewCustomerBookingRepo(db)
 
@@ -58,6 +62,7 @@ func paymentHandlerInit() *paymenthdl.Handler {
 		repoHotelCity,
 		repoHotelAddress,
 		repoHotelImages,
+		repoCoordinates,
 	)
 	bookingServ := bookingserv.NewService(repoBooking)
 	return paymenthdl.NewHandler(hotelbedsServ, servPayment, hotelsServ, bookingServ)
@@ -82,6 +87,7 @@ func hotelsHandlerInit() *hotelshdl.Handler {
 	repoHotelCity := hotelrepo.NewHotelCityRepo(db)
 	repoHotelAddress := hotelrepo.NewHotelAddressRepo(db)
 	repoHotelImages := hotelrepo.NewHotelImagesRepo(db)
+	repoCoordinates := hotelrepo.NewHotelCoordinatesRepo(db)
 
 	hotelsServ := hotelsserv.NewService(
 		repoHotels,
@@ -97,6 +103,7 @@ func hotelsHandlerInit() *hotelshdl.Handler {
 		repoHotelCity,
 		repoHotelAddress,
 		repoHotelImages,
+		repoCoordinates,
 	)
 	return hotelshdl.NewHandler(hotelsServ)
 }
@@ -110,7 +117,12 @@ func hotelbedsHandlerInit() *hotelbedshdl.Handler {
 
 func memberHandlerInit() *memberhdl.Handler {
 	memberRepo := customerrepo.NewMemberRepo(db)
-	firebaseMemberRepo := firebaserepo.NewFirebaseMemberRepo(app)
+	client, err := app.Auth(context.Background())
+	if err != nil {
+		panic(fmt.Errorf("client: %v", err))
+	}
+
+	firebaseMemberRepo := firebaserepo.NewFirebaseMemberRepo(app, client)
 	memberServ := memberserv.NewService(memberRepo, pub, firebaseMemberRepo)
 	return memberhdl.NewHandler(memberServ)
 }
