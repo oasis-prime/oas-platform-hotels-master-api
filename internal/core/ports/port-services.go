@@ -63,3 +63,6 @@ type BookingService interface {
 	Update(argID uint, updated *customerrepo.CustomerBooking) (result *customerrepo.CustomerBooking, RowsAffected int64, err error)
 	GetPayLinkId(payLinkId string) (record *customerrepo.CustomerBooking, err error)
 }
+
+type MasterService interface {
+}

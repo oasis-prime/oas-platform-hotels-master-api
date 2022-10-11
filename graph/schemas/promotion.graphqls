@@ -1,0 +1,27 @@
+# GraphQL Basic enum
+
+# GraphQL schema Type
+# Promotion
+type PromotionData {
+  image: String
+  link: String
+  state: String
+  status: String
+  createdAt: String
+  updatedAt: String
+}
+
+# GraphQl schema Input
+# PromotionInput
+input PromotionInput {
+  language: LanguageEnum!
+}
+
+# GraphQl schema Input
+
+# Query
+extend type Query {
+  getPromotion(input: PromotionInput!): PromotionData!
+}
+
+# Mutation

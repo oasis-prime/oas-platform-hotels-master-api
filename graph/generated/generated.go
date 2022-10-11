@@ -355,6 +355,25 @@ type ComplexityRoot struct {
 		Places func(childComplexity int) int
 	}
 
+	PopularData struct {
+		Count     func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		Image     func(childComplexity int) int
+		Link      func(childComplexity int) int
+		Status    func(childComplexity int) int
+		Title     func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
+	PromotionData struct {
+		CreatedAt func(childComplexity int) int
+		Image     func(childComplexity int) int
+		Link      func(childComplexity int) int
+		State     func(childComplexity int) int
+		Status    func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
 	Query struct {
 		CheckRate          func(childComplexity int, input model.CheckRateInput) int
 		GetAvailability    func(childComplexity int, input model.AvailabilityInput) int
@@ -363,6 +382,8 @@ type ComplexityRoot struct {
 		GetHotels          func(childComplexity int, input model.HotelsInput) int
 		GetPayment         func(childComplexity int, input model.GetPaymentInput) int
 		GetPlaces          func(childComplexity int, input model.GetPlacesInput) int
+		GetPopular         func(childComplexity int, input model.GetPopularInput) int
+		GetPromotion       func(childComplexity int, input model.PromotionInput) int
 		__resolve__service func(childComplexity int) int
 	}
 
@@ -495,6 +516,8 @@ type QueryResolver interface {
 	GetHotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error)
 	GetHotel(ctx context.Context, input model.HotelInput) (*model.Hotel, error)
 	GetPayment(ctx context.Context, input model.GetPaymentInput) (*model.PaymentData, error)
+	GetPopular(ctx context.Context, input model.GetPopularInput) (*model.PopularData, error)
+	GetPromotion(ctx context.Context, input model.PromotionInput) (*model.PromotionData, error)
 }
 type RoomsResolver interface {
 	RoomStays(ctx context.Context, obj *model.Rooms, input *model.StaysInput) ([]*model.RoomStays, error)
@@ -1988,6 +2011,97 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PlacesData.Places(childComplexity), true
 
+	case "PopularData.count":
+		if e.complexity.PopularData.Count == nil {
+			break
+		}
+
+		return e.complexity.PopularData.Count(childComplexity), true
+
+	case "PopularData.createdAt":
+		if e.complexity.PopularData.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.PopularData.CreatedAt(childComplexity), true
+
+	case "PopularData.image":
+		if e.complexity.PopularData.Image == nil {
+			break
+		}
+
+		return e.complexity.PopularData.Image(childComplexity), true
+
+	case "PopularData.link":
+		if e.complexity.PopularData.Link == nil {
+			break
+		}
+
+		return e.complexity.PopularData.Link(childComplexity), true
+
+	case "PopularData.status":
+		if e.complexity.PopularData.Status == nil {
+			break
+		}
+
+		return e.complexity.PopularData.Status(childComplexity), true
+
+	case "PopularData.title":
+		if e.complexity.PopularData.Title == nil {
+			break
+		}
+
+		return e.complexity.PopularData.Title(childComplexity), true
+
+	case "PopularData.updatedAt":
+		if e.complexity.PopularData.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.PopularData.UpdatedAt(childComplexity), true
+
+	case "PromotionData.createdAt":
+		if e.complexity.PromotionData.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.PromotionData.CreatedAt(childComplexity), true
+
+	case "PromotionData.image":
+		if e.complexity.PromotionData.Image == nil {
+			break
+		}
+
+		return e.complexity.PromotionData.Image(childComplexity), true
+
+	case "PromotionData.link":
+		if e.complexity.PromotionData.Link == nil {
+			break
+		}
+
+		return e.complexity.PromotionData.Link(childComplexity), true
+
+	case "PromotionData.state":
+		if e.complexity.PromotionData.State == nil {
+			break
+		}
+
+		return e.complexity.PromotionData.State(childComplexity), true
+
+	case "PromotionData.status":
+		if e.complexity.PromotionData.Status == nil {
+			break
+		}
+
+		return e.complexity.PromotionData.Status(childComplexity), true
+
+	case "PromotionData.updatedAt":
+		if e.complexity.PromotionData.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.PromotionData.UpdatedAt(childComplexity), true
+
 	case "Query.checkRate":
 		if e.complexity.Query.CheckRate == nil {
 			break
@@ -2071,6 +2185,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetPlaces(childComplexity, args["input"].(model.GetPlacesInput)), true
+
+	case "Query.getPopular":
+		if e.complexity.Query.GetPopular == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getPopular_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetPopular(childComplexity, args["input"].(model.GetPopularInput)), true
+
+	case "Query.getPromotion":
+		if e.complexity.Query.GetPromotion == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getPromotion_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetPromotion(childComplexity, args["input"].(model.PromotionInput)), true
 
 	case "Query._service":
 		if e.complexity.Query.__resolve__service == nil {
@@ -2561,6 +2699,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputGetBookingInput,
 		ec.unmarshalInputGetPaymentInput,
 		ec.unmarshalInputGetPlacesInput,
+		ec.unmarshalInputGetPopularInput,
 		ec.unmarshalInputHotelInput,
 		ec.unmarshalInputHotelInterestPointsInput,
 		ec.unmarshalInputHotelIssuesInput,
@@ -2576,6 +2715,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputMemberVerifyEmailInput,
 		ec.unmarshalInputPaginationInput,
 		ec.unmarshalInputPaymentInput,
+		ec.unmarshalInputPromotionInput,
 		ec.unmarshalInputStaysInput,
 	)
 	first := true
@@ -3267,6 +3407,63 @@ extend type Mutation {
   payment(input: PaymentInput!): PaymentData!
 }
 `, BuiltIn: false},
+	{Name: "../schemas/popular.graphqls", Input: `# GraphQL Basic enum
+
+# GraphQL schema Type
+# Popular
+type PopularData {
+  title: String
+  image: String
+  link: String
+  count: Int
+  status: String
+  createdAt: String
+  updatedAt: String
+}
+
+# GraphQl schema Input
+# GetPopularInput
+input GetPopularInput {
+  language: LanguageEnum!
+}
+
+# GraphQl schema Input
+
+# Query
+extend type Query {
+  getPopular(input: GetPopularInput!): PopularData!
+}
+
+# Mutation
+`, BuiltIn: false},
+	{Name: "../schemas/promotion.graphqls", Input: `# GraphQL Basic enum
+
+# GraphQL schema Type
+# Promotion
+type PromotionData {
+  image: String
+  link: String
+  state: String
+  status: String
+  createdAt: String
+  updatedAt: String
+}
+
+# GraphQl schema Input
+# PromotionInput
+input PromotionInput {
+  language: LanguageEnum!
+}
+
+# GraphQl schema Input
+
+# Query
+extend type Query {
+  getPromotion(input: PromotionInput!): PromotionData!
+}
+
+# Mutation
+`, BuiltIn: false},
 	{Name: "../schemas/schema.graphqls", Input: `# GraphQL schema-enum
 enum LanguageEnum {
   TAI
@@ -3592,6 +3789,36 @@ func (ec *executionContext) field_Query_getPlaces_args(ctx context.Context, rawA
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNGetPlacesInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐGetPlacesInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getPopular_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.GetPopularInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNGetPopularInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐGetPopularInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getPromotion_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.PromotionInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNPromotionInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPromotionInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -12631,6 +12858,539 @@ func (ec *executionContext) fieldContext_PlacesData_places(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _PopularData_title(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PopularData_title(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Title, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PopularData_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PopularData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PopularData_image(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PopularData_image(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Image, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PopularData_image(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PopularData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PopularData_link(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PopularData_link(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Link, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PopularData_link(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PopularData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PopularData_count(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PopularData_count(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Count, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PopularData_count(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PopularData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PopularData_status(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PopularData_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PopularData_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PopularData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PopularData_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PopularData_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PopularData_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PopularData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PopularData_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PopularData_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PopularData_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PopularData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PromotionData_image(ctx context.Context, field graphql.CollectedField, obj *model.PromotionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PromotionData_image(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Image, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PromotionData_image(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PromotionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PromotionData_link(ctx context.Context, field graphql.CollectedField, obj *model.PromotionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PromotionData_link(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Link, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PromotionData_link(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PromotionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PromotionData_state(ctx context.Context, field graphql.CollectedField, obj *model.PromotionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PromotionData_state(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.State, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PromotionData_state(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PromotionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PromotionData_status(ctx context.Context, field graphql.CollectedField, obj *model.PromotionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PromotionData_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PromotionData_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PromotionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PromotionData_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.PromotionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PromotionData_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PromotionData_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PromotionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PromotionData_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.PromotionData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PromotionData_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PromotionData_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PromotionData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_getBooking(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_getBooking(ctx, field)
 	if err != nil {
@@ -13168,6 +13928,146 @@ func (ec *executionContext) fieldContext_Query_getPayment(ctx context.Context, f
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_getPayment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getPopular(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getPopular(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetPopular(rctx, fc.Args["input"].(model.GetPopularInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PopularData)
+	fc.Result = res
+	return ec.marshalNPopularData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopularData(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getPopular(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "title":
+				return ec.fieldContext_PopularData_title(ctx, field)
+			case "image":
+				return ec.fieldContext_PopularData_image(ctx, field)
+			case "link":
+				return ec.fieldContext_PopularData_link(ctx, field)
+			case "count":
+				return ec.fieldContext_PopularData_count(ctx, field)
+			case "status":
+				return ec.fieldContext_PopularData_status(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_PopularData_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_PopularData_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PopularData", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getPopular_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getPromotion(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getPromotion(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetPromotion(rctx, fc.Args["input"].(model.PromotionInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PromotionData)
+	fc.Result = res
+	return ec.marshalNPromotionData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPromotionData(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getPromotion(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "image":
+				return ec.fieldContext_PromotionData_image(ctx, field)
+			case "link":
+				return ec.fieldContext_PromotionData_link(ctx, field)
+			case "state":
+				return ec.fieldContext_PromotionData_state(ctx, field)
+			case "status":
+				return ec.fieldContext_PromotionData_status(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_PromotionData_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_PromotionData_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PromotionData", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getPromotion_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -18342,6 +19242,34 @@ func (ec *executionContext) unmarshalInputGetPlacesInput(ctx context.Context, ob
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputGetPopularInput(ctx context.Context, obj interface{}) (model.GetPopularInput, error) {
+	var it model.GetPopularInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"language"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "language":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("language"))
+			it.Language, err = ec.unmarshalNLanguageEnum2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐLanguageEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputHotelInput(ctx context.Context, obj interface{}) (model.HotelInput, error) {
 	var it model.HotelInput
 	asMap := map[string]interface{}{}
@@ -18961,6 +19889,34 @@ func (ec *executionContext) unmarshalInputPaymentInput(ctx context.Context, obj 
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rateKey"))
 			it.RateKey, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputPromotionInput(ctx context.Context, obj interface{}) (model.PromotionInput, error) {
+	var it model.PromotionInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"language"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "language":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("language"))
+			it.Language, err = ec.unmarshalNLanguageEnum2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐLanguageEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -20778,6 +21734,100 @@ func (ec *executionContext) _PlacesData(ctx context.Context, sel ast.SelectionSe
 	return out
 }
 
+var popularDataImplementors = []string{"PopularData"}
+
+func (ec *executionContext) _PopularData(ctx context.Context, sel ast.SelectionSet, obj *model.PopularData) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, popularDataImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PopularData")
+		case "title":
+
+			out.Values[i] = ec._PopularData_title(ctx, field, obj)
+
+		case "image":
+
+			out.Values[i] = ec._PopularData_image(ctx, field, obj)
+
+		case "link":
+
+			out.Values[i] = ec._PopularData_link(ctx, field, obj)
+
+		case "count":
+
+			out.Values[i] = ec._PopularData_count(ctx, field, obj)
+
+		case "status":
+
+			out.Values[i] = ec._PopularData_status(ctx, field, obj)
+
+		case "createdAt":
+
+			out.Values[i] = ec._PopularData_createdAt(ctx, field, obj)
+
+		case "updatedAt":
+
+			out.Values[i] = ec._PopularData_updatedAt(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var promotionDataImplementors = []string{"PromotionData"}
+
+func (ec *executionContext) _PromotionData(ctx context.Context, sel ast.SelectionSet, obj *model.PromotionData) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, promotionDataImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PromotionData")
+		case "image":
+
+			out.Values[i] = ec._PromotionData_image(ctx, field, obj)
+
+		case "link":
+
+			out.Values[i] = ec._PromotionData_link(ctx, field, obj)
+
+		case "state":
+
+			out.Values[i] = ec._PromotionData_state(ctx, field, obj)
+
+		case "status":
+
+			out.Values[i] = ec._PromotionData_status(ctx, field, obj)
+
+		case "createdAt":
+
+			out.Values[i] = ec._PromotionData_createdAt(ctx, field, obj)
+
+		case "updatedAt":
+
+			out.Values[i] = ec._PromotionData_updatedAt(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -20945,6 +21995,52 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getPayment(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "getPopular":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getPopular(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "getPromotion":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getPromotion(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -22060,6 +23156,11 @@ func (ec *executionContext) unmarshalNGetPlacesInput2githubᚗcomᚋoasisᚑprim
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNGetPopularInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐGetPopularInput(ctx context.Context, v interface{}) (model.GetPopularInput, error) {
+	res, err := ec.unmarshalInputGetPopularInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNHotel2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotel(ctx context.Context, sel ast.SelectionSet, v model.Hotel) graphql.Marshaler {
 	return ec._Hotel(ctx, sel, &v)
 }
@@ -22293,6 +23394,39 @@ func (ec *executionContext) marshalNPlacesData2ᚖgithubᚗcomᚋoasisᚑprime�
 		return graphql.Null
 	}
 	return ec._PlacesData(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNPopularData2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopularData(ctx context.Context, sel ast.SelectionSet, v model.PopularData) graphql.Marshaler {
+	return ec._PopularData(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPopularData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopularData(ctx context.Context, sel ast.SelectionSet, v *model.PopularData) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._PopularData(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNPromotionData2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPromotionData(ctx context.Context, sel ast.SelectionSet, v model.PromotionData) graphql.Marshaler {
+	return ec._PromotionData(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPromotionData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPromotionData(ctx context.Context, sel ast.SelectionSet, v *model.PromotionData) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._PromotionData(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNPromotionInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPromotionInput(ctx context.Context, v interface{}) (model.PromotionInput, error) {
+	res, err := ec.unmarshalInputPromotionInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

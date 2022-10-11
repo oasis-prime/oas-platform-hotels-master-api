@@ -268,6 +268,10 @@ type GetPlacesInput struct {
 	Query *string `json:"query"`
 }
 
+type GetPopularInput struct {
+	Language LanguageEnum `json:"language"`
+}
+
 type Hotel struct {
 	HotelName             *string           `json:"hotelName"`
 	Language              LanguageEnum      `json:"language"`
@@ -454,6 +458,29 @@ type Places struct {
 
 type PlacesData struct {
 	Places []*Places `json:"places"`
+}
+
+type PopularData struct {
+	Title     *string `json:"title"`
+	Image     *string `json:"image"`
+	Link      *string `json:"link"`
+	Count     *int    `json:"count"`
+	Status    *string `json:"status"`
+	CreatedAt *string `json:"createdAt"`
+	UpdatedAt *string `json:"updatedAt"`
+}
+
+type PromotionData struct {
+	Image     *string `json:"image"`
+	Link      *string `json:"link"`
+	State     *string `json:"state"`
+	Status    *string `json:"status"`
+	CreatedAt *string `json:"createdAt"`
+	UpdatedAt *string `json:"updatedAt"`
+}
+
+type PromotionInput struct {
+	Language LanguageEnum `json:"language"`
 }
 
 type RaCancellationPolicies struct {
