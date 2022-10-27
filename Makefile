@@ -12,7 +12,7 @@ run-dev:
 	-air
 
 set-mod:
-	go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core
+	go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core,github.com/oasis-prime/oas-platform-firebase-core
 	git config --global url."https://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:x-oauth-basic@github.com".insteadOf "https://github.com"
 
 dcup-build:
