@@ -3,7 +3,12 @@
 # GraphQL schema Type
 # Popular
 type PopularData {
-  title: String
+  data: [Popular!]!
+  pagination: PaginationType!
+}
+
+type Popular {
+  name: String
   image: String
   link: String
   count: Int
@@ -16,13 +21,15 @@ type PopularData {
 # GetPopularInput
 input GetPopularInput {
   language: LanguageEnum!
+  pagination: PaginationInput!
 }
 
 # GraphQl schema Input
 
 # Query
 extend type Query {
-  getPopular(input: GetPopularInput!): PopularData!
+  getPopular(input: GetPopularInput!): Popular!
+  getAllPopular(input: GetPopularInput!): PopularData!
 }
 
 # Mutation

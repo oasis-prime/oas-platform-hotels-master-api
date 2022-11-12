@@ -5,8 +5,10 @@ import (
 	"github.com/oasis-prime/oas-platform-core/domain/customerdm"
 	"github.com/oasis-prime/oas-platform-core/domain/hotelbedsdm"
 	"github.com/oasis-prime/oas-platform-core/domain/hoteldm"
+	"github.com/oasis-prime/oas-platform-core/domain/masterdm"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
+	"github.com/oasis-prime/oas-platform-core/repositories/masterrepo"
 	"github.com/oasis-prime/oas-platform-firebase-core/domain/firebasedm"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/domain"
@@ -65,4 +67,9 @@ type BookingService interface {
 }
 
 type MasterService interface {
+}
+
+type PopularService interface {
+	GetAll(condition masterdm.GetCustomerPopularRequest) (results []*masterrepo.Popular, totalRows int64, err error)
+	Get(condition masterdm.GetCustomerPopularRequest) (record *masterrepo.Popular, err error)
 }

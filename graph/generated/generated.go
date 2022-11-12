@@ -355,14 +355,19 @@ type ComplexityRoot struct {
 		Places func(childComplexity int) int
 	}
 
-	PopularData struct {
+	Popular struct {
 		Count     func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		Image     func(childComplexity int) int
 		Link      func(childComplexity int) int
+		Name      func(childComplexity int) int
 		Status    func(childComplexity int) int
-		Title     func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
+	}
+
+	PopularData struct {
+		Data       func(childComplexity int) int
+		Pagination func(childComplexity int) int
 	}
 
 	PromotionData struct {
@@ -376,6 +381,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		CheckRate          func(childComplexity int, input model.CheckRateInput) int
+		GetAllPopular      func(childComplexity int, input model.GetPopularInput) int
 		GetAvailability    func(childComplexity int, input model.AvailabilityInput) int
 		GetBooking         func(childComplexity int, input model.GetBookingInput) int
 		GetHotel           func(childComplexity int, input model.HotelInput) int
@@ -516,7 +522,8 @@ type QueryResolver interface {
 	GetHotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error)
 	GetHotel(ctx context.Context, input model.HotelInput) (*model.Hotel, error)
 	GetPayment(ctx context.Context, input model.GetPaymentInput) (*model.PaymentData, error)
-	GetPopular(ctx context.Context, input model.GetPopularInput) (*model.PopularData, error)
+	GetPopular(ctx context.Context, input model.GetPopularInput) (*model.Popular, error)
+	GetAllPopular(ctx context.Context, input model.GetPopularInput) (*model.PopularData, error)
 	GetPromotion(ctx context.Context, input model.PromotionInput) (*model.PromotionData, error)
 }
 type RoomsResolver interface {
@@ -2011,54 +2018,68 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PlacesData.Places(childComplexity), true
 
-	case "PopularData.count":
-		if e.complexity.PopularData.Count == nil {
+	case "Popular.count":
+		if e.complexity.Popular.Count == nil {
 			break
 		}
 
-		return e.complexity.PopularData.Count(childComplexity), true
+		return e.complexity.Popular.Count(childComplexity), true
 
-	case "PopularData.createdAt":
-		if e.complexity.PopularData.CreatedAt == nil {
+	case "Popular.createdAt":
+		if e.complexity.Popular.CreatedAt == nil {
 			break
 		}
 
-		return e.complexity.PopularData.CreatedAt(childComplexity), true
+		return e.complexity.Popular.CreatedAt(childComplexity), true
 
-	case "PopularData.image":
-		if e.complexity.PopularData.Image == nil {
+	case "Popular.image":
+		if e.complexity.Popular.Image == nil {
 			break
 		}
 
-		return e.complexity.PopularData.Image(childComplexity), true
+		return e.complexity.Popular.Image(childComplexity), true
 
-	case "PopularData.link":
-		if e.complexity.PopularData.Link == nil {
+	case "Popular.link":
+		if e.complexity.Popular.Link == nil {
 			break
 		}
 
-		return e.complexity.PopularData.Link(childComplexity), true
+		return e.complexity.Popular.Link(childComplexity), true
 
-	case "PopularData.status":
-		if e.complexity.PopularData.Status == nil {
+	case "Popular.name":
+		if e.complexity.Popular.Name == nil {
 			break
 		}
 
-		return e.complexity.PopularData.Status(childComplexity), true
+		return e.complexity.Popular.Name(childComplexity), true
 
-	case "PopularData.title":
-		if e.complexity.PopularData.Title == nil {
+	case "Popular.status":
+		if e.complexity.Popular.Status == nil {
 			break
 		}
 
-		return e.complexity.PopularData.Title(childComplexity), true
+		return e.complexity.Popular.Status(childComplexity), true
 
-	case "PopularData.updatedAt":
-		if e.complexity.PopularData.UpdatedAt == nil {
+	case "Popular.updatedAt":
+		if e.complexity.Popular.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.PopularData.UpdatedAt(childComplexity), true
+		return e.complexity.Popular.UpdatedAt(childComplexity), true
+
+	case "PopularData.data":
+		if e.complexity.PopularData.Data == nil {
+			break
+		}
+
+		return e.complexity.PopularData.Data(childComplexity), true
+
+	case "PopularData.pagination":
+		if e.complexity.PopularData.Pagination == nil {
+			break
+		}
+
+		return e.complexity.PopularData.Pagination(childComplexity), true
 
 	case "PromotionData.createdAt":
 		if e.complexity.PromotionData.CreatedAt == nil {
@@ -2113,6 +2134,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.CheckRate(childComplexity, args["input"].(model.CheckRateInput)), true
+
+	case "Query.getAllPopular":
+		if e.complexity.Query.GetAllPopular == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getAllPopular_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetAllPopular(childComplexity, args["input"].(model.GetPopularInput)), true
 
 	case "Query.getAvailability":
 		if e.complexity.Query.GetAvailability == nil {
@@ -3412,7 +3445,12 @@ extend type Mutation {
 # GraphQL schema Type
 # Popular
 type PopularData {
-  title: String
+  data: [Popular!]!
+  pagination: PaginationType!
+}
+
+type Popular {
+  name: String
   image: String
   link: String
   count: Int
@@ -3425,13 +3463,15 @@ type PopularData {
 # GetPopularInput
 input GetPopularInput {
   language: LanguageEnum!
+  pagination: PaginationInput!
 }
 
 # GraphQl schema Input
 
 # Query
 extend type Query {
-  getPopular(input: GetPopularInput!): PopularData!
+  getPopular(input: GetPopularInput!): Popular!
+  getAllPopular(input: GetPopularInput!): PopularData!
 }
 
 # Mutation
@@ -3699,6 +3739,21 @@ func (ec *executionContext) field_Query_checkRate_args(ctx context.Context, rawA
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNCheckRateInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐCheckRateInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getAllPopular_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.GetPopularInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNGetPopularInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐGetPopularInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -12858,8 +12913,8 @@ func (ec *executionContext) fieldContext_PlacesData_places(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _PopularData_title(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PopularData_title(ctx, field)
+func (ec *executionContext) _Popular_name(ctx context.Context, field graphql.CollectedField, obj *model.Popular) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Popular_name(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -12872,7 +12927,7 @@ func (ec *executionContext) _PopularData_title(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Title, nil
+		return obj.Name, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12886,9 +12941,9 @@ func (ec *executionContext) _PopularData_title(ctx context.Context, field graphq
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PopularData_title(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Popular_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "PopularData",
+		Object:     "Popular",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -12899,8 +12954,8 @@ func (ec *executionContext) fieldContext_PopularData_title(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _PopularData_image(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PopularData_image(ctx, field)
+func (ec *executionContext) _Popular_image(ctx context.Context, field graphql.CollectedField, obj *model.Popular) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Popular_image(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -12927,9 +12982,9 @@ func (ec *executionContext) _PopularData_image(ctx context.Context, field graphq
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PopularData_image(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Popular_image(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "PopularData",
+		Object:     "Popular",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -12940,8 +12995,8 @@ func (ec *executionContext) fieldContext_PopularData_image(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _PopularData_link(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PopularData_link(ctx, field)
+func (ec *executionContext) _Popular_link(ctx context.Context, field graphql.CollectedField, obj *model.Popular) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Popular_link(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -12968,9 +13023,9 @@ func (ec *executionContext) _PopularData_link(ctx context.Context, field graphql
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PopularData_link(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Popular_link(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "PopularData",
+		Object:     "Popular",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -12981,8 +13036,8 @@ func (ec *executionContext) fieldContext_PopularData_link(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _PopularData_count(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PopularData_count(ctx, field)
+func (ec *executionContext) _Popular_count(ctx context.Context, field graphql.CollectedField, obj *model.Popular) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Popular_count(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -13009,9 +13064,9 @@ func (ec *executionContext) _PopularData_count(ctx context.Context, field graphq
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PopularData_count(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Popular_count(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "PopularData",
+		Object:     "Popular",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -13022,8 +13077,8 @@ func (ec *executionContext) fieldContext_PopularData_count(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _PopularData_status(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PopularData_status(ctx, field)
+func (ec *executionContext) _Popular_status(ctx context.Context, field graphql.CollectedField, obj *model.Popular) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Popular_status(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -13050,9 +13105,9 @@ func (ec *executionContext) _PopularData_status(ctx context.Context, field graph
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PopularData_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Popular_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "PopularData",
+		Object:     "Popular",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -13063,8 +13118,8 @@ func (ec *executionContext) fieldContext_PopularData_status(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _PopularData_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PopularData_createdAt(ctx, field)
+func (ec *executionContext) _Popular_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Popular) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Popular_createdAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -13091,9 +13146,9 @@ func (ec *executionContext) _PopularData_createdAt(ctx context.Context, field gr
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PopularData_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Popular_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "PopularData",
+		Object:     "Popular",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -13104,8 +13159,8 @@ func (ec *executionContext) fieldContext_PopularData_createdAt(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _PopularData_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PopularData_updatedAt(ctx, field)
+func (ec *executionContext) _Popular_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Popular) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Popular_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -13132,14 +13187,126 @@ func (ec *executionContext) _PopularData_updatedAt(ctx context.Context, field gr
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_PopularData_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Popular_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Popular",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PopularData_data(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PopularData_data(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Data, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Popular)
+	fc.Result = res
+	return ec.marshalNPopular2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopularᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PopularData_data(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "PopularData",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_Popular_name(ctx, field)
+			case "image":
+				return ec.fieldContext_Popular_image(ctx, field)
+			case "link":
+				return ec.fieldContext_Popular_link(ctx, field)
+			case "count":
+				return ec.fieldContext_Popular_count(ctx, field)
+			case "status":
+				return ec.fieldContext_Popular_status(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Popular_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Popular_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Popular", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _PopularData_pagination(ctx context.Context, field graphql.CollectedField, obj *model.PopularData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PopularData_pagination(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Pagination, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PaginationType)
+	fc.Result = res
+	return ec.marshalNPaginationType2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPaginationType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PopularData_pagination(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PopularData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "page":
+				return ec.fieldContext_PaginationType_page(ctx, field)
+			case "pageSize":
+				return ec.fieldContext_PaginationType_pageSize(ctx, field)
+			case "total":
+				return ec.fieldContext_PaginationType_total(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PaginationType", field.Name)
 		},
 	}
 	return fc, nil
@@ -13960,9 +14127,9 @@ func (ec *executionContext) _Query_getPopular(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.PopularData)
+	res := resTmp.(*model.Popular)
 	fc.Result = res
-	return ec.marshalNPopularData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopularData(ctx, field.Selections, res)
+	return ec.marshalNPopular2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopular(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPopular(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13973,20 +14140,81 @@ func (ec *executionContext) fieldContext_Query_getPopular(ctx context.Context, f
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "title":
-				return ec.fieldContext_PopularData_title(ctx, field)
+			case "name":
+				return ec.fieldContext_Popular_name(ctx, field)
 			case "image":
-				return ec.fieldContext_PopularData_image(ctx, field)
+				return ec.fieldContext_Popular_image(ctx, field)
 			case "link":
-				return ec.fieldContext_PopularData_link(ctx, field)
+				return ec.fieldContext_Popular_link(ctx, field)
 			case "count":
-				return ec.fieldContext_PopularData_count(ctx, field)
+				return ec.fieldContext_Popular_count(ctx, field)
 			case "status":
-				return ec.fieldContext_PopularData_status(ctx, field)
+				return ec.fieldContext_Popular_status(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_PopularData_createdAt(ctx, field)
+				return ec.fieldContext_Popular_createdAt(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_PopularData_updatedAt(ctx, field)
+				return ec.fieldContext_Popular_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Popular", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getPopular_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getAllPopular(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getAllPopular(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetAllPopular(rctx, fc.Args["input"].(model.GetPopularInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PopularData)
+	fc.Result = res
+	return ec.marshalNPopularData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopularData(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getAllPopular(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "data":
+				return ec.fieldContext_PopularData_data(ctx, field)
+			case "pagination":
+				return ec.fieldContext_PopularData_pagination(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type PopularData", field.Name)
 		},
@@ -13998,7 +14226,7 @@ func (ec *executionContext) fieldContext_Query_getPopular(ctx context.Context, f
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_getPopular_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_getAllPopular_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -19249,7 +19477,7 @@ func (ec *executionContext) unmarshalInputGetPopularInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"language"}
+	fieldsInOrder := [...]string{"language", "pagination"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -19261,6 +19489,14 @@ func (ec *executionContext) unmarshalInputGetPopularInput(ctx context.Context, o
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("language"))
 			it.Language, err = ec.unmarshalNLanguageEnum2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐLanguageEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "pagination":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pagination"))
+			it.Pagination, err = ec.unmarshalNPaginationInput2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPaginationInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -21734,6 +21970,55 @@ func (ec *executionContext) _PlacesData(ctx context.Context, sel ast.SelectionSe
 	return out
 }
 
+var popularImplementors = []string{"Popular"}
+
+func (ec *executionContext) _Popular(ctx context.Context, sel ast.SelectionSet, obj *model.Popular) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, popularImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Popular")
+		case "name":
+
+			out.Values[i] = ec._Popular_name(ctx, field, obj)
+
+		case "image":
+
+			out.Values[i] = ec._Popular_image(ctx, field, obj)
+
+		case "link":
+
+			out.Values[i] = ec._Popular_link(ctx, field, obj)
+
+		case "count":
+
+			out.Values[i] = ec._Popular_count(ctx, field, obj)
+
+		case "status":
+
+			out.Values[i] = ec._Popular_status(ctx, field, obj)
+
+		case "createdAt":
+
+			out.Values[i] = ec._Popular_createdAt(ctx, field, obj)
+
+		case "updatedAt":
+
+			out.Values[i] = ec._Popular_updatedAt(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var popularDataImplementors = []string{"PopularData"}
 
 func (ec *executionContext) _PopularData(ctx context.Context, sel ast.SelectionSet, obj *model.PopularData) graphql.Marshaler {
@@ -21744,34 +22029,20 @@ func (ec *executionContext) _PopularData(ctx context.Context, sel ast.SelectionS
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("PopularData")
-		case "title":
+		case "data":
 
-			out.Values[i] = ec._PopularData_title(ctx, field, obj)
+			out.Values[i] = ec._PopularData_data(ctx, field, obj)
 
-		case "image":
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "pagination":
 
-			out.Values[i] = ec._PopularData_image(ctx, field, obj)
+			out.Values[i] = ec._PopularData_pagination(ctx, field, obj)
 
-		case "link":
-
-			out.Values[i] = ec._PopularData_link(ctx, field, obj)
-
-		case "count":
-
-			out.Values[i] = ec._PopularData_count(ctx, field, obj)
-
-		case "status":
-
-			out.Values[i] = ec._PopularData_status(ctx, field, obj)
-
-		case "createdAt":
-
-			out.Values[i] = ec._PopularData_createdAt(ctx, field, obj)
-
-		case "updatedAt":
-
-			out.Values[i] = ec._PopularData_updatedAt(ctx, field, obj)
-
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -22018,6 +22289,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getPopular(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "getAllPopular":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getAllPopular(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -23394,6 +23688,64 @@ func (ec *executionContext) marshalNPlacesData2ᚖgithubᚗcomᚋoasisᚑprime�
 		return graphql.Null
 	}
 	return ec._PlacesData(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNPopular2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopular(ctx context.Context, sel ast.SelectionSet, v model.Popular) graphql.Marshaler {
+	return ec._Popular(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPopular2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopularᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Popular) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNPopular2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopular(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNPopular2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopular(ctx context.Context, sel ast.SelectionSet, v *model.Popular) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Popular(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNPopularData2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐPopularData(ctx context.Context, sel ast.SelectionSet, v model.PopularData) graphql.Marshaler {

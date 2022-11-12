@@ -6,6 +6,7 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/memberhdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/paymenthdl"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/popularhdl"
 )
 
 // This file will not be regenerated automatically.
@@ -18,4 +19,5 @@ type Resolver struct {
 	HotelsHandler    *hotelshdl.Handler
 	GoogleHandler    *googlehdl.Handler
 	PaymentHandler   *paymenthdl.Handler
+	PopularHandler   *popularhdl.Handler
 }

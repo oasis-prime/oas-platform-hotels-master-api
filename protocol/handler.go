@@ -8,6 +8,7 @@ import (
 	"github.com/oasis-prime/oas-platform-core/http/hotelbedshttp"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
+	"github.com/oasis-prime/oas-platform-core/repositories/masterrepo"
 	"github.com/oasis-prime/oas-platform-firebase-core/repositories/firebaserepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/bookingserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/googleserv"
@@ -15,11 +16,13 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelsserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/memberserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/paymentserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/popularserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/googlehdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelbedshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/memberhdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/paymenthdl"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/popularhdl"
 )
 
 func paymentHandlerInit() *paymenthdl.Handler {
@@ -125,4 +128,11 @@ func memberHandlerInit() *memberhdl.Handler {
 	firebaseMemberRepo := firebaserepo.NewFirebaseMemberRepo(app, client)
 	memberServ := memberserv.NewService(memberRepo, pub, firebaseMemberRepo)
 	return memberhdl.NewHandler(memberServ)
+}
+
+func popularHandlerInit() *popularhdl.Handler {
+	repo := masterrepo.NewPopularRepo(db)
+	popularServ := popularserv.NewService(repo)
+
+	return popularhdl.NewHandler(popularServ)
 }

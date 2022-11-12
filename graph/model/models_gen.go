@@ -269,7 +269,8 @@ type GetPlacesInput struct {
 }
 
 type GetPopularInput struct {
-	Language LanguageEnum `json:"language"`
+	Language   LanguageEnum     `json:"language"`
+	Pagination *PaginationInput `json:"pagination"`
 }
 
 type Hotel struct {
@@ -460,14 +461,19 @@ type PlacesData struct {
 	Places []*Places `json:"places"`
 }
 
-type PopularData struct {
-	Title     *string `json:"title"`
+type Popular struct {
+	Name      *string `json:"name"`
 	Image     *string `json:"image"`
 	Link      *string `json:"link"`
 	Count     *int    `json:"count"`
 	Status    *string `json:"status"`
 	CreatedAt *string `json:"createdAt"`
 	UpdatedAt *string `json:"updatedAt"`
+}
+
+type PopularData struct {
+	Data       []*Popular      `json:"data"`
+	Pagination *PaginationType `json:"pagination"`
 }
 
 type PromotionData struct {
