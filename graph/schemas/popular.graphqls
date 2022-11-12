@@ -1,0 +1,35 @@
+# GraphQL Basic enum
+
+# GraphQL schema Type
+# Popular
+type PopularData {
+  data: [Popular!]!
+  pagination: PaginationType!
+}
+
+type Popular {
+  name: String
+  image: String
+  link: String
+  count: Int
+  status: String
+  createdAt: String
+  updatedAt: String
+}
+
+# GraphQl schema Input
+# GetPopularInput
+input GetPopularInput {
+  language: LanguageEnum!
+  pagination: PaginationInput!
+}
+
+# GraphQl schema Input
+
+# Query
+extend type Query {
+  getPopular(input: GetPopularInput!): Popular!
+  getAllPopular(input: GetPopularInput!): PopularData!
+}
+
+# Mutation

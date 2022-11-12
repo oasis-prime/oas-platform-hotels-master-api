@@ -10,11 +10,11 @@ type MasterAccommodationsDescriptionRepository interface {
 }
 
 type MasterAccommodationsRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Accommodations, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Accommodations, totalRows int64, err error)
 }
 
 type MasterAmenitiesRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Amenities, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Amenities, totalRows int64, err error)
 }
 
 type MasterBoardsDescriptionRepository interface {
@@ -22,7 +22,7 @@ type MasterBoardsDescriptionRepository interface {
 }
 
 type MasterBoardsRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Boards, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Boards, totalRows int64, err error)
 }
 
 type MasterCategoriesDescriptionRepository interface {
@@ -30,7 +30,7 @@ type MasterCategoriesDescriptionRepository interface {
 }
 
 type MasterCategoriesRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Categories, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Categories, totalRows int64, err error)
 }
 
 type MasterChainsDescriptionRepository interface {
@@ -38,7 +38,7 @@ type MasterChainsDescriptionRepository interface {
 }
 
 type MasterChainsRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Chains, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Chains, totalRows int64, err error)
 }
 
 type MasterCurrenciesDescriptionRepository interface {
@@ -46,7 +46,7 @@ type MasterCurrenciesDescriptionRepository interface {
 }
 
 type MasterCurrenciesRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Currencies, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Currencies, totalRows int64, err error)
 }
 
 type MasterFacilitiesDescriptionRepository interface {
@@ -54,7 +54,7 @@ type MasterFacilitiesDescriptionRepository interface {
 }
 
 type MasterFacilityTypologiesRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.FacilityTypologies, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.FacilityTypologies, totalRows int64, err error)
 }
 
 type MasterFacilityGroupsDescriptionRepository interface {
@@ -62,11 +62,11 @@ type MasterFacilityGroupsDescriptionRepository interface {
 }
 
 type MasterFacilityGroupsRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.FacilityGroups, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.FacilityGroups, totalRows int64, err error)
 }
 
 type MasterFacilitiesRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Facilities, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Facilities, totalRows int64, err error)
 }
 
 type MasterGroupCategoriesDescriptionRepository interface {
@@ -78,11 +78,11 @@ type MasterGroupCategoriesNameRepository interface {
 }
 
 type MasterGroupCategoriesRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.GroupCategories, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.GroupCategories, totalRows int64, err error)
 }
 
 type MasterHotelTypeRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.HotelType, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.HotelType, totalRows int64, err error)
 }
 
 type MasterImageTypeDescriptionRepository interface {
@@ -90,7 +90,7 @@ type MasterImageTypeDescriptionRepository interface {
 }
 
 type MasterImageTypesRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.ImageTypes, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.ImageTypes, totalRows int64, err error)
 }
 
 type MasterIssuesDescriptionRepository interface {
@@ -102,7 +102,7 @@ type MasterIssuesNameRepository interface {
 }
 
 type MasterIssuesRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Issues, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Issues, totalRows int64, err error)
 }
 
 type MasterLanguagesDescriptionRepository interface {
@@ -110,7 +110,7 @@ type MasterLanguagesDescriptionRepository interface {
 }
 
 type MasterLanguagesRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Languages, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Languages, totalRows int64, err error)
 }
 
 type MasterPromotionsDescriptionRepository interface {
@@ -122,7 +122,7 @@ type MasterPromotionsNameRepository interface {
 }
 
 type MasterPromotionsRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Promotions, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Promotions, totalRows int64, err error)
 }
 
 type MasterRoomBedsTypeRepository interface {
@@ -146,11 +146,11 @@ type MasterSegmentsDescriptionRepository interface {
 }
 
 type MasterSegmentsRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Segments, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Segments, totalRows int64, err error)
 }
 
 type MasterSurroundingsRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Surroundings, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Surroundings, totalRows int64, err error)
 }
 
 type MasterTerminalsDescriptionRepository interface {
@@ -162,5 +162,9 @@ type MasterTerminalsNameRepository interface {
 }
 
 type MasterTerminalsRepository interface {
-	GetAll(condition masterdm.GetAllBasicRequest) (results []*masterrepo.Terminals, totalRows int64, err error)
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Terminals, totalRows int64, err error)
+}
+
+type MasterPopularRepository interface {
+	GetAll(condition masterdm.GetCustomerPopularRequest) (results []*masterrepo.Popular, totalRows int64, err error)
 }

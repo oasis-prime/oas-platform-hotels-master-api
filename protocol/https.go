@@ -29,6 +29,7 @@ func graphqlHandler() gin.HandlerFunc {
 	hotelsHandler := hotelsHandlerInit()
 	googleHandler := googleHandlerInit()
 	paymentHandler := paymentHandlerInit()
+	popularHandler := popularHandlerInit()
 
 	h := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
@@ -39,6 +40,7 @@ func graphqlHandler() gin.HandlerFunc {
 					HotelsHandler:    hotelsHandler,
 					GoogleHandler:    googleHandler,
 					PaymentHandler:   paymentHandler,
+					PopularHandler:   popularHandler,
 				},
 			},
 		),
