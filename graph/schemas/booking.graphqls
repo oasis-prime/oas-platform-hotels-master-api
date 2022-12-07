@@ -83,7 +83,13 @@ type B_ModificationPolicies {
   modification: Boolean
 }
 
+# GraphQl schema Type
 type BookingData {
+  data: [Booking!]!
+  pagination: PaginationType!
+}
+
+type Booking {
   reference: String
   cancellationReference: String
   clientReference: String
@@ -109,6 +115,13 @@ input GetBookingInput {
 }
 
 # GraphQl schema Input
+# BookingsHistoryInput
+input BookingsHistoryInput {
+  language: LanguageEnum!
+  pagination: PaginationInput!
+}
+
+# GraphQl schema Input
 # BookingInput
 input BookingInput {
   clientReference: String
@@ -117,11 +130,12 @@ input BookingInput {
 
 # Query
 extend type Query {
-  getBooking(input: GetBookingInput!): BookingData!
+  getBooking(input: GetBookingInput!): Booking!
+  getBookingsHistory(input: BookingsHistoryInput!): BookingData!
 }
 
 # Mutation
 
 extend type Mutation {
-  booking(input: BookingInput!): BookingData!
+  booking(input: BookingInput!): Booking!
 }

@@ -31,16 +31,21 @@ func graphqlHandler() gin.HandlerFunc {
 	paymentHandler := paymentHandlerInit()
 	popularHandler := popularHandlerInit()
 
+	subscriptionHandler := subscriptionHandlerInit()
+	tickerHandler := tickerHandlerInit()
+
 	h := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
 			generated.Config{
 				Resolvers: &graph.Resolver{
-					MemberHandler:    memberHandler,
-					HotelbedsHandler: hotelbedsHandler,
-					HotelsHandler:    hotelsHandler,
-					GoogleHandler:    googleHandler,
-					PaymentHandler:   paymentHandler,
-					PopularHandler:   popularHandler,
+					MemberHandler:       memberHandler,
+					HotelbedsHandler:    hotelbedsHandler,
+					HotelsHandler:       hotelsHandler,
+					GoogleHandler:       googleHandler,
+					PaymentHandler:      paymentHandler,
+					PopularHandler:      popularHandler,
+					SubscriptionHandler: subscriptionHandler,
+					TickerHandler:       tickerHandler,
 				},
 			},
 		),

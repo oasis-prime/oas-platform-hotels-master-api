@@ -10,7 +10,7 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 )
 
-// GetPlaces is the resolver for the getPlaces field.
-func (r *queryResolver) GetPlaces(ctx context.Context, input model.GetPlacesInput) (*model.PlacesData, error) {
-	return r.GoogleHandler.GetPlaces(ctx, input)
+// GetSubscription is the resolver for the getSubscription field.
+func (r *queryResolver) GetSubscription(ctx context.Context, input model.SubscriptionInput) (*model.SubscriptionData, error) {
+	return r.SubscriptionHandler.GetSubscription(ctx, input)
 }

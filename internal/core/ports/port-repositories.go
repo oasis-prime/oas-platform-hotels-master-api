@@ -100,3 +100,23 @@ type PopularRepository interface {
 	GetAll(condition masterdm.GetCustomerPopularRequest) (results []*masterrepo.Popular, totalRows int64, err error)
 	Get(condition masterdm.GetCustomerPopularRequest) (record *masterrepo.Popular, err error)
 }
+
+type TickerRepository interface {
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Ticker, totalRows int64, err error)
+	Get(argID uint) (record *masterrepo.Ticker, err error)
+	Create(record *masterrepo.Ticker) (result *masterrepo.Ticker, RowsAffected int64, err error)
+	Update(argID uint, updated *masterrepo.Ticker) (result *masterrepo.Ticker, RowsAffected int64, err error)
+	Delete(argID uint32) (rowsAffected int64, err error)
+}
+
+type CustomerTickerRepository interface {
+	GetAll(condition customerdm.GetAllRequestBasic) (results []*customerrepo.CustomerTicker, totalRows int64, err error)
+	Get(argID uint) (record *customerrepo.CustomerTicker, err error)
+	Create(record *customerrepo.CustomerTicker) (result *customerrepo.CustomerTicker, RowsAffected int64, err error)
+	Update(argID uint, updated *customerrepo.CustomerTicker) (result *customerrepo.CustomerTicker, RowsAffected int64, err error)
+}
+
+type SubscriptionRepository interface {
+	GetAll(condition customerdm.GetAllRequestBasic) (results []*customerrepo.CustomerSubscription, totalRows int64, err error)
+	Get(argID uint) (record *customerrepo.CustomerSubscription, err error)
+}

@@ -73,3 +73,13 @@ type PopularService interface {
 	GetAll(condition masterdm.GetCustomerPopularRequest) (results []*masterrepo.Popular, totalRows int64, err error)
 	Get(condition masterdm.GetCustomerPopularRequest) (record *masterrepo.Popular, err error)
 }
+
+type TickerService interface {
+	TickerGetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Ticker, totalRows int64, err error)
+	TickerGet(argID uint) (record *masterrepo.Ticker, err error)
+	CustomerTickerGetAll(condition customerdm.GetAllRequestBasic) (results []*customerrepo.CustomerTicker, totalRows int64, err error)
+	CustomerTickerGet(argID uint) (record *customerrepo.CustomerTicker, err error)
+}
+
+type SubscriptionService interface {
+}

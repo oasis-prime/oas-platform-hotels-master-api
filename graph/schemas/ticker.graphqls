@@ -1,0 +1,54 @@
+# GraphQL Basic enum
+
+# GraphQL schema Type
+# Ticker
+type TickerData {
+  data: [Ticker!]!
+  pagination: PaginationType!
+}
+
+type Ticker {
+  id: Int!
+  name: String
+  description: String
+  image: String
+  link: String
+  count: Int!
+}
+
+# GraphQl schema Input
+# TickerInput
+input GetTickerInput {
+  language: LanguageEnum!
+}
+
+input GetTickersInput {
+  language: LanguageEnum!
+  pagination: PaginationInput!
+}
+
+input TickerInput {
+  reference: String
+  clientReference: String
+  creationDate: String
+  creationUser: String
+  remark: String
+  billImage: String
+  totalSellingRate: String
+  totalNet: String
+  pendingAmount: String
+  currency: String
+}
+
+# GraphQl schema Input
+
+# Query
+extend type Query {
+  getTickers(input: GetTickersInput!): TickerData!
+  getTicker(input: GetTickerInput!): Ticker!
+}
+
+# Mutation
+extend type Mutation {
+  Ticker(input: TickerInput!): Ticker!
+}
