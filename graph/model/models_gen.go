@@ -176,7 +176,7 @@ type BSupplier struct {
 	VatNumber *string `json:"vatNumber"`
 }
 
-type BookingData struct {
+type Booking struct {
 	Reference             *string                `json:"reference"`
 	CancellationReference *string                `json:"cancellationReference"`
 	ClientReference       *string                `json:"clientReference"`
@@ -194,9 +194,19 @@ type BookingData struct {
 	ModificationPolicies  *BModificationPolicies `json:"modificationPolicies"`
 }
 
+type BookingData struct {
+	Data       []*Booking      `json:"data"`
+	Pagination *PaginationType `json:"pagination"`
+}
+
 type BookingInput struct {
 	ClientReference *string      `json:"clientReference"`
 	Language        LanguageEnum `json:"language"`
+}
+
+type BookingsHistoryInput struct {
+	Language   LanguageEnum     `json:"language"`
+	Pagination *PaginationInput `json:"pagination"`
 }
 
 type CheckRateData struct {
@@ -269,6 +279,15 @@ type GetPlacesInput struct {
 }
 
 type GetPopularInput struct {
+	Language   LanguageEnum     `json:"language"`
+	Pagination *PaginationInput `json:"pagination"`
+}
+
+type GetTickerInput struct {
+	Language LanguageEnum `json:"language"`
+}
+
+type GetTickersInput struct {
 	Language   LanguageEnum     `json:"language"`
 	Pagination *PaginationInput `json:"pagination"`
 }
@@ -588,6 +607,44 @@ type Rooms struct {
 type StaysInput struct {
 	Offset int `json:"offset"`
 	Limit  int `json:"limit"`
+}
+
+type SubscriptionData struct {
+	PrimaryEmail *string `json:"primaryEmail"`
+	Email        *string `json:"email"`
+	Status       *string `json:"status"`
+	Expired      *string `json:"expired"`
+}
+
+type SubscriptionInput struct {
+	Language LanguageEnum `json:"language"`
+}
+
+type Ticker struct {
+	ID          int     `json:"id"`
+	Name        *string `json:"name"`
+	Description *string `json:"description"`
+	Image       *string `json:"image"`
+	Link        *string `json:"link"`
+	Count       int     `json:"count"`
+}
+
+type TickerData struct {
+	Data       []*Ticker       `json:"data"`
+	Pagination *PaginationType `json:"pagination"`
+}
+
+type TickerInput struct {
+	Reference        *string `json:"reference"`
+	ClientReference  *string `json:"clientReference"`
+	CreationDate     *string `json:"creationDate"`
+	CreationUser     *string `json:"creationUser"`
+	Remark           *string `json:"remark"`
+	BillImage        *string `json:"billImage"`
+	TotalSellingRate *string `json:"totalSellingRate"`
+	TotalNet         *string `json:"totalNet"`
+	PendingAmount    *string `json:"pendingAmount"`
+	Currency         *string `json:"currency"`
 }
 
 type HotelTypeEnum string

@@ -294,8 +294,8 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 firebase.google.com/go/v4 v4.8.0/go.mod h1:y+j6xX7BgBco/XaN+YExIBVm6pzvYutheDV3nprvbWc=
 firebase.google.com/go/v4 v4.10.0 h1:dgK/8uwfJbzc5LZK/GyRRfIkZEDObN9q0kgEXsjlXN4=
 firebase.google.com/go/v4 v4.10.0/go.mod h1:m0gLwPY9fxKggizzglgCNWOGnFnVPifLpqZzo5u3e/A=
-github.com/99designs/gqlgen v0.17.20 h1:O7WzccIhKB1dm+7g6dhQcULINftfiLSBg2l/mwbpJMw=
-github.com/99designs/gqlgen v0.17.20/go.mod h1:Mja2HI23kWT1VRH09hvWshFgOzKswpO20o4ScpJIES4=
+github.com/99designs/gqlgen v0.17.21 h1:JCFyw3RdXwQlQCq6To5Z/KNaGDJigQt43eLvtqhH0yE=
+github.com/99designs/gqlgen v0.17.21/go.mod h1:BMhYIhe4bp7OlCo5I2PnowSK/Wimpv/YlxfNkqZGwLo=
 github.com/Azure/azure-sdk-for-go/sdk/azcore v0.19.0/go.mod h1:h6H6c8enJmmocHUbLiiGY6sx7f9i+X3m1CHdd5c6Rdw=
 github.com/Azure/azure-sdk-for-go/sdk/azidentity v0.11.0/go.mod h1:HcM1YX14R7CJcghJGOYCgdezslRSVzqwLf/q+4Y2r/0=
 github.com/Azure/azure-sdk-for-go/sdk/internal v0.7.0/go.mod h1:yqy467j36fJxcRV2TzfVZ1pCb5vxm4BtZPUdYWe/Xo8=
@@ -681,7 +681,6 @@ github.com/mitchellh/go-homedir v1.1.0/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrk
 github.com/mitchellh/go-testing-interface v1.0.0/go.mod h1:kRemZodwjscx+RGhAo8eIhFbs2+BFgRtFPeD/KE+zxI=
 github.com/mitchellh/mapstructure v0.0.0-20160808181253-ca63d7c062ee/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
 github.com/mitchellh/mapstructure v1.1.2/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
-github.com/mitchellh/mapstructure v1.3.1/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/mitchellh/mapstructure v1.4.3/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
 github.com/mitchellh/mapstructure v1.5.0 h1:jeMsZIYE/09sWLaz43PL7Gy6RuMjD2eJVyuac5Z2hdY=
 github.com/mitchellh/mapstructure v1.5.0/go.mod h1:bFUtVrKA4DC2yAKiSyO/QUcy7e+RRV2QTWOzhPopBRo=
@@ -697,8 +696,8 @@ github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRW
 github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
 github.com/nqd/flat v0.1.1 h1:sKa3CZipbb7WYD9tORSJD6Ylm/00f6D9Wse7+UkSa+4=
 github.com/nqd/flat v0.1.1/go.mod h1:FOuslZmNY082wVfVUUb7qAGWKl8z8Nor9FMg+Xj2Nss=
-github.com/oasis-prime/oas-platform-core v0.2.1 h1:tJbCvE+LG6iiyQfKJefHDe6dF/Q/UVmDrAr6yAwWgSk=
-github.com/oasis-prime/oas-platform-core v0.2.1/go.mod h1:VQr/ZpSNK4Rk8YbeUqYgZERQn3O0eoxRgUw2wgpVIzo=
+github.com/oasis-prime/oas-platform-core v0.2.2 h1:Y8/lv3X6EXnDBXzT0xp/lKUkZnTM53bBNuDmz8PPH9Q=
+github.com/oasis-prime/oas-platform-core v0.2.2/go.mod h1:VQr/ZpSNK4Rk8YbeUqYgZERQn3O0eoxRgUw2wgpVIzo=
 github.com/oasis-prime/oas-platform-firebase-core v1.0.1 h1:yBv65q0Ng6kOz7l+cnF4AU0fFLLGvkg5TO3elDGJXbc=
 github.com/oasis-prime/oas-platform-firebase-core v1.0.1/go.mod h1:soAg+Fbj4Rq2yfwQ2IPP70ZSLBDtSpa6ZXV1XXvOjCk=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=

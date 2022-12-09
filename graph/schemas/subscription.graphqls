@@ -1,0 +1,25 @@
+# GraphQL Basic enum
+
+# GraphQL schema Type
+# Subscription
+type SubscriptionData {
+  primaryEmail: String
+  email: String
+  status: String
+  expired: String
+}
+
+# GraphQl schema Input
+# SubscriptionInput
+input SubscriptionInput {
+  language: LanguageEnum!
+}
+
+# GraphQl schema Input
+
+# Query
+extend type Query {
+  getSubscription(input: SubscriptionInput!): SubscriptionData!
+}
+
+# Mutation

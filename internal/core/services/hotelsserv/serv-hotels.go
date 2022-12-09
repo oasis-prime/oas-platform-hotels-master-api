@@ -81,29 +81,32 @@ func (svc *service) GetHotels(
 		})
 	}
 
+	var keyword *[]string
+
 	if input.Keywords != nil {
-		rooms, adults, children := 0, 0, 0
+		keyword = &input.Keywords.Keyword
+	} else {
+		keyword = &[]string{""}
+	}
+	rooms, adults, children := 0, 0, 0
 
-		if input.Occupancies != nil {
-			rooms = input.Occupancies.Rooms
-			adults = input.Occupancies.Adults
-			children = input.Occupancies.Children
-		}
-
-		return svc.repoHotels.GetAll(hoteldm.GetAllHotelRequest{
-			GetAllRequestBasic: hoteldm.GetAllRequestBasic{
-				Page:     input.Pagination.Page,
-				PageSize: pageSize,
-				Keyword:  &input.Keywords.Keyword,
-				Language: (*langenums.Language)(&input.Language),
-			},
-			Rooms:    rooms,
-			Adults:   adults,
-			Children: children,
-		})
+	if input.Occupancies != nil {
+		rooms = input.Occupancies.Rooms
+		adults = input.Occupancies.Adults
+		children = input.Occupancies.Children
 	}
 
-	return nil, 0, nil
+	return svc.repoHotels.GetAll(hoteldm.GetAllHotelRequest{
+		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
+			Page:     input.Pagination.Page,
+			PageSize: pageSize,
+			Keyword:  keyword,
+			Language: (*langenums.Language)(&input.Language),
+		},
+		Rooms:    rooms,
+		Adults:   adults,
+		Children: children,
+	})
 }
 
 func (svc *service) GetHotel(

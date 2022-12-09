@@ -17,12 +17,16 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/memberserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/paymentserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/popularserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/subscriptionserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/tickerserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/googlehdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelbedshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/hotelshdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/memberhdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/paymenthdl"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/popularhdl"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/subscriptionhdl"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/handlers/tickerhdl"
 )
 
 func paymentHandlerInit() *paymenthdl.Handler {
@@ -135,4 +139,20 @@ func popularHandlerInit() *popularhdl.Handler {
 	popularServ := popularserv.NewService(repo)
 
 	return popularhdl.NewHandler(popularServ)
+}
+
+func tickerHandlerInit() *tickerhdl.Handler {
+	tickerRepo := masterrepo.NewTickerRepo(db)
+	customerTickerRepo := customerrepo.NewCustomerTickergRepo(db)
+
+	tickerServ := tickerserv.NewService(tickerRepo, customerTickerRepo)
+
+	return tickerhdl.NewHandler(tickerServ)
+}
+
+func subscriptionHandlerInit() *subscriptionhdl.Handler {
+	repo := customerrepo.NewCustomerSubscriptionRepo(db)
+	serv := subscriptionserv.NewService(repo)
+
+	return subscriptionhdl.NewHandler(serv)
 }

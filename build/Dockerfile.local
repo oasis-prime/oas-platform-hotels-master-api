@@ -7,12 +7,14 @@ RUN apk update && apk upgrade && \
     apk add tzdata && \
     go install github.com/cosmtrek/air@latest && \
     go env -w GOPRIVATE=github.com/oasis-prime/oas-platform-core,github.com/oasis-prime/oas-platform-firebase-core && \ 
+    export GOPRIVATE=github.com/oasis-prime/oas-platform-core,github.com/oasis-prime/oas-platform-firebase-core && \ 
     GOCACHE=OFF
 
 ARG ACCESS_TOKEN
 ENV ACCESS_TOKEN=$ACCESS_TOKEN
 ENV TZ=Asia/Bangkok
 
-RUN git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
+RUN git config --global url."https://${ACCESS_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+# RUN git config --global url."https://${ACCESS_TOKEN}@github.com".insteadOf "https://github.com"
 
 ENTRYPOINT ["/go/bin/air"]

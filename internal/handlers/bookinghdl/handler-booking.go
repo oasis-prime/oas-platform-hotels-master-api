@@ -1,11 +1,9 @@
-package paymenthdl
+package bookinghdl
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/jinzhu/copier"
@@ -44,92 +42,6 @@ func NewHandler(
 const (
 	timeFormat = "2006-01-02"
 )
-
-func (h *Handler) GetPayment(ctx context.Context, input model.GetPaymentInput) (display *model.PaymentData, err error) {
-	argCode, err := strconv.ParseInt(input.OrderNumber, 10, 32)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = h.servPaymentService.GetPayment(int(argCode))
-	if err != nil {
-		return nil, err
-	}
-
-	response, err := h.servPaymentService.GetChillPay(uint(argCode))
-	if err != nil {
-		return nil, err
-	}
-
-	f, _ := json.Marshal(response)
-	fmt.Println(string(f))
-
-	return display, nil
-}
-
-// Payment(ctx context.Context, input model.PaymentInput) (*model.PaymentData, error)
-func (h *Handler) Payment(ctx context.Context, input model.PaymentInput) (display *model.PaymentData, err error) {
-
-	rate, err := h.servHotelbeds.CheckRate(&hotelbedsdm.CheckRatesRequest{
-		Rooms: []hotelbedsdm.RateKey{
-			{
-				RateKey: input.RateKey,
-			},
-		},
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	amount, err := strconv.ParseFloat(rate.Hotel.TotalNet, 10)
-	if err != nil {
-		return nil, err
-	}
-
-	startDate := time.Now()
-	expiredDate := time.Now().Add(time.Minute * 5)
-
-	condition := &chillpaydm.PaylinkGenerateRequest{
-		ProductImage:       "",
-		ProductName:        rate.Hotel.Name,
-		ProductDescription: rate.Hotel.ZoneName,
-		PaymentLimit:       "",
-		StartDate:          startDate.Format("02/01/2006 15:04:05"),
-		ExpiredDate:        expiredDate.Format("02/01/2006 15:04:05"),
-		Currency:           "THB",
-		Amount:             strings.Replace(rate.Hotel.TotalNet, ".", "", 3),
-	}
-
-	pay, err := h.servPaymentService.Generate(condition)
-
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = h.servPaymentService.CreatePayment(&customerrepo.CustomerPayment{
-		Email:       input.Email,
-		Name:        input.Name,
-		Surname:     input.Surname,
-		PhoneNumber: input.PhoneNumber,
-		RateKey:     input.RateKey,
-		PayLinkId:   pay.Data.PayLinkID,
-		Status:      pay.Data.Status,
-		Amount:      amount,
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	display = &model.PaymentData{
-		OrderNumber: fmt.Sprintf("%d", pay.Data.PayLinkID),
-		PaymentURL:  pay.Data.PaymentURL,
-		QRImage:     pay.Data.PaymentURL,
-	}
-
-	return display, nil
-}
 
 func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model.Booking, error) {
 	display := model.Booking{}
@@ -186,9 +98,6 @@ func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model
 		payment.TransactionDate = &transactionDate
 		payment.PaymentDate = &paymentDate
 
-		fmt.Println(getChillPay.Data)
-		fmt.Println(payment)
-
 		_, err = h.servPaymentService.UpdatePayment(payment.Code, payment)
 		if err != nil {
 			return nil, fmt.Errorf("%s", "UpdatePaymentError")
@@ -225,8 +134,6 @@ func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model
 			}
 		}
 
-		fmt.Println("running Success!!")
-
 		mb := &hotelbedsdm.BookingsRequest{
 			Language: hotelbedsdm.Language(input.Language),
 			Holder: hotelbedsdm.BookingHolder{
@@ -251,11 +158,8 @@ func (h *Handler) Booking(ctx context.Context, input model.BookingInput) (*model
 			return nil, err
 		}
 
-		fmt.Printf("booking: %v \n", booking)
-
 		createBooking := &customerrepo.CustomerBooking{}
 		copier.CopyWithOption(createBooking, &booking.Booking, copier.Option{IgnoreEmpty: true})
-		fmt.Printf("createBooking: %v \n", createBooking)
 
 		_, _, err = h.servBooking.Create(createBooking)
 		if err != nil {
