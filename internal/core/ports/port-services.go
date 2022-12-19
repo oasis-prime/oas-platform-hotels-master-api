@@ -7,6 +7,7 @@ import (
 	"github.com/oasis-prime/oas-platform-core/domain/hoteldm"
 	"github.com/oasis-prime/oas-platform-core/domain/masterdm"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
+	"github.com/oasis-prime/oas-platform-core/repositories/enums/langenums"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
 	"github.com/oasis-prime/oas-platform-core/repositories/masterrepo"
 	"github.com/oasis-prime/oas-platform-firebase-core/domain/firebasedm"
@@ -76,7 +77,7 @@ type PopularService interface {
 
 type TickerService interface {
 	TickerGetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.Ticker, totalRows int64, err error)
-	TickerGet(argID uint) (record *masterrepo.Ticker, err error)
+	TickerGet(argID uint, language langenums.Language) (record *masterrepo.Ticker, err error)
 	CustomerTickerGetAll(condition customerdm.GetAllRequestBasic) (results []*customerrepo.CustomerTicker, totalRows int64, err error)
 	CustomerTickerGet(argID uint) (record *customerrepo.CustomerTicker, err error)
 }

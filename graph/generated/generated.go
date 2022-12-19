@@ -507,12 +507,14 @@ type ComplexityRoot struct {
 	}
 
 	Ticker struct {
-		Count       func(childComplexity int) int
-		Description func(childComplexity int) int
-		ID          func(childComplexity int) int
-		Image       func(childComplexity int) int
-		Link        func(childComplexity int) int
-		Name        func(childComplexity int) int
+		Count            func(childComplexity int) int
+		Description      func(childComplexity int) int
+		ID               func(childComplexity int) int
+		Image            func(childComplexity int) int
+		Link             func(childComplexity int) int
+		Name             func(childComplexity int) int
+		TotalNet         func(childComplexity int) int
+		TotalSellingRate func(childComplexity int) int
 	}
 
 	TickerData struct {
@@ -2886,6 +2888,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Ticker.Name(childComplexity), true
 
+	case "Ticker.totalNet":
+		if e.complexity.Ticker.TotalNet == nil {
+			break
+		}
+
+		return e.complexity.Ticker.TotalNet(childComplexity), true
+
+	case "Ticker.totalSellingRate":
+		if e.complexity.Ticker.TotalSellingRate == nil {
+			break
+		}
+
+		return e.complexity.Ticker.TotalSellingRate(childComplexity), true
+
 	case "TickerData.data":
 		if e.complexity.TickerData.Data == nil {
 			break
@@ -3795,12 +3811,15 @@ type Ticker {
   image: String
   link: String
   count: Int!
+  totalSellingRate: Float!
+  totalNet: Float!
 }
 
 # GraphQl schema Input
 # TickerInput
 input GetTickerInput {
   language: LanguageEnum!
+  id: Int!
 }
 
 input GetTickersInput {
@@ -12939,6 +12958,10 @@ func (ec *executionContext) fieldContext_Mutation_Ticker(ctx context.Context, fi
 				return ec.fieldContext_Ticker_link(ctx, field)
 			case "count":
 				return ec.fieldContext_Ticker_count(ctx, field)
+			case "totalSellingRate":
+				return ec.fieldContext_Ticker_totalSellingRate(ctx, field)
+			case "totalNet":
+				return ec.fieldContext_Ticker_totalNet(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Ticker", field.Name)
 		},
@@ -15106,6 +15129,10 @@ func (ec *executionContext) fieldContext_Query_getTicker(ctx context.Context, fi
 				return ec.fieldContext_Ticker_link(ctx, field)
 			case "count":
 				return ec.fieldContext_Ticker_count(ctx, field)
+			case "totalSellingRate":
+				return ec.fieldContext_Ticker_totalSellingRate(ctx, field)
+			case "totalNet":
+				return ec.fieldContext_Ticker_totalNet(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Ticker", field.Name)
 		},
@@ -18450,6 +18477,94 @@ func (ec *executionContext) fieldContext_Ticker_count(ctx context.Context, field
 	return fc, nil
 }
 
+func (ec *executionContext) _Ticker_totalSellingRate(ctx context.Context, field graphql.CollectedField, obj *model.Ticker) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Ticker_totalSellingRate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalSellingRate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Ticker_totalSellingRate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Ticker",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Ticker_totalNet(ctx context.Context, field graphql.CollectedField, obj *model.Ticker) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Ticker_totalNet(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalNet, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Ticker_totalNet(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Ticker",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _TickerData_data(ctx context.Context, field graphql.CollectedField, obj *model.TickerData) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TickerData_data(ctx, field)
 	if err != nil {
@@ -18501,6 +18616,10 @@ func (ec *executionContext) fieldContext_TickerData_data(ctx context.Context, fi
 				return ec.fieldContext_Ticker_link(ctx, field)
 			case "count":
 				return ec.fieldContext_Ticker_count(ctx, field)
+			case "totalSellingRate":
+				return ec.fieldContext_Ticker_totalSellingRate(ctx, field)
+			case "totalNet":
+				return ec.fieldContext_Ticker_totalNet(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Ticker", field.Name)
 		},
@@ -20897,7 +21016,7 @@ func (ec *executionContext) unmarshalInputGetTickerInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"language"}
+	fieldsInOrder := [...]string{"language", "id"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -20909,6 +21028,14 @@ func (ec *executionContext) unmarshalInputGetTickerInput(ctx context.Context, ob
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("language"))
 			it.Language, err = ec.unmarshalNLanguageEnum2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐLanguageEnum(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -24704,6 +24831,20 @@ func (ec *executionContext) _Ticker(ctx context.Context, sel ast.SelectionSet, o
 		case "count":
 
 			out.Values[i] = ec._Ticker_count(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "totalSellingRate":
+
+			out.Values[i] = ec._Ticker_totalSellingRate(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "totalNet":
+
+			out.Values[i] = ec._Ticker_totalNet(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++

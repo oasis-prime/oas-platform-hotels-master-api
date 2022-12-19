@@ -65,9 +65,28 @@ func (h *Handler) GetTickers(ctx context.Context, input model.GetTickersInput) (
 }
 
 func (h *Handler) GetTicker(ctx context.Context, input model.GetTickerInput) (display *model.Ticker, err error) {
+	language := (*langenums.Language)(&input.Language)
+
+	record, err := h.servTicker.TickerGet(uint(input.ID), *language)
+	if err != nil {
+		return display, err
+	}
+
+	display = &model.Ticker{
+		ID:               int(record.Code),
+		Name:             &record.TickerName,
+		Description:      &record.TickerDescription,
+		Image:            &record.Image,
+		Link:             &record.Link,
+		Count:            int(record.Count),
+		TotalSellingRate: float64(record.TotalSellingRate),
+		TotalNet:         float64(record.TotalNet),
+	}
+
 	return display, err
 }
 
 func (h *Handler) Ticker(ctx context.Context, input model.TickerInput) (display *model.Ticker, err error) {
+
 	return display, err
 }

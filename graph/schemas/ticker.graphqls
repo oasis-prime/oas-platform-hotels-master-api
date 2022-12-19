@@ -14,12 +14,15 @@ type Ticker {
   image: String
   link: String
   count: Int!
+  totalSellingRate: Float!
+  totalNet: Float!
 }
 
 # GraphQl schema Input
 # TickerInput
 input GetTickerInput {
   language: LanguageEnum!
+  id: Int!
 }
 
 input GetTickersInput {

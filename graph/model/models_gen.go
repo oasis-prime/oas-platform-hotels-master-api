@@ -285,6 +285,7 @@ type GetPopularInput struct {
 
 type GetTickerInput struct {
 	Language LanguageEnum `json:"language"`
+	ID       int          `json:"id"`
 }
 
 type GetTickersInput struct {
@@ -621,12 +622,14 @@ type SubscriptionInput struct {
 }
 
 type Ticker struct {
-	ID          int     `json:"id"`
-	Name        *string `json:"name"`
-	Description *string `json:"description"`
-	Image       *string `json:"image"`
-	Link        *string `json:"link"`
-	Count       int     `json:"count"`
+	ID               int     `json:"id"`
+	Name             *string `json:"name"`
+	Description      *string `json:"description"`
+	Image            *string `json:"image"`
+	Link             *string `json:"link"`
+	Count            int     `json:"count"`
+	TotalSellingRate float64 `json:"totalSellingRate"`
+	TotalNet         float64 `json:"totalNet"`
 }
 
 type TickerData struct {

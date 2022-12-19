@@ -3,7 +3,7 @@ module github.com/oasis-prime/oas-platform-hotels-master-api
 go 1.16
 
 require (
-	github.com/99designs/gqlgen v0.17.21
+	github.com/99designs/gqlgen v0.17.22
 	github.com/vektah/gqlparser/v2 v2.5.1
 )
 
@@ -16,8 +16,8 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/joho/godotenv v1.4.0
 	github.com/nqd/flat v0.1.1
-	// github.com/oasis-prime/oas-platform-core v0.0.0-00010101000000-000000000000
-	github.com/oasis-prime/oas-platform-core v0.2.2
+	github.com/oasis-prime/oas-platform-core v0.0.0-00010101000000-000000000000
+	// github.com/oasis-prime/oas-platform-core v0.2.2
 	github.com/oasis-prime/oas-platform-firebase-core v1.0.1
 	// github.com/oasis-prime/oas-platform-firebase-core v0.0.0-00010101000000-000000000000
 	github.com/sirupsen/logrus v1.9.0
@@ -28,6 +28,6 @@ require (
 	gorm.io/gorm v1.23.9
 )
 
-// replace github.com/oasis-prime/oas-platform-core => ../oas-platform-core
+replace github.com/oasis-prime/oas-platform-core => ../oas-platform-core
 
 // replace github.com/oasis-prime/oas-platform-firebase-core => ../oas-platform-firebase-core

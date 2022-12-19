@@ -4,6 +4,7 @@ import (
 	"github.com/oasis-prime/oas-platform-core/domain/customerdm"
 	"github.com/oasis-prime/oas-platform-core/domain/masterdm"
 	"github.com/oasis-prime/oas-platform-core/repositories/customerrepo"
+	"github.com/oasis-prime/oas-platform-core/repositories/enums/langenums"
 	"github.com/oasis-prime/oas-platform-core/repositories/masterrepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
 )
@@ -24,8 +25,8 @@ func (svc *service) TickerGetAll(condition masterdm.GetAllRequestBasic) (results
 	return svc.tickerRepo.GetAll(condition)
 }
 
-func (svc *service) TickerGet(argID uint) (record *masterrepo.Ticker, err error) {
-	return svc.tickerRepo.Get(argID)
+func (svc *service) TickerGet(argID uint, language langenums.Language) (record *masterrepo.Ticker, err error) {
+	return svc.tickerRepo.Get(argID, language)
 }
 
 func (svc *service) CustomerTickerGetAll(condition customerdm.GetAllRequestBasic) (results []*customerrepo.CustomerTicker, totalRows int64, err error) {
