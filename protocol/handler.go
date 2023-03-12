@@ -14,6 +14,7 @@ import (
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/googleserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelbedsserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/hotelsserv"
+	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/masterserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/memberserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/paymentserv"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/services/popularserv"
@@ -112,7 +113,10 @@ func hotelsHandlerInit() *hotelshdl.Handler {
 		repoHotelImages,
 		repoCoordinates,
 	)
-	return hotelshdl.NewHandler(hotelsServ)
+
+	masterServ := masterserv.NewService(db)
+
+	return hotelshdl.NewHandler(hotelsServ, masterServ)
 }
 
 func hotelbedsHandlerInit() *hotelbedshdl.Handler {

@@ -81,13 +81,6 @@ func (svc *service) GetHotels(
 		})
 	}
 
-	var keyword *[]string
-
-	if input.Keywords != nil {
-		keyword = &input.Keywords.Keyword
-	} else {
-		keyword = &[]string{""}
-	}
 	rooms, adults, children := 0, 0, 0
 
 	if input.Occupancies != nil {
@@ -96,17 +89,51 @@ func (svc *service) GetHotels(
 		children = input.Occupancies.Children
 	}
 
-	return svc.repoHotels.GetAll(hoteldm.GetAllHotelRequest{
-		GetAllRequestBasic: hoteldm.GetAllRequestBasic{
-			Page:     input.Pagination.Page,
-			PageSize: pageSize,
-			Keyword:  keyword,
-			Language: (*langenums.Language)(&input.Language),
-		},
-		Rooms:    rooms,
-		Adults:   adults,
-		Children: children,
-	})
+	record = []*hotelrepo.Hotels{}
+
+	if input.Keywords != nil {
+		resKeyword, t, err := svc.repoHotels.GetAll(hoteldm.GetAllHotelRequest{
+			GetAllRequestBasic: hoteldm.GetAllRequestBasic{
+				Page:     input.Pagination.Page,
+				PageSize: pageSize,
+				Keyword:  &input.Keywords.Keyword,
+				Cities:   nil,
+				Language: (*langenums.Language)(&input.Language),
+			},
+			Rooms:    rooms,
+			Adults:   adults,
+			Children: children,
+		})
+
+		totalRows += t
+
+		if err == nil {
+			record = append(record, resKeyword...)
+		}
+	}
+
+	if input.Keywords.Cities != nil {
+		resCities, t, err := svc.repoHotels.GetAll(hoteldm.GetAllHotelRequest{
+			GetAllRequestBasic: hoteldm.GetAllRequestBasic{
+				Page:     input.Pagination.Page,
+				PageSize: pageSize,
+				Keyword:  nil,
+				Cities:   &input.Keywords.Cities,
+				Language: (*langenums.Language)(&input.Language),
+			},
+			Rooms:    rooms,
+			Adults:   adults,
+			Children: children,
+		})
+
+		totalRows += t
+
+		if err == nil {
+			record = append(record, resCities...)
+		}
+	}
+
+	return record, totalRows, nil
 }
 
 func (svc *service) GetHotel(

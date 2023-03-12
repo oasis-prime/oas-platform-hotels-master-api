@@ -294,6 +294,8 @@ type GetTickersInput struct {
 
 type Hotel struct {
 	HotelName             *string           `json:"hotelName"`
+	HotelCity             *string           `json:"hotelCity"`
+	QueryBy               *string           `json:"queryBy"`
 	Language              LanguageEnum      `json:"language"`
 	Code                  *int              `json:"code"`
 	Type                  HotelTypeEnum     `json:"type"`
@@ -375,6 +377,7 @@ type HotelsInput struct {
 
 type HotelsKeywordsInput struct {
 	Keyword []string `json:"keyword"`
+	Cities  []string `json:"cities"`
 }
 
 type HotelsOccupanciesInput struct {
@@ -416,6 +419,23 @@ type Issues struct {
 	DateTo      *string `json:"dateTo"`
 	Order       *int    `json:"order"`
 	Alternative *bool   `json:"alternative"`
+}
+
+type Keyword struct {
+	Name      *string `json:"name"`
+	QueryBy   *string `json:"queryBy"`
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+	Radius    int     `json:"radius"`
+}
+
+type KeywordData struct {
+	Keyword []*Keyword `json:"keyword"`
+}
+
+type KeywordInput struct {
+	Keyword  []string     `json:"keyword"`
+	Language LanguageEnum `json:"language"`
 }
 
 type MemberRegisterData struct {
