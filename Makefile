@@ -17,7 +17,7 @@ set-mod:
 
 dcup-build:
 	docker build \
-		--build-arg ACCESS_TOKEN=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 \
+		--build-arg ACCESS_TOKEN= \
 		-t oas-platform-hotels-master-api -f ./build/Dockerfile .
 
 dcup-local:
