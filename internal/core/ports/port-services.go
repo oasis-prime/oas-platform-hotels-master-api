@@ -67,6 +67,7 @@ type BookingService interface {
 }
 
 type MasterService interface {
+	GetCities(input masterdm.GetAllRequestBasic) (results []*masterrepo.City, totalRows int64, err error)
 }
 
 type PopularService interface {

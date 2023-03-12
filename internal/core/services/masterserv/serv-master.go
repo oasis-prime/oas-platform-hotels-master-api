@@ -1,6 +1,7 @@
 package masterserv
 
 import (
+	"github.com/oasis-prime/oas-platform-core/domain/masterdm"
 	"github.com/oasis-prime/oas-platform-core/repositories/masterrepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
 	"gorm.io/gorm"
@@ -28,6 +29,7 @@ type service struct {
 	Surroundings       ports.MasterSurroundingsRepository
 	Terminals          ports.MasterTerminalsRepository
 	Popular            ports.MasterPopularRepository
+	Citi               ports.MasterCitiRepository
 }
 
 func NewService(db *gorm.DB) *service {
@@ -52,6 +54,7 @@ func NewService(db *gorm.DB) *service {
 	surroundings := masterrepo.NewSurroundingsRepo(db)
 	terminals := masterrepo.NewTerminalsRepo(db)
 	popular := masterrepo.NewPopularRepo(db)
+	citi := masterrepo.NewCityRepo(db)
 
 	return &service{
 		Accommodations:     accommodations,
@@ -75,5 +78,13 @@ func NewService(db *gorm.DB) *service {
 		Surroundings:       surroundings,
 		Terminals:          terminals,
 		Popular:            popular,
+		Citi:               citi,
 	}
+}
+
+func (svc *service) GetCities(
+	input masterdm.GetAllRequestBasic,
+) (results []*masterrepo.City, totalRows int64, err error) {
+	condition := input
+	return svc.Citi.GetAll(condition)
 }

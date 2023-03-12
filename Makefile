@@ -24,7 +24,7 @@ dcup-local:
 	docker-compose up
 
 dcup-prod:
-	docker-compose -f ./docker-compose.prod.yaml up
+	docker-compose -f ./docker-compose.prod.yaml up --build
 
 dc-down:
 	docker-compose down

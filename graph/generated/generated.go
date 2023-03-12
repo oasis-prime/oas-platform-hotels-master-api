@@ -267,6 +267,7 @@ type ComplexityRoot struct {
 		DestinationCode       func(childComplexity int) int
 		Email                 func(childComplexity int) int
 		Facilities            func(childComplexity int, input *model.FacilitiesInput) int
+		HotelCity             func(childComplexity int) int
 		HotelName             func(childComplexity int) int
 		Images                func(childComplexity int, input *model.ImagesInput) int
 		InterestPoints        func(childComplexity int, input *model.HotelInterestPointsInput) int
@@ -276,6 +277,7 @@ type ComplexityRoot struct {
 		Name                  func(childComplexity int) int
 		Phones                func(childComplexity int, input *model.HotelPhonesInput) int
 		PostalCode            func(childComplexity int) int
+		QueryBy               func(childComplexity int) int
 		Ranking               func(childComplexity int) int
 		Rooms                 func(childComplexity int, input *model.HotelRoomsInput) int
 		S2c                   func(childComplexity int) int
@@ -313,6 +315,18 @@ type ComplexityRoot struct {
 		IssueCode   func(childComplexity int) int
 		IssueType   func(childComplexity int) int
 		Order       func(childComplexity int) int
+	}
+
+	Keyword struct {
+		Latitude  func(childComplexity int) int
+		Longitude func(childComplexity int) int
+		Name      func(childComplexity int) int
+		QueryBy   func(childComplexity int) int
+		Radius    func(childComplexity int) int
+	}
+
+	KeywordData struct {
+		Keyword func(childComplexity int) int
 	}
 
 	MemberRegisterData struct {
@@ -393,6 +407,7 @@ type ComplexityRoot struct {
 		GetBookingsHistory func(childComplexity int, input model.BookingsHistoryInput) int
 		GetHotel           func(childComplexity int, input model.HotelInput) int
 		GetHotels          func(childComplexity int, input model.HotelsInput) int
+		GetKeyword         func(childComplexity int, input model.KeywordInput) int
 		GetPayment         func(childComplexity int, input model.GetPaymentInput) int
 		GetPlaces          func(childComplexity int, input model.GetPlacesInput) int
 		GetPopular         func(childComplexity int, input model.GetPopularInput) int
@@ -554,6 +569,7 @@ type QueryResolver interface {
 	CheckRate(ctx context.Context, input model.CheckRateInput) (*model.CheckRateData, error)
 	GetHotels(ctx context.Context, input model.HotelsInput) (*model.HotelsData, error)
 	GetHotel(ctx context.Context, input model.HotelInput) (*model.Hotel, error)
+	GetKeyword(ctx context.Context, input model.KeywordInput) (*model.KeywordData, error)
 	GetPayment(ctx context.Context, input model.GetPaymentInput) (*model.PaymentData, error)
 	GetPopular(ctx context.Context, input model.GetPopularInput) (*model.Popular, error)
 	GetAllPopular(ctx context.Context, input model.GetPopularInput) (*model.PopularData, error)
@@ -1659,6 +1675,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Hotel.Facilities(childComplexity, args["input"].(*model.FacilitiesInput)), true
 
+	case "Hotel.hotelCity":
+		if e.complexity.Hotel.HotelCity == nil {
+			break
+		}
+
+		return e.complexity.Hotel.HotelCity(childComplexity), true
+
 	case "Hotel.hotelName":
 		if e.complexity.Hotel.HotelName == nil {
 			break
@@ -1741,6 +1764,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Hotel.PostalCode(childComplexity), true
+
+	case "Hotel.queryBy":
+		if e.complexity.Hotel.QueryBy == nil {
+			break
+		}
+
+		return e.complexity.Hotel.QueryBy(childComplexity), true
 
 	case "Hotel.ranking":
 		if e.complexity.Hotel.Ranking == nil {
@@ -1921,6 +1951,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Issues.Order(childComplexity), true
+
+	case "Keyword.latitude":
+		if e.complexity.Keyword.Latitude == nil {
+			break
+		}
+
+		return e.complexity.Keyword.Latitude(childComplexity), true
+
+	case "Keyword.longitude":
+		if e.complexity.Keyword.Longitude == nil {
+			break
+		}
+
+		return e.complexity.Keyword.Longitude(childComplexity), true
+
+	case "Keyword.name":
+		if e.complexity.Keyword.Name == nil {
+			break
+		}
+
+		return e.complexity.Keyword.Name(childComplexity), true
+
+	case "Keyword.queryBy":
+		if e.complexity.Keyword.QueryBy == nil {
+			break
+		}
+
+		return e.complexity.Keyword.QueryBy(childComplexity), true
+
+	case "Keyword.radius":
+		if e.complexity.Keyword.Radius == nil {
+			break
+		}
+
+		return e.complexity.Keyword.Radius(childComplexity), true
+
+	case "KeywordData.keyword":
+		if e.complexity.KeywordData.Keyword == nil {
+			break
+		}
+
+		return e.complexity.KeywordData.Keyword(childComplexity), true
 
 	case "MemberRegisterData.message":
 		if e.complexity.MemberRegisterData.Message == nil {
@@ -2268,6 +2340,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetHotels(childComplexity, args["input"].(model.HotelsInput)), true
+
+	case "Query.getKeyword":
+		if e.complexity.Query.GetKeyword == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getKeyword_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetKeyword(childComplexity, args["input"].(model.KeywordInput)), true
 
 	case "Query.getPayment":
 		if e.complexity.Query.GetPayment == nil {
@@ -2941,6 +3025,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputHotelsOccupanciesInput,
 		ec.unmarshalInputHotelsStayInput,
 		ec.unmarshalInputImagesInput,
+		ec.unmarshalInputKeywordInput,
 		ec.unmarshalInputMemberRegisterInput,
 		ec.unmarshalInputMemberVerifyEmailInput,
 		ec.unmarshalInputPaginationInput,
@@ -3359,6 +3444,8 @@ extend type Query {
 	{Name: "../schemas/hotels.graphqls", Input: `# Hotels
 type Hotel {
   hotelName: String
+  hotelCity: String
+  queryBy: String
   language: LanguageEnum!
   code: Int
   type: HotelTypeEnum!
@@ -3501,6 +3588,19 @@ type HotelsData {
   pagination: PaginationType!
 }
 
+# Keyword
+type KeywordData {
+  keyword: [Keyword!]!
+}
+
+type Keyword {
+  name: String
+  queryBy: String
+  latitude: Float!
+  longitude: Float!
+  radius: Int!
+}
+
 input HotelsStayInput {
   checkIn: String!
   checkOut: String!
@@ -3567,6 +3667,7 @@ input HotelPhonesInput {
 
 input HotelsKeywordsInput {
   keyword: [String!]!
+  cities: [String!]
 }
 
 input HotelsGeolocationInput {
@@ -3575,10 +3676,16 @@ input HotelsGeolocationInput {
   radius: Int!
 }
 
+input KeywordInput {
+  keyword: [String!]!
+  language: LanguageEnum!
+}
+
 # Query
 extend type Query {
   getHotels(input: HotelsInput!): HotelsData!
   getHotel(input: HotelInput!): Hotel!
+  getKeyword(input: KeywordInput!): KeywordData!
 }
 `, BuiltIn: false},
 	{Name: "../schemas/member.graphqls", Input: `# GraphQL Basic enum
@@ -4138,6 +4245,21 @@ func (ec *executionContext) field_Query_getHotels_args(ctx context.Context, rawA
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNHotelsInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐHotelsInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getKeyword_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.KeywordInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNKeywordInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐKeywordInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -10298,6 +10420,88 @@ func (ec *executionContext) fieldContext_Hotel_hotelName(ctx context.Context, fi
 	return fc, nil
 }
 
+func (ec *executionContext) _Hotel_hotelCity(ctx context.Context, field graphql.CollectedField, obj *model.Hotel) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Hotel_hotelCity(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HotelCity, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Hotel_hotelCity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Hotel",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Hotel_queryBy(ctx context.Context, field graphql.CollectedField, obj *model.Hotel) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Hotel_queryBy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.QueryBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Hotel_queryBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Hotel",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Hotel_language(ctx context.Context, field graphql.CollectedField, obj *model.Hotel) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Hotel_language(ctx, field)
 	if err != nil {
@@ -11796,6 +12000,10 @@ func (ec *executionContext) fieldContext_HotelsData_hotels(ctx context.Context, 
 			switch field.Name {
 			case "hotelName":
 				return ec.fieldContext_Hotel_hotelName(ctx, field)
+			case "hotelCity":
+				return ec.fieldContext_Hotel_hotelCity(ctx, field)
+			case "queryBy":
+				return ec.fieldContext_Hotel_queryBy(ctx, field)
 			case "language":
 				return ec.fieldContext_Hotel_language(ctx, field)
 			case "code":
@@ -12527,6 +12735,276 @@ func (ec *executionContext) fieldContext_Issues_alternative(ctx context.Context,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Keyword_name(ctx context.Context, field graphql.CollectedField, obj *model.Keyword) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Keyword_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Keyword_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Keyword",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Keyword_queryBy(ctx context.Context, field graphql.CollectedField, obj *model.Keyword) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Keyword_queryBy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.QueryBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Keyword_queryBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Keyword",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Keyword_latitude(ctx context.Context, field graphql.CollectedField, obj *model.Keyword) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Keyword_latitude(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Latitude, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Keyword_latitude(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Keyword",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Keyword_longitude(ctx context.Context, field graphql.CollectedField, obj *model.Keyword) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Keyword_longitude(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Longitude, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Keyword_longitude(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Keyword",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Keyword_radius(ctx context.Context, field graphql.CollectedField, obj *model.Keyword) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Keyword_radius(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Radius, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Keyword_radius(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Keyword",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _KeywordData_keyword(ctx context.Context, field graphql.CollectedField, obj *model.KeywordData) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_KeywordData_keyword(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Keyword, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Keyword)
+	fc.Result = res
+	return ec.marshalNKeyword2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐKeywordᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_KeywordData_keyword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "KeywordData",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_Keyword_name(ctx, field)
+			case "queryBy":
+				return ec.fieldContext_Keyword_queryBy(ctx, field)
+			case "latitude":
+				return ec.fieldContext_Keyword_latitude(ctx, field)
+			case "longitude":
+				return ec.fieldContext_Keyword_longitude(ctx, field)
+			case "radius":
+				return ec.fieldContext_Keyword_radius(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Keyword", field.Name)
 		},
 	}
 	return fc, nil
@@ -14585,6 +15063,10 @@ func (ec *executionContext) fieldContext_Query_getHotel(ctx context.Context, fie
 			switch field.Name {
 			case "hotelName":
 				return ec.fieldContext_Hotel_hotelName(ctx, field)
+			case "hotelCity":
+				return ec.fieldContext_Hotel_hotelCity(ctx, field)
+			case "queryBy":
+				return ec.fieldContext_Hotel_queryBy(ctx, field)
 			case "language":
 				return ec.fieldContext_Hotel_language(ctx, field)
 			case "code":
@@ -14659,6 +15141,65 @@ func (ec *executionContext) fieldContext_Query_getHotel(ctx context.Context, fie
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_getHotel_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getKeyword(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getKeyword(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetKeyword(rctx, fc.Args["input"].(model.KeywordInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.KeywordData)
+	fc.Result = res
+	return ec.marshalNKeywordData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐKeywordData(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getKeyword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "keyword":
+				return ec.fieldContext_KeywordData_keyword(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type KeywordData", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getKeyword_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -21261,7 +21802,7 @@ func (ec *executionContext) unmarshalInputHotelsKeywordsInput(ctx context.Contex
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"keyword"}
+	fieldsInOrder := [...]string{"keyword", "cities"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21273,6 +21814,14 @@ func (ec *executionContext) unmarshalInputHotelsKeywordsInput(ctx context.Contex
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("keyword"))
 			it.Keyword, err = ec.unmarshalNString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "cities":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cities"))
+			it.Cities, err = ec.unmarshalOString2ᚕstringᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -21397,6 +21946,42 @@ func (ec *executionContext) unmarshalInputImagesInput(ctx context.Context, obj i
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
 			it.Limit, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputKeywordInput(ctx context.Context, obj interface{}) (model.KeywordInput, error) {
+	var it model.KeywordInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"keyword", "language"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "keyword":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("keyword"))
+			it.Keyword, err = ec.unmarshalNString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "language":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("language"))
+			it.Language, err = ec.unmarshalNLanguageEnum2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐLanguageEnum(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -22819,6 +23404,14 @@ func (ec *executionContext) _Hotel(ctx context.Context, sel ast.SelectionSet, ob
 
 			out.Values[i] = ec._Hotel_hotelName(ctx, field, obj)
 
+		case "hotelCity":
+
+			out.Values[i] = ec._Hotel_hotelCity(ctx, field, obj)
+
+		case "queryBy":
+
+			out.Values[i] = ec._Hotel_queryBy(ctx, field, obj)
+
 		case "language":
 
 			out.Values[i] = ec._Hotel_language(ctx, field, obj)
@@ -23250,6 +23843,84 @@ func (ec *executionContext) _Issues(ctx context.Context, sel ast.SelectionSet, o
 
 			out.Values[i] = ec._Issues_alternative(ctx, field, obj)
 
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var keywordImplementors = []string{"Keyword"}
+
+func (ec *executionContext) _Keyword(ctx context.Context, sel ast.SelectionSet, obj *model.Keyword) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, keywordImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Keyword")
+		case "name":
+
+			out.Values[i] = ec._Keyword_name(ctx, field, obj)
+
+		case "queryBy":
+
+			out.Values[i] = ec._Keyword_queryBy(ctx, field, obj)
+
+		case "latitude":
+
+			out.Values[i] = ec._Keyword_latitude(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "longitude":
+
+			out.Values[i] = ec._Keyword_longitude(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "radius":
+
+			out.Values[i] = ec._Keyword_radius(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var keywordDataImplementors = []string{"KeywordData"}
+
+func (ec *executionContext) _KeywordData(ctx context.Context, sel ast.SelectionSet, obj *model.KeywordData) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, keywordDataImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("KeywordData")
+		case "keyword":
+
+			out.Values[i] = ec._KeywordData_keyword(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -23886,6 +24557,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getHotel(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "getKeyword":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getKeyword(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -25500,6 +26194,79 @@ func (ec *executionContext) marshalNInt2ᚕintᚄ(ctx context.Context, sel ast.S
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalNKeyword2ᚕᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐKeywordᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Keyword) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNKeyword2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐKeyword(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNKeyword2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐKeyword(ctx context.Context, sel ast.SelectionSet, v *model.Keyword) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Keyword(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNKeywordData2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐKeywordData(ctx context.Context, sel ast.SelectionSet, v model.KeywordData) graphql.Marshaler {
+	return ec._KeywordData(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNKeywordData2ᚖgithubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐKeywordData(ctx context.Context, sel ast.SelectionSet, v *model.KeywordData) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._KeywordData(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNKeywordInput2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐKeywordInput(ctx context.Context, v interface{}) (model.KeywordInput, error) {
+	res, err := ec.unmarshalInputKeywordInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNLanguageEnum2githubᚗcomᚋoasisᚑprimeᚋoasᚑplatformᚑhotelsᚑmasterᚑapiᚋgraphᚋmodelᚐLanguageEnum(ctx context.Context, v interface{}) (model.LanguageEnum, error) {

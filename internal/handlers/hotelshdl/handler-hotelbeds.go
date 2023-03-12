@@ -7,9 +7,11 @@ import (
 
 	"github.com/jinzhu/copier"
 	"github.com/oasis-prime/oas-platform-core/domain/hoteldm"
+	"github.com/oasis-prime/oas-platform-core/domain/masterdm"
 	"github.com/oasis-prime/oas-platform-core/repositories/enums/htenums"
 	"github.com/oasis-prime/oas-platform-core/repositories/enums/langenums"
 	"github.com/oasis-prime/oas-platform-core/repositories/hotelrepo"
+	"github.com/oasis-prime/oas-platform-core/repositories/masterrepo"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/graph/model"
 	"github.com/oasis-prime/oas-platform-hotels-master-api/internal/core/ports"
 	"github.com/sirupsen/logrus"
@@ -17,13 +19,16 @@ import (
 
 type Handler struct {
 	servHotels ports.HotelsService
+	servMaster ports.MasterService
 }
 
 func NewHandler(
 	servHotels ports.HotelsService,
+	servMaster ports.MasterService,
 ) *Handler {
 	return &Handler{
 		servHotels: servHotels,
+		servMaster: servMaster,
 	}
 }
 
@@ -68,6 +73,78 @@ func (h *Handler) GetAllHotel(ctx context.Context, input model.HotelInput) (*mod
 	}
 
 	copier.Copy(&display, &hotel)
+
+	return display, nil
+}
+
+func (h *Handler) GetKeyword(ctx context.Context, input model.KeywordInput) (*model.KeywordData, error) {
+	display := &model.KeywordData{}
+
+	hotelResult := make(chan []*hotelrepo.Hotels)
+	citiesResult := make(chan []*masterrepo.City)
+
+	go func(c chan []*hotelrepo.Hotels) {
+		hotels, _, err := h.servHotels.GetHotels(model.HotelsInput{
+			Language: input.Language,
+			Keywords: &model.HotelsKeywordsInput{
+				Keyword: input.Keyword,
+			},
+			Pagination: &model.PaginationInput{
+				Page:     1,
+				PageSize: 5,
+			},
+		})
+
+		if err != nil {
+			return
+		}
+
+		c <- hotels
+	}(hotelResult)
+
+	go func(c chan []*masterrepo.City) {
+		cities, _, err := h.servMaster.GetCities(masterdm.GetAllRequestBasic{
+			Language: (*langenums.Language)(&input.Language),
+			Keyword:  &input.Keyword,
+			Page:     1,
+			PageSize: 5,
+		})
+
+		if err != nil {
+			c <- []*masterrepo.City{}
+		}
+
+		c <- cities
+	}(citiesResult)
+
+	hotelsRepo := <-hotelResult
+	citiRepo := <-citiesResult
+
+	keywords := []*model.Keyword{}
+
+	hotelType := "hotels"
+	for _, hotel := range hotelsRepo {
+		var h model.Keyword
+		h.Name = &hotel.HotelName
+		h.QueryBy = &hotelType
+
+		keywords = append(keywords, &h)
+	}
+
+	cityType := "cities"
+	for _, city := range citiRepo {
+		var h model.Keyword
+		h.Name = &city.Name
+		h.QueryBy = &cityType
+		h.Latitude = city.Latitude
+		h.Longitude = city.Longitude
+
+		keywords = append(keywords, &h)
+	}
+
+	display = &model.KeywordData{
+		Keyword: keywords,
+	}
 
 	return display, nil
 }

@@ -1,6 +1,8 @@
 # Hotels
 type Hotel {
   hotelName: String
+  hotelCity: String
+  queryBy: String
   language: LanguageEnum!
   code: Int
   type: HotelTypeEnum!
@@ -143,6 +145,19 @@ type HotelsData {
   pagination: PaginationType!
 }
 
+# Keyword
+type KeywordData {
+  keyword: [Keyword!]!
+}
+
+type Keyword {
+  name: String
+  queryBy: String
+  latitude: Float!
+  longitude: Float!
+  radius: Int!
+}
+
 input HotelsStayInput {
   checkIn: String!
   checkOut: String!
@@ -209,6 +224,7 @@ input HotelPhonesInput {
 
 input HotelsKeywordsInput {
   keyword: [String!]!
+  cities: [String!]
 }
 
 input HotelsGeolocationInput {
@@ -217,8 +233,14 @@ input HotelsGeolocationInput {
   radius: Int!
 }
 
+input KeywordInput {
+  keyword: [String!]!
+  language: LanguageEnum!
+}
+
 # Query
 extend type Query {
   getHotels(input: HotelsInput!): HotelsData!
   getHotel(input: HotelInput!): Hotel!
+  getKeyword(input: KeywordInput!): KeywordData!
 }

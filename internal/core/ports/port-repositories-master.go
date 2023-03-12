@@ -168,3 +168,7 @@ type MasterTerminalsRepository interface {
 type MasterPopularRepository interface {
 	GetAll(condition masterdm.GetCustomerPopularRequest) (results []*masterrepo.Popular, totalRows int64, err error)
 }
+
+type MasterCitiRepository interface {
+	GetAll(condition masterdm.GetAllRequestBasic) (results []*masterrepo.City, totalRows int64, err error)
+}

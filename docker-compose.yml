@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./build/Dockerfile.local
       args:
-        ACCESS_TOKEN: 
+        ACCESS_TOKEN:
     volumes:
       - ./:/app/
     working_dir: /app
